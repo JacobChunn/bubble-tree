@@ -7,9 +7,63 @@ specifies that any user authenticated via an API key can "create", "read",
 "update", and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
-  Todo: a
+  User: a // Team
     .model({
-      content: a.string(),
+      // Primary Key is auto-generated as `id`
+      username: a.string().required(),
+      hashedPassword: a.string().required(),
+      //profileImage: a.string(),
+      bio: a.string(),
+      // Relationships: a User can have many Bubbles, Votes, and Comments.
+      bubbles: a.hasMany("Bubble", "userID"),
+      votes: a.hasMany("Vote", "userID"),
+      comments: a.hasMany("Comment", "userID"),
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
+
+  Bubble: a // Member
+    .model({
+      // Primary Key is auto-generated as `id`
+      title: a.string().required(),
+      content: a.string().required(),
+      type: a.string().required(),
+      author: a.string().required(),
+      dateCreated: a.datetime().required(),
+      bubbleCoordinates: a.string().required(),
+
+      userID: a.id().required(),
+      user: a.belongsTo('User', 'userID'),
+
+      votes: a.hasMany("Vote", "bubbleID"),
+      comments: a.hasMany("Comment", "bubbleID"),
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
+
+  Vote: a
+    .model({
+      // Primary Key is auto-generated as `id`
+      voteValue: a.integer().required(),
+      dateCreated: a.datetime().required(),
+      
+      userID: a.id().required(),
+      user: a.belongsTo('User', 'userID'),
+
+      bubbleID: a.id().required(),
+      bubble: a.belongsTo('Bubble', 'bubbleID'),
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
+
+  Comment: a
+    .model({
+      // Primary Key is auto-generated as `id`
+      commentText: a.string().required(),
+      dateCreated: a.datetime().required(),
+      
+      userID: a.id().required(),
+      user: a.belongsTo('User', 'userID'),
+
+      bubbleID: a.id().required(),
+      bubble: a.belongsTo('Bubble', 'bubbleID'),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 });
