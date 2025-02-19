@@ -11,9 +11,7 @@ import AuthWrapper from "@/components/auth-wrapper";
 import Header from "@/components/header";
 import { Flex } from "@aws-amplify/ui-react";
 
-Amplify.configure(outputs);
-
-const client = generateClient<Schema>();
+//const client = generateClient<Schema>();
 
 export default function App() {
 

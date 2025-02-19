@@ -11,8 +11,6 @@ import { Authenticator, Flex, useAuthenticator } from "@aws-amplify/ui-react";
 import { useRouter } from 'next/navigation'
 import { useEffect } from "react";
 
-Amplify.configure(outputs);
-
 export default function App() {
   const { authStatus } = useAuthenticator(context => [context.authStatus]);
   
@@ -37,6 +35,7 @@ export default function App() {
       }}
     >
       <Header/>
+      
       <Flex
         direction="column"
         width="100vw"
@@ -44,6 +43,7 @@ export default function App() {
         justifyContent="center"
         alignSelf="center"
       >
+        <h1>Bubble Tree Explore Page</h1>
         <Authenticator/>
       </Flex>
     </main>

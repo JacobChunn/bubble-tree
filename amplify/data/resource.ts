@@ -11,7 +11,7 @@ const schema = a.schema({
     .model({
       // Primary Key is auto-generated as `id`
       username: a.string().required(),
-      hashedPassword: a.string().required(),
+      //hashedPassword: a.string().required(),
       //profileImage: a.string(),
       bio: a.string(),
       // Relationships: a User can have many Bubbles, Votes, and Comments.
