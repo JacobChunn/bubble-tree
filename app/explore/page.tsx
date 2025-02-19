@@ -25,7 +25,7 @@ export default function App() {
           justifyContent="center"
           alignSelf="center"
         >
-          <h1>Bubble Tree Home Page</h1>
+          <h1>Bubble Tree Explore Page</h1>
         </Flex>
       
       </main>
