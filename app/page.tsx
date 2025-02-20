@@ -66,6 +66,14 @@ export default function App() {
       );
     });
   };
+
+  const removeBubble = (deleteBubbleID: string) => {
+    setBubbles((prevBubbles) => {
+      if (!prevBubbles) return null;
+      return prevBubbles.filter((bubble) => bubble.id !== deleteBubbleID);
+    });
+  };
+  
   
 
   const { authStatus } = useAuthenticator(context => [context.authStatus]);
@@ -118,7 +126,8 @@ export default function App() {
         onClose={() => setModalState(false)}
         focusedBubble={focusedBubble}
         updateBubble={updateBubble} 
-        />
+        removeBubble={removeBubble}
+      />
       <Flex
         width="100%"
         justifyContent="center"
