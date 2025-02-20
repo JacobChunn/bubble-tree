@@ -9,11 +9,13 @@ import outputs from "@/amplify_outputs.json";
 import "@aws-amplify/ui-react/styles.css";
 import AuthWrapper from "@/components/auth-wrapper";
 import Header from "@/components/header";
-import { Button, Flex, Text, useAuthenticator } from "@aws-amplify/ui-react";
+import { Button, Flex, SwitchField, Text, ToggleButton, useAuthenticator } from "@aws-amplify/ui-react";
 import { createBubble } from "./actions/create-bubble";
 import { createUserRecord } from "./actions/create-user-record";
 import { getUserBubbleRecords } from "./actions/get-user-bubble-records";
 import CreateBubbleModal from "@/components/create-bubble-modal";
+import ViewBubbleModal from "@/components/view-bubble-modal";
+import EditBubbleModal from "@/components/edit-bubble-modal";
 
 //const client = generateClient<Schema>();
 
@@ -46,13 +48,25 @@ export default function App() {
 
   const [bubbles, setBubbles] = useState<BubbleType[] | null>(null);
   const [loadingBubbles, setLoadingBubbles] = useState<LoadingBubbleType>("unloaded");
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [modalState, setModalState] = useState<"create" | "view" | "edit" | false>(false);
   const [editToggle, setEditToggle] = useState(false);
+  const [focusedBubble, setFocusedBubble] = useState<BubbleType | null>(null);
 
   // Function to append bubbles to the bubbles state array
   const addBubble = (newBubble: BubbleType) => {
     setBubbles((prevBubbles) => (prevBubbles ? [...prevBubbles, newBubble] : [newBubble]));
   };
+
+  // Function to replace a bubble in the bubbles state array. Replaces the bubble with id of replaceBubbleID
+  const updateBubble = (replaceBubbleID: string, editedBubble: BubbleType) => {
+    setBubbles((prevBubbles) => {
+      if (!prevBubbles) return null;
+      return prevBubbles.map((bubble) =>
+        bubble.id === replaceBubbleID ? editedBubble : bubble
+      );
+    });
+  };
+  
 
   const { authStatus } = useAuthenticator(context => [context.authStatus]);
 
@@ -90,10 +104,21 @@ export default function App() {
     <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Header />
       <CreateBubbleModal
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
+        isOpen={modalState == "create"}
+        onClose={() => setModalState(false)}
         addBubble={addBubble}
       />
+      <ViewBubbleModal
+        isOpen={modalState == "view"}
+        onClose={() => setModalState(false)}
+        focusedBubble={focusedBubble}
+      />
+      <EditBubbleModal
+        isOpen={modalState == "edit"}
+        onClose={() => setModalState(false)}
+        focusedBubble={focusedBubble}
+        updateBubble={updateBubble} 
+        />
       <Flex
         width="100%"
         justifyContent="center"
@@ -145,7 +170,7 @@ export default function App() {
             padding="12px 8px 12px 8px"
             borderRadius="20px"
             borderColor="rgb(0,0,0)"
-            onClick={() => setModalOpen(true)}
+            onClick={() => setModalState("create")}
           >
             <Text
               //fontFamily="Roboto"
@@ -163,6 +188,12 @@ export default function App() {
             </Text>
           </Button>
 
+          <SwitchField
+            label="Edit"
+            labelPosition="end"
+            isChecked={editToggle}
+            onChange={() => setEditToggle(!editToggle)}
+          />
         </Flex>
 
       </Flex>
@@ -181,7 +212,7 @@ export default function App() {
         position="relative"
       >
         {loadingBubbles == "loaded" && bubbles != null ?
-          
+
           bubbles.map((bubble, index) => (
             <Flex
               key={index}
@@ -189,8 +220,15 @@ export default function App() {
               left={`${bubble.bubbleCoordinates.x}px`}
               top={`${bubble.bubbleCoordinates.y}px`}
               padding="10px"
-              backgroundColor="rgb(255,0,0)"
+              backgroundColor="rgba(81, 194, 194, 0.62)"
               borderRadius="8px"
+              border="4px solid"
+              borderColor="rgb(25, 103, 103)"
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                setFocusedBubble(bubble);
+                setModalState(editToggle ? "edit" : "view")
+              }}
             >
               <Text>{bubble.title}</Text>
             </Flex>

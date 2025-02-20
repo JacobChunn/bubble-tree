@@ -5,8 +5,9 @@ import { Button, Flex, TextAreaField, TextField, Text } from '@aws-amplify/ui-re
 import { createBubble, CreateBubbleType } from '@/app/actions/create-bubble';
 import { useState } from 'react';
 import { BubbleType } from '@/app/page';
+import { editBubble, EditBubbleType } from '@/app/actions/edit-bubble';
 
-type UnrolledCreateBubbleType = {
+type UnrolledEditBubbleType = {
   title: string,
   content: string,
   x: string, // x and y are strings because we want the
@@ -16,23 +17,25 @@ type UnrolledCreateBubbleType = {
 interface ModalProps {
   isOpen: boolean,
   onClose: () => void,
-  addBubble: (newBubble: BubbleType) => void,
+  focusedBubble: BubbleType | null,
+  updateBubble: (replaceBubbleID: string, editedBubble: BubbleType) => void,
 }
 
-export default function CreateBubbleModal({
+export default function EditBubbleModal({
   isOpen,
   onClose,
-  addBubble,
+  focusedBubble,
+  updateBubble,
 }: ModalProps) {
-
-  const [formState, setFormState] = useState<UnrolledCreateBubbleType>({
-    title: "",
-    content: "",
-    x: "",
-    y: ""
+  if (!isOpen || !focusedBubble) return null;
+  const [formState, setFormState] = useState<UnrolledEditBubbleType>({
+    title: focusedBubble ? focusedBubble.title : "",
+    content: focusedBubble ? focusedBubble.content : "",
+    x: focusedBubble ? String(focusedBubble.bubbleCoordinates.x) : "",
+    y: focusedBubble ? String(focusedBubble.bubbleCoordinates.y) : ""
   });
 
-  if (!isOpen) return null;
+  
 
   const handleInputChange = (field: any) => (e: { target: any; }) => {
     const value =
@@ -44,7 +47,8 @@ export default function CreateBubbleModal({
     e.preventDefault();
     try {
       console.log("handling submit!")
-      const formBubble: CreateBubbleType = {
+      const formBubble: EditBubbleType = {
+        replaceID: focusedBubble.id,
         title: formState.title,
         content: formState.content,
         bubbleCoordinates: {
@@ -53,10 +57,10 @@ export default function CreateBubbleModal({
         }
       }
 
-      const newBubble = await createBubble(formBubble);
-      if (!newBubble) return;
-      console.log("newBubble: ", newBubble)
-      addBubble(newBubble);
+      const updatedBubble = await editBubble(formBubble);
+      if (!updatedBubble) return;
+      console.log("updatedBubble: ", updatedBubble)
+      updateBubble(focusedBubble.id, updatedBubble);
 
     } catch (error) {
       console.error('Error submitting bubble creation:', error);
@@ -100,7 +104,7 @@ export default function CreateBubbleModal({
           position="relative"
         >
           <TextField
-            label="Add bubble title:"
+            label="Edit bubble title:"
             placeholder="Enter bubble title..."
             isRequired={true}
             width="40%"
@@ -113,7 +117,7 @@ export default function CreateBubbleModal({
 
           <TextAreaField
             //className='nc'
-            label="Add bubble content:"
+            label="Edit bubble content:"
             placeholder="Enter bubble content..."
             isRequired={true}
             rows={3}
@@ -129,7 +133,7 @@ export default function CreateBubbleModal({
             justifyContent="center"
           >
             <TextField
-              label="Add bubble x coordinate:"
+              label="Edit bubble x coordinate:"
               placeholder="x coordinate..."
               isRequired={true}
               width="200px"
@@ -140,7 +144,7 @@ export default function CreateBubbleModal({
               onChange={handleInputChange('x')}
             />
             <TextField
-              label="Add bubble y coordinate:"
+              label="Edit bubble y coordinate:"
               placeholder="y coordinate..."
               isRequired={true}
               width="200px"
@@ -183,7 +187,7 @@ export default function CreateBubbleModal({
               position="relative"
               whiteSpace="pre-wrap"
             >
-              Create Bubble
+              Update Bubble
             </Text>
           </Button>
         </Flex>

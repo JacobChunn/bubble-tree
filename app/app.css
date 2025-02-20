@@ -42,3 +42,11 @@ main {
   max-height: 90%;
   overflow: auto;
 }
+
+.amplify-flex .amplify-field .amplify-textareafield textarea {
+  background-color: rgb(0, 85, 255);
+  height: 96px;
+  border-radius: 0px;
+  border: none;
+  border-bottom: 1px solid rgba(193,199,205,1);
+}
