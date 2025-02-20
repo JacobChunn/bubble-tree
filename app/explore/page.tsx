@@ -13,7 +13,7 @@ import { Flex } from "@aws-amplify/ui-react";
 import ExploreExample from "@/components/explore-example";
 
 //const client = generateClient<Schema>();
-
+// in getRecentlyVisited(), make sure createUserRecord is called inside server action.
 export default function App() {
 
   console.log("im in explore page clientside!");

@@ -19,18 +19,7 @@ export async function getUserBubbleRecords() {
     const userRecordExists = await createUserRecord();
     if (!userRecordExists) return false;
 
-    // Check if record exists
-    const userResult = await client.models.User.list({
-      filter: {
-        username: { eq: username },
-      },
-    });
-
-    if (!userResult.data || userResult.data.length === 0) {
-      return false;
-    }
-
-    const userId = userResult.data[0].id;
+    const userId = currentUser.userId;
 
     const bubbleResult = await client.models.Bubble.list({
       filter: {
@@ -42,7 +31,8 @@ export async function getUserBubbleRecords() {
 
     if (bubbleResult.errors == undefined) {
       const simplifiedBubbleData = bubbleResult.data.map(
-        ({ title, content, type, author, dateCreated, bubbleCoordinates }) => ({
+        ({ id, title, content, type, author, dateCreated, bubbleCoordinates }) => ({
+          id,
           title,
           content,
           type,
@@ -51,7 +41,7 @@ export async function getUserBubbleRecords() {
           bubbleCoordinates,
         })
       );
-
+      console.log("simplifiedBubbleData", simplifiedBubbleData)
       return simplifiedBubbleData;
     }
 
