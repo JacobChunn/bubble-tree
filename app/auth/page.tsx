@@ -10,6 +10,7 @@ import Header from "@/components/header";
 import { Authenticator, Flex, useAuthenticator } from "@aws-amplify/ui-react";
 import { useRouter } from 'next/navigation'
 import { useEffect } from "react";
+import { createUserRecord } from "../actions/create-user-record";
 
 export default function App() {
   const { authStatus } = useAuthenticator(context => [context.authStatus]);
@@ -18,7 +19,12 @@ export default function App() {
 
   useEffect(() => {
     if (authStatus == "authenticated") {
-      
+      const ensureUserRecordExists = async () => {
+        await createUserRecord();
+      }
+
+      ensureUserRecordExists();
+
       router.push("/");
     }
     
@@ -35,7 +41,6 @@ export default function App() {
       }}
     >
       <Header/>
-      
       <Flex
         direction="column"
         width="100vw"
@@ -43,7 +48,6 @@ export default function App() {
         justifyContent="center"
         alignSelf="center"
       >
-        <h1>Bubble Tree Explore Page</h1>
         <Authenticator/>
       </Flex>
     </main>

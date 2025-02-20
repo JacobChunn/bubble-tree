@@ -21,6 +21,12 @@ const schema = a.schema({
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
+  //Define a custom type for the Bubble table's bubbleCoordinate values
+  BubbleCoordinates: a.customType({
+    x: a.integer().required(),
+    y: a.integer().required(),
+  }),
+
   Bubble: a // Member
     .model({
       // Primary Key is auto-generated as `id`
@@ -29,7 +35,7 @@ const schema = a.schema({
       type: a.string().required(),
       author: a.string().required(),
       dateCreated: a.datetime().required(),
-      bubbleCoordinates: a.string().required(),
+      bubbleCoordinates: a.ref('BubbleCoordinates').required(),
 
       userID: a.id().required(),
       user: a.belongsTo('User', 'userID'),
