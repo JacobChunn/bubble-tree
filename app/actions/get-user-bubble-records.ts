@@ -1,29 +1,36 @@
 "use server"
 
-import { AuthGetCurrentUserServer, cookiesClient } from "@/utils/amplify-utils";
+import { cookiesClient } from "@/utils/amplify-utils";
 import { createUserRecord } from "./create-user-record";
+import { sanitizeUsername } from "./sanitize-username";
 
 
-export async function getUserBubbleRecords() {
+export async function getUserBubbleRecords(username: string) {
   try {
-    const currentUser = await AuthGetCurrentUserServer();
-    // This is the user's email
-    console.log(currentUser?.signInDetails?.loginId)
-    const username = currentUser?.signInDetails?.loginId;
-    if (!username) return false;
+    // We do this because if I am accessing my own profile, I want to ensure I have a user record
+    // Check if User Record exists for the logged in user (or was just created)
+    // If they arent logged in, this just returns false which is ok.
+    const userRecordExists = await createUserRecord();
+    const isLoggedInWithUserRecord = userRecordExists;
+
+    // I have a username. Based on username, I want to find a userRecord and make sure it exists
+    const sanitizedUsername = await sanitizeUsername(username);
+    if (!sanitizedUsername) return false;
+
+    console.log("sanitizedUsername", sanitizedUsername)
+
+    // const currentUser = await AuthGetCurrentUserServer();
+    // // This is the user's email
+    // console.log(currentUser?.signInDetails?.loginId)
+    // const username = currentUser?.signInDetails?.loginId;
+    // if (!username) return false;
 
     // Get DB client
     const client = cookiesClient;
 
-    // Check if User Record exists (or was just created)
-    const userRecordExists = await createUserRecord();
-    if (!userRecordExists) return false;
-
-    const userId = currentUser.userId;
-
     const bubbleResult = await client.models.Bubble.list({
       filter: {
-        userID: { eq: userId },
+        author: { eq: sanitizedUsername },
       },
     });
 
