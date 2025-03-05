@@ -17,6 +17,7 @@ const schema = a.schema({
       bio: a.string(),
       // Relationships: a User can have many Bubbles, Votes, and Comments.
       bubbles: a.hasMany("Bubble", "userID"),
+      groups: a.hasMany("Group", "userID"),
       votes: a.hasMany("Vote", "userID"),
       comments: a.hasMany("Comment", "userID"),
     })
@@ -41,8 +42,31 @@ const schema = a.schema({
       userID: a.id().required(),
       user: a.belongsTo('User', 'userID'),
 
+      groupID: a.id(),
+      group: a.belongsTo('Group', 'groupID'),
+
       votes: a.hasMany("Vote", "bubbleID"),
       comments: a.hasMany("Comment", "bubbleID"),
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
+
+    //Define a custom type for the Group table's color values
+    GroupColor: a.customType({
+      r: a.integer().required(),
+      g: a.integer().required(),
+      b: a.integer().required(),
+    }),
+
+  Group: a
+    .model({
+      // Primary Key is auto-generated as `id`
+      name: a.string().required(),
+      color: a.ref('GroupColor').required(),
+
+      userID: a.id().required(),
+      user: a.belongsTo('User', 'userID'),
+
+      bubbles: a.hasMany("Bubble", "groupID"),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
@@ -51,7 +75,7 @@ const schema = a.schema({
       // Primary Key is auto-generated as `id`
       voteValue: a.integer().required(),
       dateCreated: a.datetime().required(),
-      
+
       userID: a.id().required(),
       user: a.belongsTo('User', 'userID'),
 
@@ -65,7 +89,7 @@ const schema = a.schema({
       // Primary Key is auto-generated as `id`
       commentText: a.string().required(),
       dateCreated: a.datetime().required(),
-      
+
       userID: a.id().required(),
       user: a.belongsTo('User', 'userID'),
 
@@ -92,7 +116,7 @@ Go to your frontend source code. From your client-side code, generate a
 Data client to make CRUDL requests to your table. (THIS SNIPPET WILL ONLY
 WORK IN THE FRONTEND CODE FILE.)
 
-Using JavaScript or Next.js React Server Components, Middleware, Server 
+Using JavaScript or Next.js React Server Components, Middleware, Server
 Actions or Pages Router? Review how to generate Data clients for those use
 cases: https://docs.amplify.aws/gen2/build-a-backend/data/connect-to-API/
 =========================================================================*/

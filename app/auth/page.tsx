@@ -55,14 +55,14 @@ export default function App() {
           signUpAttributes={[
             'preferred_username' // This is used as username in the database
           ]}
-        >
-          <Flex
+        />
+          {/* <Flex
             justifyContent="center"
             alignSelf="center"
           >
             <h1>Success! Redirecting...</h1>
-          </Flex>
-        </Authenticator>
+          </Flex> */}
+        {/* </Authenticator> */}
       </Flex>
     </main>
   );
