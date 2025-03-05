@@ -16,6 +16,7 @@ import { getUserBubbleRecords } from "@/app/actions/get-user-bubble-records";
 import CreateBubbleModal from "@/components/create-bubble-modal";
 import ViewBubbleModal from "@/components/view-bubble-modal";
 import EditBubbleModal from "@/components/edit-bubble-modal";
+import CreateGroupModal from "@/components/create-group-modal";
 
 //const client = generateClient<Schema>();
 
@@ -50,7 +51,7 @@ export default function App({
 
   const [bubbles, setBubbles] = useState<BubbleType[] | null>(null);
   const [loadingBubbles, setLoadingBubbles] = useState<LoadingBubbleType>("unloaded");
-  const [modalState, setModalState] = useState<"create" | "view" | "edit" | false>(false);
+  const [modalState, setModalState] = useState<"create" | "view" | "edit" | "createGroup" | false>(false);
   const [focusedBubble, setFocusedBubble] = useState<BubbleType | null>(null);
   const [editToggle, setEditToggle] = useState(false);
 
@@ -77,8 +78,8 @@ export default function App({
       return prevBubbles.filter((bubble) => bubble.id !== deleteBubbleID);
     });
   };
-  
-  
+
+
 
   const { authStatus } = useAuthenticator(context => [context.authStatus]);
 
@@ -96,7 +97,7 @@ export default function App({
 
         var loadingValue: LoadingBubbleType;
         var bubblesValue: BubbleType[] | null;
-        
+
         if (bubbleRecords === false) {
           loadingValue = "unloaded";
           bubblesValue = null;
@@ -133,9 +134,14 @@ export default function App({
         isOpen={modalState == "edit"}
         onClose={() => setModalState(false)}
         focusedBubble={focusedBubble}
-        updateBubble={updateBubble} 
+        updateBubble={updateBubble}
         removeBubble={removeBubble}
       />
+      {/* <CreateGroupModal
+        isOpen={modalState == "createGroup"}
+        onClose={() => setModalState(false)}
+        addGroup={}
+      /> */}
       <Flex
         width="100%"
         justifyContent="center"
@@ -145,28 +151,6 @@ export default function App({
         gap="0px"
       //height="62px"
       >
-        {/* Home Page Label */}
-        {/* <Flex
-          height="50px"
-          textAlign="center"
-          justifyContent="center"
-          alignSelf="center"
-          alignItems="center"
-        >
-          <Text
-            //fontFamily="Roboto"
-            fontSize={{ base: "12px", small: "48px" }}
-            fontWeight="500"
-            color="rgba(255,255,255,1)"
-            lineHeight="16px"
-            textAlign="center"
-            shrink="0"
-            //position="relative"
-            whiteSpace="pre-wrap"
-          >
-            Bubble Tree Home Page
-          </Text>
-        </Flex> */}
 
         {/* Button bar */}
         <Flex
@@ -205,12 +189,42 @@ export default function App({
             </Text>
           </Button>
 
+          {/* Edit toggle switch */}
           <SwitchField
             label="Edit"
             labelPosition="end"
             isChecked={editToggle}
             onChange={() => setEditToggle(!editToggle)}
           />
+
+          {/* Create Group Button */}
+          <Button
+            gap="8px"
+            direction="row"
+            justifyContent="flex-start"
+            alignItems="center"
+            shrink="0"
+            position="relative"
+            padding="12px 8px 12px 8px"
+            borderRadius="20px"
+            borderColor="rgb(0,0,0)"
+            onClick={() => setModalState("group")}
+          >
+            <Text
+              //fontFamily="Roboto"
+              fontSize={{ base: "12px", small: "12px" }}
+              fontWeight="500"
+              color="rgba(255,255,255,1)"
+              lineHeight="16px"
+              textAlign="left"
+              display="block"
+              shrink="0"
+              position="relative"
+              whiteSpace="pre-wrap"
+            >
+              Create Bubble
+            </Text>
+          </Button>
         </Flex>
 
       </Flex>

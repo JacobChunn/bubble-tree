@@ -170,23 +170,27 @@ export default function App() {
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             onSubmit={handleSubmit}
+            onClear={() => setSearchValue("")}
           />
         </Flex>
 
         {/* Search Results Display Area */}
         <Flex
-          width="calc(100% - 20px)"
+          // width="calc(100% - 20px)"
+          width="700px"
+          height="300px"
           //height="100%"
-          flex="1"
+          //flex="1"
           margin="0 10px 10px 10px"
           backgroundColor="rgba(255, 255, 255, 0.5)"
           justifyContent="start"
-          alignSelf="start"
+          alignSelf="center"
           //borderRadius="30px"
           border="1px solid"
           position="relative"
           direction="column"
           gap="0"
+          style={{overflowY: "auto"}}
         >
           {loadingResults == "loaded" ? generateResultsFieldRows() : null}
         </Flex>
