@@ -141,6 +141,31 @@ export default function Header({
             {authStatus == "authenticated" ? "Log Out" : "Log In" }
           </Text>
         </MenuItem>
+        {authStatus === "authenticated" && (
+          <MenuItem 
+          gap="8px"
+          direction="row"
+          justifyContent="flex-start"
+          alignItems="center"
+          shrink="0"
+          position="relative"
+          padding="12px 8px 12px 8px"
+          href="/settings">
+            <Text 
+            fontSize={{ base: "12px", small: "16px" }} 
+            fontWeight="500" 
+            color="rgba(255,255,255,1)"
+            lineHeight="16px"
+            textAlign="left"
+            display="block"
+            shrink="0"
+            position="relative"
+            whiteSpace="pre-wrap"
+            >
+              Settings
+            </Text>
+          </MenuItem>
+        )}
       </Flex>
     </Flex>
   );
