@@ -4,12 +4,15 @@ import { XMarkIcon } from '@heroicons/react/24/solid'
 import { Button, Flex, TextAreaField, TextField, Text } from '@aws-amplify/ui-react';
 import { createBubble, CreateBubbleType } from '@/app/actions/create-bubble';
 import { useState } from 'react';
+import { createGroup, CreateGroupType } from '@/app/actions/create-group';
 
 interface ModalProps {
   isOpen: boolean,
   onClose: () => void,
   addGroup: (newGroup: string) => void,
 }
+
+
 
 export default function CreateGroupModal({
   isOpen,
@@ -26,10 +29,19 @@ export default function CreateGroupModal({
     try {
       console.log("handling submit!")
 
-      const newGroup: string | false = await createGroup(groupName);
+      const createGroupParameters: CreateGroupType = {
+        name: groupName,
+        groupColor: {
+          r: 0, // TODO create useState for R G B and tie it from sliders to here
+          g: 0,
+          b: 0
+        }
+      }
+
+      const newGroup = await createGroup(createGroupParameters);
       if (!newGroup) return;
       console.log("newGroup: ", newGroup)
-      addGroup(newGroup);
+      //addGroup(newGroup); //TODO: implement this              <- important
 
     } catch (error) {
       console.error('Error submitting group creation:', error);
@@ -60,6 +72,22 @@ export default function CreateGroupModal({
           <XMarkIcon width="30px" />
         </Flex>
 
+
+        {/* <div>
+          <form
+            id="create-group-form"
+          >
+            <input>
+            </input>
+          </form>
+          <button
+            form="create-group-form"
+            type='submit'
+          >
+          </button>
+        </div> */}
+
+
         {/* Modal Form Body */}
         <Flex
           as='form'
@@ -84,9 +112,9 @@ export default function CreateGroupModal({
             onChange={(e) => setGroupName(e.target.value)}
           />
 
-          
 
-          
+
+
         </Flex>
 
         {/* Footer Section */}
