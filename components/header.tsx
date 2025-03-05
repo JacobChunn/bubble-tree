@@ -3,6 +3,7 @@
 import { Flex, Image, Text, useAuthenticator } from '@aws-amplify/ui-react';
 import MenuItem from './menu-item';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 interface HeaderProps {
 
@@ -13,6 +14,12 @@ export default function Header({
 }: HeaderProps) {
 
   const { authStatus, signOut } = useAuthenticator(context => [context.authStatus]);
+
+  // Handle logout
+  const handleLogout = () => {
+    alert("You have signed out");
+    signOut();
+  };
 
   return (
     <Flex
@@ -117,7 +124,7 @@ export default function Header({
           position="relative"
           padding="12px 8px 12px 8px"
           href={authStatus == "authenticated" ? "/" : "/auth" }
-          onClick={authStatus == "authenticated" ? signOut : undefined }
+          onClick={authStatus == "authenticated" ? handleLogout  : undefined }
         >
           <Text
             //fontFamily="Roboto"
