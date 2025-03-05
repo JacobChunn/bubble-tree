@@ -11,26 +11,29 @@ import { Authenticator, Flex, useAuthenticator } from "@aws-amplify/ui-react";
 import { useRouter } from 'next/navigation'
 import { useEffect } from "react";
 import { createUserRecord } from "../actions/create-user-record";
+import getUsername from "../actions/get-username";
+
+
 
 export default function App() {
   const { authStatus } = useAuthenticator(context => [context.authStatus]);
-  
+
   const router = useRouter();
 
   useEffect(() => {
     if (authStatus == "authenticated") {
       const ensureUserRecordExists = async () => {
         await createUserRecord();
+        const username = await getUsername();
+        router.push("/user/" + username);
       }
 
       ensureUserRecordExists();
-
-      router.push("/");
     }
-    
+
   }, [authStatus])
 
-  
+
 
   return (
     <main
@@ -40,7 +43,7 @@ export default function App() {
         flexDirection: "column",
       }}
     >
-      <Header/>
+      <Header />
       <Flex
         direction="column"
         width="100vw"
@@ -48,7 +51,18 @@ export default function App() {
         justifyContent="center"
         alignSelf="center"
       >
-        <Authenticator/>
+        <Authenticator // TODO: Enforce unique usernames with server action
+          signUpAttributes={[
+            'preferred_username' // This is used as username in the database
+          ]}
+        >
+          <Flex
+            justifyContent="center"
+            alignSelf="center"
+          >
+            <h1>Success! Redirecting...</h1>
+          </Flex>
+        </Authenticator>
       </Flex>
     </main>
   );

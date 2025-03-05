@@ -10,7 +10,8 @@ const schema = a.schema({
   User: a // Team
     .model({
       // Primary Key is auto-generated as `id`
-      username: a.string().required(),
+      email: a.string().required(),
+      username: a.string().required(), // This is equivalent to prefered_username
       //hashedPassword: a.string().required(),
       //profileImage: a.string(),
       bio: a.string(),

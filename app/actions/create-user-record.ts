@@ -1,20 +1,23 @@
 "use server";
 
 import { Schema } from "@/amplify/data/resource";
-import { AuthGetCurrentUserServer, cookiesClient } from "@/utils/amplify-utils";
+import { AuthFetchUserAttributesServer, AuthGetCurrentUserServer, cookiesClient } from "@/utils/amplify-utils";
 import { generateClient } from "aws-amplify/api/server";
 import { v4 } from 'uuid'
 
 
-// Only call if authenticated
 // Returns true if a record exists or was created.
 export async function createUserRecord() {
   try {
     const currentUser = await AuthGetCurrentUserServer();
+    const userAttributes = await AuthFetchUserAttributesServer();
+    //console.log("userAttributes: ", userAttributes)
     // This is the user's email
-    console.log(currentUser?.signInDetails?.loginId)
-    const username = currentUser?.signInDetails?.loginId;
-    if (!username) return false;
+    //console.log(currentUser?.signInDetails?.loginId)
+    const email = currentUser?.signInDetails?.loginId;
+    const username = userAttributes?.preferred_username;
+    //const ad = currentUser.;
+    if (!email || !username) return false;
 
     // Get DB client
     const client = cookiesClient;
@@ -22,7 +25,8 @@ export async function createUserRecord() {
     // Check if record exists
     const result = await client.models.User.list({
       filter: {
-        username: { eq: username },
+        email: { eq: email },
+        username: {eq: username},
       },
     });
     if (result.data && result.data.length > 0) {
@@ -31,14 +35,15 @@ export async function createUserRecord() {
       return true;
     } else {
       console.log("No User record found, create one.");
-      console.log("u: ", username)
+      console.log("email: ", email)
       // Record creation logic
       const bio = "";
       const id = v4();
       if (id == undefined) return false;
 
-      const newUser = await cookiesClient.models.User.create({
+      const newUser = await client.models.User.create({
         id,
+        email,
         username, // required string
         bio,      // bio string (can be empty or any string)
       });

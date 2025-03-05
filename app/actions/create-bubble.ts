@@ -1,6 +1,6 @@
 "use server";
 
-import { AuthGetCurrentUserServer, cookiesClient } from "@/utils/amplify-utils";
+import { AuthFetchUserAttributesServer, AuthGetCurrentUserServer, cookiesClient } from "@/utils/amplify-utils";
 import { createUserRecord } from "./create-user-record";
 
 export type CreateBubbleType = {
@@ -16,12 +16,14 @@ export type CreateBubbleType = {
 export async function createBubble(bubbleInfo: CreateBubbleType) {
   try {
     const currentUser = await AuthGetCurrentUserServer();
-    if (!currentUser) return false;
+    const userAttributes = await AuthFetchUserAttributesServer();
+    if (!currentUser || !userAttributes) return false;
     // This is the user's email
-    const username = currentUser.signInDetails?.loginId
-    if (username == undefined) return false;
+    //const email = currentUser.signInDetails?.loginId
+    const username = userAttributes.preferred_username
+    if (!username) return false;
 
-    console.log(username)
+    //console.log(email)
 
     const userExists = await createUserRecord()
     if (userExists == false) return false;
@@ -44,6 +46,8 @@ export async function createBubble(bubbleInfo: CreateBubbleType) {
     if (!newBubble.data) return false;
 
     if (newBubble.errors == undefined) {
+      console.log("newBubble.data: ", newBubble.data)
+
       const { id, title, content, type, author, dateCreated, bubbleCoordinates } = newBubble.data;
       const simplifiedBubbleData = { id, title, content, type, author, dateCreated, bubbleCoordinates };
       console.log("Bubble created!: ", simplifiedBubbleData)
