@@ -1,7 +1,7 @@
 "use client"
 
 import { XMarkIcon } from '@heroicons/react/24/solid'
-import { Button, Flex, TextAreaField, TextField, Text } from '@aws-amplify/ui-react';
+import { Button, Flex, TextAreaField, TextField, Text, SliderField } from '@aws-amplify/ui-react';
 import { createBubble, CreateBubbleType } from '@/app/actions/create-bubble';
 import { useState } from 'react';
 import { createGroup, CreateGroupType } from '@/app/actions/create-group';
@@ -21,6 +21,9 @@ export default function CreateGroupModal({
 }: ModalProps) {
 
   const [groupName, setGroupName] = useState<string>("");
+  const [redValue, setRedValue] = useState<number>(0);
+  const [blueValue, setBlueValue] = useState<number>(0);
+  const [greenValue, setGreenValue] = useState<number>(0);
 
   if (!isOpen) return null;
 
@@ -32,9 +35,9 @@ export default function CreateGroupModal({
       const createGroupParameters: CreateGroupType = {
         name: groupName,
         groupColor: {
-          r: 0, // TODO create useState for R G B and tie it from sliders to here
-          g: 0,
-          b: 0
+          r: redValue, 
+          g: greenValue,
+          b: blueValue
         }
       }
 
@@ -111,8 +114,32 @@ export default function CreateGroupModal({
             value={groupName}
             onChange={(e) => setGroupName(e.target.value)}
           />
-
-
+          <Flex>
+            <SliderField
+              label="Choose Red Value"
+              min={0}
+              max={255}
+              flex ="1"
+              value={redValue}
+              onChange={setRedValue}
+            />
+            <SliderField
+              label="Choose Green Value"
+              min={0}
+              max={255}             
+              flex ="1"
+              value={greenValue}
+              onChange={setGreenValue}
+            />
+            <SliderField
+              label="Choose Blue Value"
+              min={0}
+              max={255}
+              flex ="1"
+              value={blueValue}
+              onChange={setBlueValue}
+            />
+          </Flex>
 
 
         </Flex>

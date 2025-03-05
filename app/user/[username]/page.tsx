@@ -137,11 +137,11 @@ export default function App({
         updateBubble={updateBubble}
         removeBubble={removeBubble}
       />
-      {/* <CreateGroupModal
+       <CreateGroupModal
         isOpen={modalState == "createGroup"}
         onClose={() => setModalState(false)}
-        addGroup={}
-      /> */}
+        addGroup={()=>{return}}
+      /> 
       <Flex
         width="100%"
         justifyContent="center"
@@ -208,7 +208,7 @@ export default function App({
             padding="12px 8px 12px 8px"
             borderRadius="20px"
             borderColor="rgb(0,0,0)"
-            onClick={() => setModalState("group")}
+            onClick={() => setModalState("createGroup")}
           >
             <Text
               //fontFamily="Roboto"
