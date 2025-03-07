@@ -2,6 +2,7 @@
 
 import { AuthFetchUserAttributesServer, AuthGetCurrentUserServer, cookiesClient } from "@/utils/amplify-utils";
 import { createUserRecord } from "./create-user-record";
+import { getUserIdByUsername } from "./get-user-id-by-username";
 
 export type CreateGroupType = {
   name: string,
@@ -16,11 +17,13 @@ export type CreateGroupType = {
 export async function createGroup(groupInfo: CreateGroupType) {
   try {
     const currentUser = await AuthGetCurrentUserServer();
+    const userAttributes = await AuthFetchUserAttributesServer();
     //const userAttributes = await AuthFetchUserAttributesServer();
-    if (!currentUser) return false;
+    if (!currentUser || !userAttributes) return false;
     // This is the user's email
     //const email = currentUser.signInDetails?.loginId
-
+    const username = userAttributes.preferred_username
+    if (!username) return false;
 
     //console.log(email)
 
@@ -29,6 +32,9 @@ export async function createGroup(groupInfo: CreateGroupType) {
 
     const client = cookiesClient;
 
+    const userID = await getUserIdByUsername(username)
+    if (!userID) return false;
+
     const newGroup = await client.models.Group.create({
       name: groupInfo.name,
       color: {
@@ -36,7 +42,7 @@ export async function createGroup(groupInfo: CreateGroupType) {
         g: groupInfo.groupColor.g,
         b: groupInfo.groupColor.b,
       },
-      userID: currentUser.userId, // uses userID because userID will never change, unlike emails or usernames
+      userID: userID, // uses userID because userID will never change, unlike emails or usernames
     });
 
     if (!newGroup.data) return false;

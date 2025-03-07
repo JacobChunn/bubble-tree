@@ -5,11 +5,12 @@ import { Button, Flex, TextAreaField, TextField, Text, SliderField } from '@aws-
 import { createBubble, CreateBubbleType } from '@/app/actions/create-bubble';
 import { useState } from 'react';
 import { createGroup, CreateGroupType } from '@/app/actions/create-group';
+import { GroupType } from '@/app/user/[username]/page';
 
 interface ModalProps {
   isOpen: boolean,
   onClose: () => void,
-  addGroup: (newGroup: string) => void,
+  addGroup: (newGroup: GroupType) => void,
 }
 
 
@@ -24,6 +25,8 @@ export default function CreateGroupModal({
   const [redValue, setRedValue] = useState<number>(0);
   const [blueValue, setBlueValue] = useState<number>(0);
   const [greenValue, setGreenValue] = useState<number>(0);
+
+  const [selectedGroup, setSelectedGroup] = useState<string | undefined>(undefined);
 
   if (!isOpen) return null;
 
@@ -44,7 +47,7 @@ export default function CreateGroupModal({
       const newGroup = await createGroup(createGroupParameters);
       if (!newGroup) return;
       console.log("newGroup: ", newGroup)
-      //addGroup(newGroup); //TODO: implement this              <- important
+      addGroup(newGroup);
 
     } catch (error) {
       console.error('Error submitting group creation:', error);
