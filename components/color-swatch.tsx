@@ -26,6 +26,7 @@ export default function ColorSwatch(colorSwatch: ColorSwatchType) {
   return (
     <Flex
       backgroundColor={`rgb(${colorSwatch.r},${colorSwatch.g},${colorSwatch.b})`}
+      border="1px solid"
       width={size}
       height={size}
       alignSelf="center"

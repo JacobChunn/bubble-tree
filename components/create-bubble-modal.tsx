@@ -90,10 +90,12 @@ export default function CreateBubbleModal({
         <Flex
           justifyContent="right"
           padding="15px 15px 0 0"
-          onClick={onClose}
-          style={{ cursor: 'pointer' }}
         >
-          <XMarkIcon width="30px" />
+          <XMarkIcon
+            width="30px"
+            onClick={onClose}
+            style={{ cursor: 'pointer' }}
+          />
         </Flex>
 
         {/* Modal Form Body */}

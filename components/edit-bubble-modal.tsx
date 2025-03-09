@@ -42,7 +42,7 @@ export default function EditBubbleModal({
     y: focusedBubble ? String(focusedBubble.bubbleCoordinates.y) : ""
   });
 
-  const [selectedGroup, setSelectedGroup] = useState<string | undefined>(focusedBubble.groupID ?? undefined );
+  const [selectedGroup, setSelectedGroup] = useState<string | undefined>(focusedBubble.groupID ?? undefined);
 
 
   const handleInputChange = (field: any) => (e: { target: any; }) => {
@@ -104,10 +104,12 @@ export default function EditBubbleModal({
         <Flex
           justifyContent="right"
           padding="15px 15px 0 0"
-          onClick={onClose}
-          style={{ cursor: 'pointer' }}
         >
-          <XMarkIcon width="30px" />
+          <XMarkIcon
+            width="30px"
+            onClick={onClose}
+            style={{ cursor: 'pointer' }}
+          />
         </Flex>
 
         {/* Modal Form Body */}

@@ -45,10 +45,11 @@ export default function ViewBubbleModal({
         <Flex
           justifyContent="space-between"
           padding="15px 15px 0 15px"
-          style={{ cursor: 'pointer' }}
         >
-          <Flex>
-            {loadingGroups == "loaded" && groups !== null?
+          <Flex
+            gap="0px"
+          >
+            {loadingGroups == "loaded" && group?
             <>
               <Text
                 //fontFamily="Roboto"
@@ -63,14 +64,15 @@ export default function ViewBubbleModal({
                 position="relative"
                 whiteSpace="pre-wrap"
               >
-                Group: {groups.find((group) => group.id == focusedBubble.groupID)?.name}
+                Group: {group.name} <br/>
               </Text>
-              <ColorSwatch r={0} g={0} b={0} />
+              <ColorSwatch r={group.color.r} g={group.color.g} b={group.color.b} />
             </>
             : null}
           </Flex>
           <XMarkIcon
             width="30px"
+            style={{ cursor: 'pointer' }}
             onClick={onClose}
           />
         </Flex>

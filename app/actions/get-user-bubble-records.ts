@@ -34,7 +34,7 @@ export async function getUserBubbleRecords(username: string) {
       },
     });
 
-    console.log("bubbles: ", bubbleResult)
+    //console.log("bubbles: ", bubbleResult)
 
     if (bubbleResult.errors == undefined) {
       const simplifiedBubbleData = bubbleResult.data.map(

@@ -33,8 +33,8 @@ export async function editBubble(bubbleInfo: EditBubbleType) {
     console.log("IN EDIT BUBBLE 2")
     console.log("bubbleInfo.groupID:", bubbleInfo.groupID)
 
-    let sanitizedGroupID: string | undefined = undefined;
-    if (bubbleInfo.groupID) {
+    let sanitizedGroupID: string | null = null;
+    if (bubbleInfo.groupID && bubbleInfo.groupID !== "No Group") {
       const result = await client.models.Group.list({
         filter: {
           id: {eq: bubbleInfo.groupID}
