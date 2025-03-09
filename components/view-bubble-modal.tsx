@@ -66,7 +66,7 @@ export default function ViewBubbleModal({
               >
                 Group: {group.name} <br/>
               </Text>
-              <ColorSwatch r={group.color.r} g={group.color.g} b={group.color.b} />
+              <ColorSwatch swatch={`rgb(${group.color.r},${group.color.g},${group.color.b})`} />
             </>
             : null}
           </Flex>

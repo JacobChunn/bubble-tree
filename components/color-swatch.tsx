@@ -3,18 +3,22 @@
 import { Flex } from "@aws-amplify/ui-react"
 
 export type ColorSwatchType = {
-  r: number,
-  g: number,
-  b: number,
-  size?: "small" | "large",
-}
+  swatch: string,
+  variant?: "small" | "large",
+  isSelected?: boolean | null,
+} & React.HTMLAttributes<HTMLDivElement>;
 
-export default function ColorSwatch(colorSwatch: ColorSwatchType) {
+export default function ColorSwatch({
+  swatch,
+  variant = "small",
+  isSelected,
+  ...props
+}: ColorSwatchType) {
 
   let size: string;
-  switch (colorSwatch.size) {
+  switch (variant) {
     case "large":
-      size = "100px"
+      size = "50px"
       break;
   
     // covers for small being default
@@ -25,11 +29,13 @@ export default function ColorSwatch(colorSwatch: ColorSwatchType) {
 
   return (
     <Flex
-      backgroundColor={`rgb(${colorSwatch.r},${colorSwatch.g},${colorSwatch.b})`}
-      border="1px solid"
+      backgroundColor={swatch}
+      border={isSelected ? "7px solid" : "1px solid"}
       width={size}
       height={size}
       alignSelf="center"
+      justifyContent="center"
+      {...props}
     />
   )
 }
