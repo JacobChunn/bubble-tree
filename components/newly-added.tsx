@@ -2,20 +2,34 @@
 
 import { getNewlyAdded } from "@/app/actions/get-newly-added";
 import { LoadingResultsType } from "@/app/explore/page";
-import { Flex, Text } from "@aws-amplify/ui-react";
-import { useEffect, useState } from "react";
+import { Flex, FlexProps, Label, Text } from "@aws-amplify/ui-react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
 export type NewlyAddedType =
   null
   |
   {
-    simplifiedBubbleData: { title: string; author: string }[];
+    simplifiedBubbleData: { id: string, title: string; author: string }[];
   }
 
-export default function NewlyAdded() {
+export default function NewlyAdded(props: FlexProps) {
 
   const [loadingResults, setLoadingResults] = useState<LoadingResultsType>("unloaded");
   const [newlyAdded, setNewlyAdded] = useState<NewlyAddedType>(null);
+
+  const searchParams = useSearchParams()
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set(name, value)
+
+      return params.toString()
+    },
+    [searchParams]
+  )
+
 
   useEffect(() => {
     const loadNewlyAdded = async () => {
@@ -48,22 +62,29 @@ export default function NewlyAdded() {
 
     return (
       newlyAdded.simplifiedBubbleData.map((bubble, index) => (
-        <Flex
-          key={index}
-          padding="10px"
-          //backgroundColor="rgba(81, 194, 194, 0.62)"
-          //borderRadius="8px"
-          //border="1px solid"
-
-          borderColor="rgba(0, 0, 0, 0.33)"
-          style={{ cursor: "pointer", borderBottom: "1px solid" }}
-        // onClick={() => {
-        //   setFocusedBubble(bubble);
-        //   setModalState(editToggle ? "edit" : "view")
-        // }}
-        >
-          <Text>{bubble.title}</Text>
-        </Flex>
+        <Link href={`/user/${bubble.author}` + '?' + createQueryString('bubbleid', bubble.id)} key={index} style={{ textDecoration: "none", color: "inherit" }}>
+          <Flex
+            key={index}
+            padding="4px 10px"
+            //backgroundColor="rgba(81, 194, 194, 0.62)"
+            //borderRadius="8px"
+            //border="1px solid"
+            style={{
+              cursor: "pointer",
+              borderBottom: index !== newlyAdded.simplifiedBubbleData.length - 1 ? "1px solid rgba(0, 0, 0, 0.33)" : "none"
+            }}
+          // onClick={() => {
+          //   setFocusedBubble(bubble);
+          //   setModalState(editToggle ? "edit" : "view")
+          // }}
+          >
+            <Text
+              fontSize="14px"
+            >
+              {bubble.title}
+            </Text>
+          </Flex>
+        </Link>
       ))
     )
   }
@@ -71,23 +92,31 @@ export default function NewlyAdded() {
 
   return (
     <Flex
-      // width="calc(100% - 20px)"
-      width="300px"
-      height="300px"
-      //height="100%"
-      //flex="1"
-      margin="0 10px 10px 10px"
-      backgroundColor="rgba(255, 255, 255, 0.5)"
-      justifyContent="start"
-      alignSelf="center"
-      //borderRadius="30px"
-      border="1px solid"
-      position="relative"
+      {...props}
       direction="column"
       gap="0"
-      style={{ overflowY: "auto" }}
     >
-      {loadingResults == "loaded" ? generateResultsFieldRows() : null}
+      <Label htmlFor="newly-added">Newly Added Bubbles:</Label>
+      <Flex
+        id="newly-added"
+        // width="calc(100% - 20px)"
+        width="250px"
+        height="152px"
+        //height="100%"
+        //flex="1"
+        margin="0 10px"
+        backgroundColor="rgba(255, 255, 255, 0.5)"
+        justifyContent="start"
+        alignSelf="center"
+        //borderRadius="30px"
+        border="1px solid"
+        position="relative"
+        direction="column"
+        gap="0"
+        style={{ overflowY: "auto" }}
+      >
+        {loadingResults == "loaded" ? generateResultsFieldRows() : null}
+      </Flex>
     </Flex>
   )
 }

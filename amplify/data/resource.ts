@@ -48,6 +48,7 @@ const schema = a.schema({
       votes: a.hasMany("Vote", "bubbleID"),
       comments: a.hasMany("Comment", "bubbleID"),
     })
+    //.secondaryIndexes((index) => {index: "dateCreated"})
     .authorization((allow) => [allow.publicApiKey()]),
 
     //Define a custom type for the Group table's color values

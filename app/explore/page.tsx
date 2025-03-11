@@ -9,10 +9,11 @@ import outputs from "@/amplify_outputs.json";
 import "@aws-amplify/ui-react/styles.css";
 import AuthWrapper from "@/components/auth-wrapper";
 import Header from "@/components/header";
-import { Text, Flex, Label, Radio, RadioGroupField, SearchField, ToggleButton, ToggleButtonGroup, useAuthenticator } from "@aws-amplify/ui-react";
+import { Text, Flex, Label, Radio, RadioGroupField, SearchField, ToggleButton, ToggleButtonGroup, useAuthenticator, Grid } from "@aws-amplify/ui-react";
 import { getSearchResults, SearchType } from "../actions/get-search-results";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import NewlyAdded from "@/components/newly-added";
 
 //const client = generateClient<Schema>();
 // in getRecentlyVisited(), make sure createUserRecord is called inside server action.
@@ -46,7 +47,7 @@ export default function App() {
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString())
       params.set(name, value)
-  
+
       return params.toString()
     },
     [searchParams]
@@ -96,24 +97,24 @@ export default function App() {
 
         return (
           searchResults.simplifiedBubbleData.map((bubble, index) => (
-            <Link href = {`/user/${bubble.author}` + '?' + createQueryString('bubbleid', bubble.id)} key={index} style={{ textDecoration: "none", color: "inherit" }}>
-            <Flex
-              key={index}
-              padding="10px"
-              //backgroundColor="rgba(81, 194, 194, 0.62)"
-              //borderRadius="8px"
-              //border="1px solid"
+            <Link href={`/user/${bubble.author}` + '?' + createQueryString('bubbleid', bubble.id)} key={index} style={{ textDecoration: "none", color: "inherit" }}>
+              <Flex
+                key={index}
+                padding="10px"
+                //backgroundColor="rgba(81, 194, 194, 0.62)"
+                //borderRadius="8px"
+                //border="1px solid"
 
-              borderColor="rgba(0, 0, 0, 0.33)"
-              style={{ cursor: "pointer", borderBottom: "1px solid" }}
+                borderColor="rgba(0, 0, 0, 0.33)"
+                style={{ cursor: "pointer", borderBottom: "1px solid" }}
               //onClick={() => { navigate(`/user/${bubble.author}`)} 
-                 
-            //   setFocusedBubble(bubble);
-            //   setModalState(editToggle ? "edit" : "view")
 
-            >
-              <Text>{bubble.title}</Text>
-            </Flex>
+              //   setFocusedBubble(bubble);
+              //   setModalState(editToggle ? "edit" : "view")
+
+              >
+                <Text>{bubble.title}</Text>
+              </Flex>
             </Link>
           ))
         )
@@ -147,22 +148,33 @@ export default function App() {
     // <AuthWrapper>
     <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Header />
-      <Flex
+      <Grid
         justifyContent="center"
         alignSelf="center"
         alignItems="center"
-        direction="column"
+        textAlign="center"
+
+        templateColumns="1fr 2.5fr 1fr"
+        templateRows="2fr 1fr 1fr 1fr 1fr 1fr 1fr"
+
         width="100%"
         height="100%"
       >
-        <h1>Bubble Tree Explore Page</h1>
+
+        {/* Explore Section Header */}
+        <h1
+          style={{
+            gridArea: "1 / 2 / span 1 / span 1"
+          }}
+        >
+          Bubble Tree Explore Page
+        </h1>
 
         {/* Search Bar feature container */}
         <Flex
-          //as='form'
-          //onSubmit={handleSubmit}
           justifyContent="center"
           alignItems="center"
+          area="2 / 2 / span 1 / span 1"
         >
           <Label>Search by: </Label>
           <ToggleButtonGroup
@@ -181,7 +193,7 @@ export default function App() {
           <SearchField
             label="Search"
             placeholder="Search here..."
-            size="large"
+            size="small"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             onSubmit={handleSubmit}
@@ -191,9 +203,10 @@ export default function App() {
 
         {/* Search Results Display Area */}
         <Flex
-          // width="calc(100% - 20px)"
-          width="700px"
-          height="300px"
+          area="3 / 2 / span 5 / span 1"
+
+          width="680px"
+          height="280px"
           //height="100%"
           //flex="1"
           margin="0 10px 10px 10px"
@@ -205,11 +218,21 @@ export default function App() {
           position="relative"
           direction="column"
           gap="0"
-          style={{overflowY: "auto"}}
+          style={{ overflowY: "auto" }}
         >
           {loadingResults == "loaded" ? generateResultsFieldRows() : null}
         </Flex>
-      </Flex>
+
+        <NewlyAdded
+          area="2 / 3 / span 3 / span 1"
+        />
+
+        {/* Space reserved for later "Recently Accessed Bubble" feature */}
+        {/* <NewlyAdded
+          area="5 / 3 / span 3 / span 1"
+        /> */}
+
+      </Grid>
 
     </main>
     // </AuthWrapper>
