@@ -113,7 +113,7 @@ export default function App({
         //console.log("frontend username param: ", username)
         const bubbleRecords = await getUserBubbleRecords(username);
         console.log("retrived bubbleRecords: ", bubbleRecords)
-        
+
         var loadingValue: LoadingType;
         var bubblesValue: BubbleType[] | null;
 
@@ -146,7 +146,7 @@ export default function App({
           loadingValue = "loaded";
           groupsValue = groupRes;
         }
-        
+
         console.log("Groups: ", groupsValue)
 
         setGroups(groupsValue);
@@ -164,6 +164,28 @@ export default function App({
     const g = groups.find(group => group.id === groupID);
     if (!g) return "rgb(0,0,0)"
     return `rgb(${g.color.r},${g.color.g},${g.color.b})`;
+  }
+
+  function lightenColor(color: string) {
+    // Uses regex to match a string that starts with rgb(, obtains the comma separated 
+    // color variables, and ends with ).
+    const matches = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+
+    if (matches) {
+      let r = Number(matches[1]);
+      let g = Number(matches[2]);
+      let b = Number(matches[3]);
+
+      // Lighten each component by 50%
+      const lightenAmount = .8
+      r = Math.round(r + (255 - r) * lightenAmount);
+      g = Math.round(g + (255 - g) * lightenAmount);
+      b = Math.round(b + (255 - b) * lightenAmount);
+
+      return `rgb(${r},${g},${b})`
+    } else {
+      return color;
+    }
   }
 
   return (
@@ -193,11 +215,11 @@ export default function App({
         groups={groups}
         loadingGroups={loadingGroups}
       />
-       <CreateGroupModal
+      <CreateGroupModal
         isOpen={modalState == "createGroup"}
         onClose={() => setModalState(false)}
         addGroup={addGroup}
-      /> 
+      />
       <Flex
         width="100%"
         justifyContent="center"
@@ -306,11 +328,21 @@ export default function App({
               left={`${bubble.bubbleCoordinates.x}px`}
               top={`${bubble.bubbleCoordinates.y}px`}
               padding="10px"
-              backgroundColor="rgba(81, 194, 194, 0.62)"
+              backgroundColor={
+                bubble.groupID && loadingGroups == "loaded" ?
+                lightenColor(getColorByGroupID(bubble.groupID))
+                :
+                "rgba(81, 194, 194, 0.62)"
+              }
               borderRadius="8px"
               border="4px solid"
-              
-              borderColor={bubble.groupID ? getColorByGroupID(bubble.groupID) : "rgb(25, 103, 103)"}
+
+              borderColor={
+                bubble.groupID && loadingGroups == "loaded" ?
+                  getColorByGroupID(bubble.groupID)
+                  :
+                  "rgb(25, 103, 103)"
+              }
               style={{ cursor: "pointer" }}
               onClick={() => {
                 setFocusedBubble(bubble);

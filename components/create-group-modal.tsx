@@ -69,9 +69,9 @@ export default function CreateGroupModal({
   }
 
   const colors = [
-    "rgb(208, 29, 29)",
-    "rgb(219, 95, 18)",
-    "rgb(255, 233, 37)",
+    "rgb(255, 0, 0)",
+    "rgb(255, 98, 0)",
+    "rgb(255, 230, 0)",
     "rgb(183, 255, 67)",
     "rgb(26, 224, 8)",
     "rgb(40, 241, 174)",
