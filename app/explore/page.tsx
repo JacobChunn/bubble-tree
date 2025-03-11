@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "@/amplify/data/resource";
 import "@/app/app.css";
@@ -11,6 +11,8 @@ import AuthWrapper from "@/components/auth-wrapper";
 import Header from "@/components/header";
 import { Text, Flex, Label, Radio, RadioGroupField, SearchField, ToggleButton, ToggleButtonGroup, useAuthenticator } from "@aws-amplify/ui-react";
 import { getSearchResults, SearchType } from "../actions/get-search-results";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 //const client = generateClient<Schema>();
 // in getRecentlyVisited(), make sure createUserRecord is called inside server action.
@@ -27,7 +29,7 @@ export type SearchResultType =
   }
   | {
     type: "title";
-    simplifiedBubbleData: { title: string; author: string }[];
+    simplifiedBubbleData: { id: string; title: string; author: string }[];
     simplifiedAuthorData?: undefined;
   };
 
@@ -39,6 +41,16 @@ export default function App() {
 
   const { authStatus } = useAuthenticator(context => [context.authStatus]);
 
+  const searchParams = useSearchParams()
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set(name, value)
+  
+      return params.toString()
+    },
+    [searchParams]
+  )
   const handleSubmit = async () => {
     try {
 
@@ -84,6 +96,7 @@ export default function App() {
 
         return (
           searchResults.simplifiedBubbleData.map((bubble, index) => (
+            <Link href = {`/user/${bubble.author}` + '?' + createQueryString('bubbleid', bubble.id)} key={index} style={{ textDecoration: "none", color: "inherit" }}>
             <Flex
               key={index}
               padding="10px"
@@ -93,13 +106,15 @@ export default function App() {
 
               borderColor="rgba(0, 0, 0, 0.33)"
               style={{ cursor: "pointer", borderBottom: "1px solid" }}
-            // onClick={() => {
+              //onClick={() => { navigate(`/user/${bubble.author}`)} 
+                 
             //   setFocusedBubble(bubble);
             //   setModalState(editToggle ? "edit" : "view")
-            // }}
+
             >
               <Text>{bubble.title}</Text>
             </Flex>
+            </Link>
           ))
         )
       case "author":
