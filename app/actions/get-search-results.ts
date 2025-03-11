@@ -47,8 +47,9 @@ export async function getSearchResults({
       });
 
       const simplifiedBubbleData = bubbleResults.data.map(
-        ({ title, author }) => ({
-          title, author
+        //idk why id is still accepted when its not defined in bubbleResults nor the schema. works tho
+        ({ id, title, author }) => ({
+          id, title, author
         })
       );
 

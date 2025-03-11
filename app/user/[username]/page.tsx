@@ -17,6 +17,7 @@ import CreateBubbleModal from "@/components/create-bubble-modal";
 import ViewBubbleModal from "@/components/view-bubble-modal";
 import EditBubbleModal from "@/components/edit-bubble-modal";
 import CreateGroupModal from "@/components/create-group-modal";
+import { useSearchParams } from "next/navigation";
 
 //const client = generateClient<Schema>();
 
@@ -54,6 +55,7 @@ export default function App({
   const [modalState, setModalState] = useState<"create" | "view" | "edit" | "createGroup" | false>(false);
   const [focusedBubble, setFocusedBubble] = useState<BubbleType | null>(null);
   const [editToggle, setEditToggle] = useState(false);
+  const searchParams = useSearchParams();
 
   console.log("hi from frontend")
 
@@ -61,7 +63,7 @@ export default function App({
   const addBubble = (newBubble: BubbleType) => {
     setBubbles((prevBubbles) => (prevBubbles ? [...prevBubbles, newBubble] : [newBubble]));
   };
-
+  
   // Function to replace a bubble in the bubbles state array. Replaces the bubble with id of replaceBubbleID
   const updateBubble = (replaceBubbleID: string, editedBubble: BubbleType) => {
     setBubbles((prevBubbles) => {
@@ -107,6 +109,20 @@ export default function App({
         }
         //console.log("BUBBLES: ", bubblesValue)
         //console.log("loadingValue: ", loadingValue)
+        let focusedBubbleValue = null;
+        let modalStateValue: boolean | "view" = false;
+        if(loadingValue == "loaded" && bubblesValue != null ){
+            
+            const bubbleid = searchParams.get("bubbleid");
+            if(bubbleid){
+              const newFocusedBubble = bubblesValue.find(bubble => bubble.id==bubbleid)
+              console.log(newFocusedBubble, bubbleid, bubblesValue)
+              focusedBubbleValue = newFocusedBubble ? newFocusedBubble : null;
+              modalStateValue = "view";
+            }
+        }
+        setFocusedBubble(focusedBubbleValue);
+        setModalState(modalStateValue);
         setBubbles(bubblesValue);
         setLoadingBubbles(loadingValue);
       }
