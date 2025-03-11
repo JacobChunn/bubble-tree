@@ -1,10 +1,10 @@
 "use client"
 
 import { XMarkIcon } from '@heroicons/react/24/solid'
-import { Button, Flex, TextAreaField, TextField, Text } from '@aws-amplify/ui-react';
+import { Button, Flex, TextAreaField, TextField, Text, SelectField } from '@aws-amplify/ui-react';
 import { createBubble, CreateBubbleType } from '@/app/actions/create-bubble';
 import { useState } from 'react';
-import { BubbleType } from '@/app/page';
+import { BubbleType, GroupType, LoadingType } from '@/app/user/[username]/page';
 
 type UnrolledCreateBubbleType = {
   title: string,
@@ -17,12 +17,16 @@ interface ModalProps {
   isOpen: boolean,
   onClose: () => void,
   addBubble: (newBubble: BubbleType) => void,
+  groups: GroupType[] | null,
+  loadingGroups: LoadingType,
 }
 
 export default function CreateBubbleModal({
   isOpen,
   onClose,
   addBubble,
+  groups,
+  loadingGroups,
 }: ModalProps) {
 
   const [formState, setFormState] = useState<UnrolledCreateBubbleType>({
@@ -32,7 +36,11 @@ export default function CreateBubbleModal({
     y: ""
   });
 
+  const [selectedGroup, setSelectedGroup] = useState<string | undefined>(undefined);
+
+
   if (!isOpen) return null;
+  //console.log("bubble modal groups: ", groups)
 
   const handleInputChange = (field: any) => (e: { target: any; }) => {
     const value =
@@ -50,7 +58,8 @@ export default function CreateBubbleModal({
         bubbleCoordinates: {
           x: Number(formState.x),
           y: Number(formState.y)
-        }
+        },
+        groupID: selectedGroup
       }
 
       const newBubble = await createBubble(formBubble);
@@ -81,10 +90,12 @@ export default function CreateBubbleModal({
         <Flex
           justifyContent="right"
           padding="15px 15px 0 0"
-          onClick={onClose}
-          style={{ cursor: 'pointer' }}
         >
-          <XMarkIcon width="30px" />
+          <XMarkIcon
+            width="30px"
+            onClick={onClose}
+            style={{ cursor: 'pointer' }}
+          />
         </Flex>
 
         {/* Modal Form Body */}
@@ -99,6 +110,7 @@ export default function CreateBubbleModal({
           alignItems="stretch"
           position="relative"
         >
+
           <TextField
             label="Add bubble title:"
             placeholder="Enter bubble title..."
@@ -112,7 +124,6 @@ export default function CreateBubbleModal({
           />
 
           <TextAreaField
-            //className='nc'
             label="Add bubble content:"
             placeholder="Enter bubble content..."
             isRequired={true}
@@ -127,29 +138,55 @@ export default function CreateBubbleModal({
 
           <Flex
             justifyContent="center"
+            alignItems="center"
+          //width="100%"
           >
-            <TextField
-              label="Add bubble x coordinate:"
-              placeholder="x coordinate..."
-              isRequired={true}
-              width="200px"
-              height="76px"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={formState.x}
-              onChange={handleInputChange('x')}
-            />
-            <TextField
-              label="Add bubble y coordinate:"
-              placeholder="y coordinate..."
-              isRequired={true}
-              width="200px"
-              height="76px"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={formState.y}
-              onChange={handleInputChange('y')}
-            />
+            <Flex
+              justifyContent="center"
+            >
+              <TextField
+                label="Add bubble x coordinate:"
+                placeholder="x coordinate..."
+                isRequired={true}
+                width="200px"
+                height="76px"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={formState.x}
+                onChange={handleInputChange('x')}
+              />
+              <TextField
+                label="Add bubble y coordinate:"
+                placeholder="y coordinate..."
+                isRequired={true}
+                width="200px"
+                height="76px"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={formState.y}
+                onChange={handleInputChange('y')}
+              />
+            </Flex>
+            {loadingGroups == "loaded" && groups !== null ?
+              <SelectField
+                style={{ float: "right" }}
+                label="Group"
+                value={selectedGroup}
+                onChange={(e) => setSelectedGroup(e.target.value)}
+              //descriptiveText="Select a group for your bubble"
+              >
+                <option value={undefined}>No Group</option>
+                {groups.map((group, index) => {
+                  return (
+                    <option value={group.id} key={index}>{group.name}</option>
+                  )
+                })}
+              </SelectField>
+              :
+              "Groups are " + loadingGroups
+            }
+
+
           </Flex>
         </Flex>
 

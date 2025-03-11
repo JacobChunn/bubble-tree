@@ -2,21 +2,32 @@
 
 import { XMarkIcon } from '@heroicons/react/24/solid'
 import { Button, Flex, TextAreaField, TextField, Text } from '@aws-amplify/ui-react';
-import { BubbleType } from '@/app/page';
+import { BubbleType, GroupType, LoadingType } from '@/app/user/[username]/page';
+import ColorSwatch from './color-swatch';
 
 
 interface ModalProps {
   isOpen: boolean,
   onClose: () => void,
   focusedBubble: BubbleType | null,
+  groups: GroupType[] | null,
+  loadingGroups: LoadingType,
 }
 
 export default function ViewBubbleModal({
   isOpen,
   onClose,
   focusedBubble,
+  groups,
+  loadingGroups,
 }: ModalProps) {
   if (!isOpen || !focusedBubble) return null;
+
+  console.log("focusedBubble.groupID: ", focusedBubble.groupID)
+
+  const group = groups?.find((group) => group.id == focusedBubble.groupID)
+  
+  console.log("ViewBubble Group: ", group)
 
   return (
     <div className="modal-overlay">
@@ -32,12 +43,38 @@ export default function ViewBubbleModal({
       >
         {/* Modal Header */}
         <Flex
-          justifyContent="right"
-          padding="15px 15px 0 0"
-          onClick={onClose}
-          style={{ cursor: 'pointer' }}
+          justifyContent="space-between"
+          padding="15px 15px 0 15px"
         >
-          <XMarkIcon width="30px" />
+          <Flex
+            gap="0px"
+          >
+            {loadingGroups == "loaded" && group?
+            <>
+              <Text
+                //fontFamily="Roboto"
+                fontSize={{ base: "16px", small: "16px" }}
+                fontWeight="400"
+                color="rgb(0, 0, 0)"
+                // lineHeight="32px"
+                alignSelf="center"
+                textAlign="left"
+                display="block"
+                shrink="0"
+                position="relative"
+                whiteSpace="pre-wrap"
+              >
+                Group: {group.name} <br/>
+              </Text>
+              <ColorSwatch swatch={`rgb(${group.color.r},${group.color.g},${group.color.b})`} />
+            </>
+            : null}
+          </Flex>
+          <XMarkIcon
+            width="30px"
+            style={{ cursor: 'pointer' }}
+            onClick={onClose}
+          />
         </Flex>
 
         {/* Modal Body */}
@@ -72,19 +109,20 @@ export default function ViewBubbleModal({
             borderRadius="30px"
           >
 
-          <TextAreaField
-            label="Add bubble content:"
-            placeholder="Enter bubble content..."
-            isRequired={true}
-            rows={5}
-            variation="quiet"
-            labelHidden={true}
-            width="100%"
-            height="120px"
-            inputMode="text"
-            alignSelf="center"
-            value={focusedBubble.content}
-          />
+            <TextAreaField
+              label="Add bubble content:"
+              placeholder="Enter bubble content..."
+              isRequired={true}
+              rows={5}
+              variation="quiet"
+              labelHidden={true}
+              width="100%"
+              height="120px"
+              inputMode="text"
+              alignSelf="center"
+              value={focusedBubble.content}
+              readOnly
+            />
           </Flex>
         </Flex>
 

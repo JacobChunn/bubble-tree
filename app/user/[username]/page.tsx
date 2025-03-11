@@ -18,6 +18,8 @@ import ViewBubbleModal from "@/components/view-bubble-modal";
 import EditBubbleModal from "@/components/edit-bubble-modal";
 import CreateGroupModal from "@/components/create-group-modal";
 import { useSearchParams } from "next/navigation";
+import { CreateGroupType } from "@/app/actions/create-group";
+import { getUserGroups } from "@/app/actions/get-user-groups";
 
 //const client = generateClient<Schema>();
 
@@ -39,10 +41,21 @@ export type BubbleType = {
     y: number
   },
   dateCreated: string,
+  groupID: string | null
+}
+
+export type GroupType = {
+  id: string,
+  name: string,
+  color: {
+    r: number,
+    g: number,
+    b: number,
+  }
 }
 
 
-export type LoadingBubbleType = "unloaded" | "loading" | "loaded"
+export type LoadingType = "unloaded" | "loading" | "loaded"
 
 export default function App({
   params
@@ -51,13 +64,15 @@ export default function App({
 }) {
 
   const [bubbles, setBubbles] = useState<BubbleType[] | null>(null);
-  const [loadingBubbles, setLoadingBubbles] = useState<LoadingBubbleType>("unloaded");
+  const [loadingBubbles, setLoadingBubbles] = useState<LoadingType>("unloaded");
   const [modalState, setModalState] = useState<"create" | "view" | "edit" | "createGroup" | false>(false);
   const [focusedBubble, setFocusedBubble] = useState<BubbleType | null>(null);
   const [editToggle, setEditToggle] = useState(false);
   const searchParams = useSearchParams();
+  const [groups, setGroups] = useState<GroupType[] | null>(null);
+  const [loadingGroups, setLoadingGroups] = useState<LoadingType>("unloaded");
 
-  console.log("hi from frontend")
+  //console.log("hi from frontend")
 
   // Function to append bubbles to the bubbles state array
   const addBubble = (newBubble: BubbleType) => {
@@ -74,6 +89,10 @@ export default function App({
     });
   };
 
+  const addGroup = (newGroup: GroupType) => {
+    setGroups((prevGroups) => (prevGroups ? [...prevGroups, newGroup] : [newGroup]))
+  }
+
   const removeBubble = (deleteBubbleID: string) => {
     setBubbles((prevBubbles) => {
       if (!prevBubbles) return null;
@@ -88,16 +107,16 @@ export default function App({
 
   // Load Bubble records
   useEffect(() => {
-    console.log("hi from useEffect", authStatus)
+    //console.log("hi from useEffect", authStatus)
     if (authStatus == "authenticated") {
       const loadBubbleRecords = async () => {
         setLoadingBubbles("loading")
         const { username } = await params;
-        console.log("frontend username param: ", username)
+        //console.log("frontend username param: ", username)
         const bubbleRecords = await getUserBubbleRecords(username);
         console.log("retrived bubbleRecords: ", bubbleRecords)
-
-        var loadingValue: LoadingBubbleType;
+        
+        var loadingValue: LoadingType;
         var bubblesValue: BubbleType[] | null;
 
         if (bubbleRecords === false) {
@@ -106,6 +125,7 @@ export default function App({
         } else {
           loadingValue = "loaded";
           bubblesValue = bubbleRecords;
+          bubbleRecords[0].groupID
         }
         //console.log("BUBBLES: ", bubblesValue)
         //console.log("loadingValue: ", loadingValue)
@@ -127,10 +147,40 @@ export default function App({
         setLoadingBubbles(loadingValue);
       }
 
+      const loadGroups = async () => {
+        setLoadingGroups("loading")
+        const { username } = await params;
+        const groupRes = await getUserGroups(username);
+
+        var loadingValue: LoadingType;
+        var groupsValue: GroupType[] | null;
+
+        if (groupRes === false) {
+          loadingValue = "unloaded";
+          groupsValue = null;
+        } else {
+          loadingValue = "loaded";
+          groupsValue = groupRes;
+        }
+        
+        console.log("Groups: ", groupsValue)
+
+        setGroups(groupsValue);
+        setLoadingGroups(loadingValue);
+      }
+
       loadBubbleRecords();
+      loadGroups();
     }
 
   }, [authStatus])
+
+  function getColorByGroupID(groupID: string) {
+    if (!groups) return "rgb(0,0,0)"
+    const g = groups.find(group => group.id === groupID);
+    if (!g) return "rgb(0,0,0)"
+    return `rgb(${g.color.r},${g.color.g},${g.color.b})`;
+  }
 
   return (
     // <AuthWrapper>
@@ -140,11 +190,15 @@ export default function App({
         isOpen={modalState == "create"}
         onClose={() => setModalState(false)}
         addBubble={addBubble}
+        groups={groups}
+        loadingGroups={loadingGroups}
       />
       <ViewBubbleModal
         isOpen={modalState == "view"}
         onClose={() => setModalState(false)}
         focusedBubble={focusedBubble}
+        groups={groups}
+        loadingGroups={loadingGroups}
       />
       <EditBubbleModal
         isOpen={modalState == "edit"}
@@ -152,11 +206,13 @@ export default function App({
         focusedBubble={focusedBubble}
         updateBubble={updateBubble}
         removeBubble={removeBubble}
+        groups={groups}
+        loadingGroups={loadingGroups}
       />
        <CreateGroupModal
         isOpen={modalState == "createGroup"}
         onClose={() => setModalState(false)}
-        addGroup={()=>{return}}
+        addGroup={addGroup}
       /> 
       <Flex
         width="100%"
@@ -238,7 +294,7 @@ export default function App({
               position="relative"
               whiteSpace="pre-wrap"
             >
-              Create Bubble
+              Create Group
             </Text>
           </Button>
         </Flex>
@@ -269,7 +325,8 @@ export default function App({
               backgroundColor="rgba(81, 194, 194, 0.62)"
               borderRadius="8px"
               border="4px solid"
-              borderColor="rgb(25, 103, 103)"
+              
+              borderColor={bubble.groupID ? getColorByGroupID(bubble.groupID) : "rgb(25, 103, 103)"}
               style={{ cursor: "pointer" }}
               onClick={() => {
                 setFocusedBubble(bubble);

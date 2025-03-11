@@ -1,15 +1,17 @@
 "use client"
 
 import { XMarkIcon } from '@heroicons/react/24/solid'
-import { Button, Flex, TextAreaField, TextField, Text, SliderField } from '@aws-amplify/ui-react';
+import { Button, Flex, TextAreaField, TextField, Text, SliderField, Grid } from '@aws-amplify/ui-react';
 import { createBubble, CreateBubbleType } from '@/app/actions/create-bubble';
 import { useState } from 'react';
 import { createGroup, CreateGroupType } from '@/app/actions/create-group';
+import { GroupType } from '@/app/user/[username]/page';
+import ColorSwatch from './color-swatch';
 
 interface ModalProps {
   isOpen: boolean,
   onClose: () => void,
-  addGroup: (newGroup: string) => void,
+  addGroup: (newGroup: GroupType) => void,
 }
 
 
@@ -21,30 +23,31 @@ export default function CreateGroupModal({
 }: ModalProps) {
 
   const [groupName, setGroupName] = useState<string>("");
-  const [redValue, setRedValue] = useState<number>(0);
-  const [blueValue, setBlueValue] = useState<number>(0);
-  const [greenValue, setGreenValue] = useState<number>(0);
+
+  const [selectedColor, setSelectedColor] = useState<{ r: number, g: number, b: number } | null>(null);
+
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     try {
+      if (!selectedColor) return;
       console.log("handling submit!")
 
       const createGroupParameters: CreateGroupType = {
         name: groupName,
         groupColor: {
-          r: redValue, 
-          g: greenValue,
-          b: blueValue
+          r: selectedColor.r,
+          g: selectedColor.g,
+          b: selectedColor.b
         }
       }
 
       const newGroup = await createGroup(createGroupParameters);
       if (!newGroup) return;
       console.log("newGroup: ", newGroup)
-      //addGroup(newGroup); //TODO: implement this              <- important
+      addGroup(newGroup);
 
     } catch (error) {
       console.error('Error submitting group creation:', error);
@@ -52,6 +55,33 @@ export default function CreateGroupModal({
     console.log("done")
     onClose();
   };
+
+  function parseRGB(rgbString: string) {
+    const result = rgbString.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+    if (result) {
+      return {
+        r: Number(result[1]),
+        g: Number(result[2]),
+        b: Number(result[3])
+      };
+    }
+    return null;
+  }
+
+  const colors = [
+    "rgb(208, 29, 29)",
+    "rgb(219, 95, 18)",
+    "rgb(255, 233, 37)",
+    "rgb(183, 255, 67)",
+    "rgb(26, 224, 8)",
+    "rgb(40, 241, 174)",
+    "rgb(31, 220, 253)",
+    "rgb(44, 148, 252)",
+    "rgb(14, 38, 255)",
+    "rgb(168, 27, 255)",
+    "rgb(230, 41, 255)",
+    "rgb(255, 22, 138)"
+  ];
 
   return (
     <div className="modal-overlay">
@@ -114,34 +144,40 @@ export default function CreateGroupModal({
             value={groupName}
             onChange={(e) => setGroupName(e.target.value)}
           />
-          <Flex>
-            <SliderField
-              label="Choose Red Value"
-              min={0}
-              max={255}
-              flex ="1"
-              value={redValue}
-              onChange={setRedValue}
-            />
-            <SliderField
-              label="Choose Green Value"
-              min={0}
-              max={255}             
-              flex ="1"
-              value={greenValue}
-              onChange={setGreenValue}
-            />
-            <SliderField
-              label="Choose Blue Value"
-              min={0}
-              max={255}
-              flex ="1"
-              value={blueValue}
-              onChange={setBlueValue}
-            />
-          </Flex>
+          {/* Color Swatch Grid of 12 Colors */}
+          <div
+            style={{
+              display: "grid",
+              width: "min-content",
+              height: "100%",
+              gridTemplateColumns: "1fr 1fr 1fr 1fr",
+              justifyItems: "center",
+              gap: "10px",
+              margin: "0 auto"
+            }}
+          >
+            {colors.map((color) => {
+              const rgbObj = parseRGB(color);
+              if (!rgbObj) return null;
+              // Compare the current color with the selectedColor
+              const isSelected =
+                selectedColor &&
+                selectedColor.r === rgbObj.r &&
+                selectedColor.g === rgbObj.g &&
+                selectedColor.b === rgbObj.b;
 
-
+              return (
+                <ColorSwatch
+                  key={color}
+                  swatch={color}
+                  variant="large"
+                  isSelected={isSelected}
+                  onClick={() => setSelectedColor(rgbObj)}
+                  style={{cursor: "pointer"}}
+                />
+              );
+            })}
+          </div>
         </Flex>
 
         {/* Footer Section */}

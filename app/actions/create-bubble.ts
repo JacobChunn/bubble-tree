@@ -9,7 +9,8 @@ export type CreateBubbleType = {
   bubbleCoordinates: {
     x: number,
     y: number
-  }
+  },
+  groupID?: string,
 }
 
 // Only call if logged in
@@ -30,6 +31,21 @@ export async function createBubble(bubbleInfo: CreateBubbleType) {
 
     const client = cookiesClient;
 
+    let sanitizedGroupID: string | undefined = undefined;
+    if (bubbleInfo.groupID) {
+      const result = await client.models.Group.list({
+        filter: {
+          id: {eq: bubbleInfo.groupID}
+        }
+      });
+
+      if (result.errors == undefined && result.data.length > 0) {
+        sanitizedGroupID = result.data[0].id
+      } else {
+        return false
+      }
+    }
+
     const newBubble = await client.models.Bubble.create({
       title: bubbleInfo.title,
       content: bubbleInfo.content,
@@ -41,6 +57,7 @@ export async function createBubble(bubbleInfo: CreateBubbleType) {
         y: bubbleInfo.bubbleCoordinates.y,
       },
       userID: currentUser.userId, // uses userID because userID will never change, unlike emails or usernames
+      groupID: sanitizedGroupID
     });
 
     if (!newBubble.data) return false;
@@ -48,8 +65,8 @@ export async function createBubble(bubbleInfo: CreateBubbleType) {
     if (newBubble.errors == undefined) {
       console.log("newBubble.data: ", newBubble.data)
 
-      const { id, title, content, type, author, dateCreated, bubbleCoordinates } = newBubble.data;
-      const simplifiedBubbleData = { id, title, content, type, author, dateCreated, bubbleCoordinates };
+      const { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID } = newBubble.data;
+      const simplifiedBubbleData = { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID };
       console.log("Bubble created!: ", simplifiedBubbleData)
       return simplifiedBubbleData;
     }

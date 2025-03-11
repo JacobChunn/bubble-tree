@@ -10,11 +10,13 @@ export type EditBubbleType = {
   bubbleCoordinates: {
     x: number,
     y: number
-  }
+  },
+  groupID?: string,
 }
 
 // Only call if logged in
 export async function editBubble(bubbleInfo: EditBubbleType) {
+  console.log("IN EDIT BUBBLE")
   try {
     const currentUser = await AuthGetCurrentUserServer();
     const userAttributes = await AuthFetchUserAttributesServer();
@@ -28,6 +30,27 @@ export async function editBubble(bubbleInfo: EditBubbleType) {
     if (userExists == false) return false;
 
     const client = cookiesClient;
+    console.log("IN EDIT BUBBLE 2")
+    console.log("bubbleInfo.groupID:", bubbleInfo.groupID)
+
+    let sanitizedGroupID: string | null = null;
+    if (bubbleInfo.groupID && bubbleInfo.groupID !== "No Group") {
+      const result = await client.models.Group.list({
+        filter: {
+          id: {eq: bubbleInfo.groupID}
+        }
+      });
+      console.log("result: ", result)
+
+      if (result.errors == undefined && result.data.length > 0) {
+        sanitizedGroupID = result.data[0].id
+      } else {
+        return false
+      }
+    }
+
+    console.log("sanitizedGroupID:", sanitizedGroupID)
+    console.log("bubbleInfo.groupID:", bubbleInfo.groupID)
 
     const result = await client.models.Bubble.list({
       filter: {
@@ -35,14 +58,16 @@ export async function editBubble(bubbleInfo: EditBubbleType) {
       },
     });
 
+    // Check to see if owner of the bubble that has replaceID is the current user
     if (result.data && result.data.length > 0) {
       //console.log("User record exists:", result.data[0]);
       // Record exists
-      if ( !(result.data[0].id == bubbleInfo.replaceID) ) return false;
+      if ( !(result.data.some((d) => d.id == bubbleInfo.replaceID)) ) return false
+
     } else {
       return false;
     }
-
+    
     const updatedBubble = await client.models.Bubble.update({
       id: bubbleInfo.replaceID,
       title: bubbleInfo.title,
@@ -55,13 +80,14 @@ export async function editBubble(bubbleInfo: EditBubbleType) {
         y: bubbleInfo.bubbleCoordinates.y,
       },
       userID: currentUser.userId, // uses userID because userID will never change, unlike emails or usernames
+      groupID: sanitizedGroupID
     });
 
     if (!updatedBubble.data) return false;
 
     if (updatedBubble.errors == undefined) {
-      const { id, title, content, type, author, dateCreated, bubbleCoordinates } = updatedBubble.data;
-      const simplifiedBubbleData = { id, title, content, type, author, dateCreated, bubbleCoordinates };
+      const { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID } = updatedBubble.data;
+      const simplifiedBubbleData = { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID };
       console.log("Bubble updated!: ", simplifiedBubbleData)
       return simplifiedBubbleData;
     }

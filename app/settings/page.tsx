@@ -9,7 +9,7 @@ import outputs from "@/amplify_outputs.json";
 import "@aws-amplify/ui-react/styles.css";
 import AuthWrapper from "@/components/auth-wrapper";
 import Header from "@/components/header";
-import { Button, Flex, SwitchField, Text, ToggleButton, useAuthenticator } from "@aws-amplify/ui-react";
+import { AccountSettings, Button, Flex, SwitchField, Text, ToggleButton, useAuthenticator } from "@aws-amplify/ui-react";
 import { createBubble } from "@/app/actions/create-bubble";
 import { createUserRecord } from "@/app/actions/create-user-record";
 import { getUserBubbleRecords } from "@/app/actions/get-user-bubble-records";
@@ -32,14 +32,36 @@ export default function App({
   const userName = user?.userId
   const [userBio, setUserBio] = useState<string | null>(null);
   
+  const components = {
+    NewPasswordField: (props: React.ComponentProps<typeof AccountSettings.ChangePassword.NewPasswordField>) => (
+      <AccountSettings.ChangePassword.NewPasswordField
+        {...props} 
+        label="Custom New Password Label" 
+      />
+    ),
+    ConfirmPasswordField: (props: React.ComponentProps<typeof AccountSettings.ChangePassword.ConfirmPasswordField>) => (
+      <AccountSettings.ChangePassword.ConfirmPasswordField
+        {...props} 
+        label="Custom Confirm Password Label" 
+      />
+    ),
+    DeleteButton: (props: React.ComponentProps<typeof AccountSettings.DeleteUser.DeleteButton>) => (
+      <AccountSettings.DeleteUser.DeleteButton {...props}>
+        DELETE ACCOUNT
+      </AccountSettings.DeleteUser.DeleteButton>
+    ),
+  };
+  
 
   return (
     // <AuthWrapper>
     <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Header />
       <h1>Email: {userEmail}</h1>
+      <h1>User ID: {userName}</h1>
+      <h1>Username:___</h1>
       <h1>Bio: {userBio}</h1>
-      <h1>Username: {userName}</h1>
+      
       <Flex
         width="100%"
         justifyContent="center"
@@ -50,6 +72,12 @@ export default function App({
       //height="62px"
       >
       </Flex>
+
+      <Flex direction="column" alignItems="center" gap="20px" marginTop="20px">
+        <AccountSettings.ChangePassword components={components} />
+        <AccountSettings.DeleteUser components={components} />
+      </Flex>
+
     </main>
     // </AuthWrapper>
   );

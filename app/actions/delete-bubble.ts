@@ -18,6 +18,8 @@ export async function deleteBubble(bubbleID: string) {
     const userExists = await createUserRecord()
     if (userExists == false) return false;
 
+    console.log("IN DELETE!")
+
     const client = cookiesClient;
 
     const result = await client.models.Bubble.list({
@@ -29,7 +31,7 @@ export async function deleteBubble(bubbleID: string) {
     if (result.data && result.data.length > 0) {
       //console.log("User record exists:", result.data[0]);
       // Record exists
-      if ( !(result.data[0].id == bubbleID) ) return false;
+      if ( !(result.data.some((d) => d.id == bubbleID)) ) return false
     } else {
       return false;
     }

@@ -1,12 +1,12 @@
 "use client"
 
 import { XMarkIcon } from '@heroicons/react/24/solid'
-import { Button, Flex, TextAreaField, TextField, Text } from '@aws-amplify/ui-react';
+import { Button, Flex, TextAreaField, TextField, Text, SelectField } from '@aws-amplify/ui-react';
 import { createBubble, CreateBubbleType } from '@/app/actions/create-bubble';
 import { useState } from 'react';
-import { BubbleType } from '@/app/page';
 import { editBubble, EditBubbleType } from '@/app/actions/edit-bubble';
 import { deleteBubble } from '@/app/actions/delete-bubble';
+import { BubbleType, GroupType, LoadingType } from '@/app/user/[username]/page';
 
 type UnrolledEditBubbleType = {
   title: string,
@@ -21,6 +21,8 @@ interface ModalProps {
   focusedBubble: BubbleType | null,
   updateBubble: (replaceBubbleID: string, editedBubble: BubbleType) => void,
   removeBubble: (removeBubbleID: string) => void,
+  groups: GroupType[] | null,
+  loadingGroups: LoadingType,
 }
 
 export default function EditBubbleModal({
@@ -28,7 +30,9 @@ export default function EditBubbleModal({
   onClose,
   focusedBubble,
   updateBubble,
-  removeBubble
+  removeBubble,
+  groups,
+  loadingGroups,
 }: ModalProps) {
   if (!isOpen || !focusedBubble) return null;
   const [formState, setFormState] = useState<UnrolledEditBubbleType>({
@@ -38,7 +42,8 @@ export default function EditBubbleModal({
     y: focusedBubble ? String(focusedBubble.bubbleCoordinates.y) : ""
   });
 
-  
+  const [selectedGroup, setSelectedGroup] = useState<string | undefined>(focusedBubble.groupID ?? undefined);
+
 
   const handleInputChange = (field: any) => (e: { target: any; }) => {
     const value =
@@ -50,6 +55,7 @@ export default function EditBubbleModal({
     e.preventDefault();
     try {
       console.log("handling submit!")
+      console.log("selectedGroup: ", selectedGroup)
       const formBubble: EditBubbleType = {
         replaceID: focusedBubble.id,
         title: formState.title,
@@ -57,7 +63,8 @@ export default function EditBubbleModal({
         bubbleCoordinates: {
           x: Number(formState.x),
           y: Number(formState.y)
-        }
+        },
+        groupID: selectedGroup
       }
 
       const updatedBubble = await editBubble(formBubble);
@@ -97,10 +104,12 @@ export default function EditBubbleModal({
         <Flex
           justifyContent="right"
           padding="15px 15px 0 0"
-          onClick={onClose}
-          style={{ cursor: 'pointer' }}
         >
-          <XMarkIcon width="30px" />
+          <XMarkIcon
+            width="30px"
+            onClick={onClose}
+            style={{ cursor: 'pointer' }}
+          />
         </Flex>
 
         {/* Modal Form Body */}
@@ -143,29 +152,53 @@ export default function EditBubbleModal({
 
           <Flex
             justifyContent="center"
+            alignItems="center"
           >
-            <TextField
-              label="Edit bubble x coordinate:"
-              placeholder="x coordinate..."
-              isRequired={true}
-              width="200px"
-              height="76px"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={formState.x}
-              onChange={handleInputChange('x')}
-            />
-            <TextField
-              label="Edit bubble y coordinate:"
-              placeholder="y coordinate..."
-              isRequired={true}
-              width="200px"
-              height="76px"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={formState.y}
-              onChange={handleInputChange('y')}
-            />
+            <Flex
+              justifyContent="center"
+            >
+              <TextField
+                label="Edit bubble x coordinate:"
+                placeholder="x coordinate..."
+                isRequired={true}
+                width="200px"
+                height="76px"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={formState.x}
+                onChange={handleInputChange('x')}
+              />
+              <TextField
+                label="Edit bubble y coordinate:"
+                placeholder="y coordinate..."
+                isRequired={true}
+                width="200px"
+                height="76px"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={formState.y}
+                onChange={handleInputChange('y')}
+              />
+            </Flex>
+
+            {loadingGroups == "loaded" && groups !== null ?
+              <SelectField
+                style={{ float: "right" }}
+                label="Group"
+                value={selectedGroup}
+                onChange={(e) => setSelectedGroup(e.target.value)}
+              //descriptiveText="Select a group for your bubble"
+              >
+                <option value={undefined}>No Group</option>
+                {groups.map((group, index) => {
+                  return (
+                    <option value={group.id} key={index}>{group.name}</option>
+                  )
+                })}
+              </SelectField>
+              :
+              "Groups are " + loadingGroups
+            }
           </Flex>
         </Flex>
 
@@ -173,8 +206,8 @@ export default function EditBubbleModal({
         <Flex
           justifyContent="center"
         >
-                    {/* Submit Delete Bubble Button */}
-                    <Button
+          {/* Submit Delete Bubble Button */}
+          <Button
             gap="8px"
             direction="row"
             justifyContent="flex-start"

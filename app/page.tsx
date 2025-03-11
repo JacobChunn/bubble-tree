@@ -26,61 +26,17 @@ import EditBubbleModal from "@/components/edit-bubble-modal";
 
 */
 
-export type BubbleType = {
-  id: string,
-  title: string,
-  content: string,
-  type: string,
-  author: string,
-  bubbleCoordinates: {
-    x: number,
-    y: number
-  },
-  dateCreated: string,
-}
 
-
-export type LoadingBubbleType = "unloaded" | "loading" | "loaded"
 
 
 
 export default function App() {
 
-  const [bubbles, setBubbles] = useState<BubbleType[] | null>(null);
-  const [loadingBubbles, setLoadingBubbles] = useState<LoadingBubbleType>("unloaded");
-  const [modalState, setModalState] = useState<"create" | "view" | "edit" | false>(false);
-  const [focusedBubble, setFocusedBubble] = useState<BubbleType | null>(null);
-  const [editToggle, setEditToggle] = useState(false);
 
 
-  // Function to append bubbles to the bubbles state array
-  const addBubble = (newBubble: BubbleType) => {
-    setBubbles((prevBubbles) => (prevBubbles ? [...prevBubbles, newBubble] : [newBubble]));
-  };
 
-  // Function to replace a bubble in the bubbles state array. Replaces the bubble with id of replaceBubbleID
-  const updateBubble = (replaceBubbleID: string, editedBubble: BubbleType) => {
-    setBubbles((prevBubbles) => {
-      if (!prevBubbles) return null;
-      return prevBubbles.map((bubble) =>
-        bubble.id === replaceBubbleID ? editedBubble : bubble
-      );
-    });
-  };
-
-  const removeBubble = (deleteBubbleID: string) => {
-    setBubbles((prevBubbles) => {
-      if (!prevBubbles) return null;
-      return prevBubbles.filter((bubble) => bubble.id !== deleteBubbleID);
-    });
-  };
   
-  
-
-  const { authStatus } = useAuthenticator(context => [context.authStatus]);
-
-
-  // Load Bubble records
+    // Load Bubble records
   // useEffect(() => {
   //   if (authStatus == "authenticated") {
   //     const loadBubbleRecords = async () => {

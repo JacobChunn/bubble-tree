@@ -30,7 +30,7 @@ export async function createUserRecord() {
       },
     });
     if (result.data && result.data.length > 0) {
-      console.log("User record exists:", result.data[0]);
+      //console.log("User record exists:", result.data[0]);
       // Record exists
       return true;
     } else {
