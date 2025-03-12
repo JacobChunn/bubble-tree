@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "@/amplify/data/resource";
 import "@/app/app.css";
@@ -97,25 +97,24 @@ export default function App() {
 
         return (
           searchResults.simplifiedBubbleData.map((bubble, index) => (
-            <Link href={`/user/${bubble.author}` + '?' + createQueryString('bubbleid', bubble.id)} key={index} style={{ textDecoration: "none", color: "inherit" }}>
-              <Flex
-                key={index}
-                padding="10px"
-                //backgroundColor="rgba(81, 194, 194, 0.62)"
-                //borderRadius="8px"
-                //border="1px solid"
-
-                borderColor="rgba(0, 0, 0, 0.33)"
-                style={{ cursor: "pointer", borderBottom: "1px solid" }}
-              //onClick={() => { navigate(`/user/${bubble.author}`)} 
-
-              //   setFocusedBubble(bubble);
-              //   setModalState(editToggle ? "edit" : "view")
-
-              >
-                <Text>{bubble.title}</Text>
-              </Flex>
-            </Link>
+            <Suspense>
+              <Link href={`/user/${bubble.author}` + '?' + createQueryString('bubbleid', bubble.id)} key={index} style={{ textDecoration: "none", color: "inherit" }}>
+                <Flex
+                  key={index}
+                  padding="10px"
+                  //backgroundColor="rgba(81, 194, 194, 0.62)"
+                  //borderRadius="8px"
+                  //border="1px solid"
+                  borderColor="rgba(0, 0, 0, 0.33)"
+                  style={{ cursor: "pointer", borderBottom: "1px solid" }}
+                //onClick={() => { navigate(`/user/${bubble.author}`)}
+                //   setFocusedBubble(bubble);
+                //   setModalState(editToggle ? "edit" : "view")
+                >
+                  <Text>{bubble.title}</Text>
+                </Flex>
+              </Link>
+            </Suspense>
           ))
         )
       case "author":

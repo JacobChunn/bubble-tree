@@ -5,13 +5,13 @@ import { LoadingResultsType } from "@/app/explore/page";
 import { Flex, FlexProps, Label, Text } from "@aws-amplify/ui-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 
 export type NewlyAddedType =
   null
   |
   {
-    simplifiedBubbleData: { id: string, title: string; author: string }[];
+    simplifiedBubbleData: { id: string, title: string, author: string, dateCreated: string }[];
   }
 
 export default function NewlyAdded(props: FlexProps) {
@@ -62,29 +62,31 @@ export default function NewlyAdded(props: FlexProps) {
 
     return (
       newlyAdded.simplifiedBubbleData.map((bubble, index) => (
-        <Link href={`/user/${bubble.author}` + '?' + createQueryString('bubbleid', bubble.id)} key={index} style={{ textDecoration: "none", color: "inherit" }}>
-          <Flex
-            key={index}
-            padding="4px 10px"
-            //backgroundColor="rgba(81, 194, 194, 0.62)"
-            //borderRadius="8px"
-            //border="1px solid"
-            style={{
-              cursor: "pointer",
-              borderBottom: index !== newlyAdded.simplifiedBubbleData.length - 1 ? "1px solid rgba(0, 0, 0, 0.33)" : "none"
-            }}
-          // onClick={() => {
-          //   setFocusedBubble(bubble);
-          //   setModalState(editToggle ? "edit" : "view")
-          // }}
-          >
-            <Text
-              fontSize="14px"
+        <Suspense>
+          <Link href={`/user/${bubble.author}` + '?' + createQueryString('bubbleid', bubble.id)} key={index} style={{ textDecoration: "none", color: "inherit" }}>
+            <Flex
+              key={index}
+              padding="4px 10px"
+              //backgroundColor="rgba(81, 194, 194, 0.62)"
+              //borderRadius="8px"
+              //border="1px solid"
+              style={{
+                cursor: "pointer",
+                borderBottom: index !== newlyAdded.simplifiedBubbleData.length - 1 ? "1px solid rgba(0, 0, 0, 0.33)" : "none"
+              }}
+            // onClick={() => {
+            //   setFocusedBubble(bubble);
+            //   setModalState(editToggle ? "edit" : "view")
+            // }}
             >
-              {bubble.title}
-            </Text>
-          </Flex>
-        </Link>
+              <Text
+                fontSize="14px"
+              >
+                {bubble.title}
+              </Text>
+            </Flex>
+          </Link>
+        </Suspense>
       ))
     )
   }

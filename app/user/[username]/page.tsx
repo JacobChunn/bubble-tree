@@ -125,7 +125,7 @@ export default function App({
         } else {
           loadingValue = "loaded";
           bubblesValue = bubbleRecords;
-          bubbleRecords[0].groupID
+          //bubbleRecords[0].groupID
         }
         //console.log("BUBBLES: ", bubblesValue)
         //console.log("loadingValue: ", loadingValue)

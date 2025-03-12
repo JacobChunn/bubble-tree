@@ -13,6 +13,8 @@ export async function getUserBubbleRecords(username: string) {
     const userRecordExists = await createUserRecord();
     const isLoggedInWithUserRecord = userRecordExists;
 
+    //console.log("Get User Bubble Records: ", userRecordExists)
+
     // I have a username. Based on username, I want to find a userRecord and make sure it exists
     const sanitizedUsername = await sanitizeUsername(username);
     if (!sanitizedUsername) return false;
@@ -34,7 +36,7 @@ export async function getUserBubbleRecords(username: string) {
       },
     });
 
-    //console.log("bubbles: ", bubbleResult)
+    console.log("bubbles: ", bubbleResult)
 
     if (bubbleResult.errors == undefined) {
       const simplifiedBubbleData = bubbleResult.data.map(
