@@ -220,7 +220,9 @@ export default function App() {
         <Flex width = "100%" height = "100%" style={{ outline: "1px solid blue" }} area="2 / 3 / span 2 / span 1">
             <NewlyAdded/>
         </Flex>
-
+        <Flex width = "100%" height = "100%" style={{ outline: "1px solid blue" }} area="4 / 3 / span 2 / span 1">
+            <NewlyAdded/>
+        </Flex>
         {/* Space reserved for later "Recently Accessed Bubble" feature */}
 
       </Grid>

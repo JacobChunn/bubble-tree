@@ -20,6 +20,7 @@ import CreateGroupModal from "@/components/create-group-modal";
 import { useSearchParams } from "next/navigation";
 import { CreateGroupType } from "@/app/actions/create-group";
 import { getUserGroups } from "@/app/actions/get-user-groups";
+import {updateRecentlyVisited } from "@/app/actions/update-recently-visited";
 
 //const client = generateClient<Schema>();
 
@@ -361,6 +362,8 @@ export default function App({
               }
               style={{ cursor: "pointer" }}
               onClick={() => {
+                console.log(updateRecentlyVisited(bubble))
+                console.log("deez nuts")
                 setFocusedBubble(bubble);
                 setModalState(editToggle ? "edit" : "view")
               }}
