@@ -151,29 +151,29 @@ export default function App() {
         justifyContent="center"
         alignSelf="center"
         alignItems="center"
-        textAlign="center"
-
-        templateColumns="1fr 2.5fr 1fr"
-        templateRows="2fr 1fr 1fr 1fr 1fr 1fr 1fr"
-
+        templateColumns="1fr 2fr 1fr"
+        templateRows="1fr 1fr 1fr 1fr 1fr 1fr 1fr"
         width="100%"
         height="100%"
+        style={{ border: "2px solid red" }}
       >
 
         {/* Explore Section Header */}
-        <h1
-          style={{
-            gridArea: "1 / 2 / span 1 / span 1"
-          }}
-        >
-          Bubble Tree Explore Page
-        </h1>
+        <div style={{ height: "100%", width: "100%", gridArea: "1 / 2 / span 1 / span 1", outline: "1px solid blue", textAlign: "center"}}>
+            <h1>
+              Explore Page
+            </h1>
+        </div>
+
 
         {/* Search Bar feature container */}
         <Flex
           justifyContent="center"
           alignItems="center"
           area="2 / 2 / span 1 / span 1"
+          style={{ outline: "1px solid blue" }}
+          width= "100%"  // Full column width
+          height= "100%" // Full row height
         >
           <Label>Search by: </Label>
           <ToggleButtonGroup
@@ -203,33 +203,25 @@ export default function App() {
         {/* Search Results Display Area */}
         <Flex
           area="3 / 2 / span 5 / span 1"
-
-          width="680px"
-          height="280px"
-          //height="100%"
-          //flex="1"
-          margin="0 10px 10px 10px"
+          width="100%"
+          height="100%"
           backgroundColor="rgba(255, 255, 255, 0.5)"
           justifyContent="start"
           alignSelf="center"
-          //borderRadius="30px"
           border="1px solid"
           position="relative"
           direction="column"
           gap="0"
-          style={{ overflowY: "auto" }}
+          style={{ overflowY: "auto", outline: "1px solid red" }}
         >
           {loadingResults == "loaded" ? generateResultsFieldRows() : null}
         </Flex>
 
-        <NewlyAdded
-          area="2 / 3 / span 3 / span 1"
-        />
+        <Flex width = "100%" height = "100%" style={{ outline: "1px solid blue" }} area="2 / 3 / span 2 / span 1">
+            <NewlyAdded/>
+        </Flex>
 
         {/* Space reserved for later "Recently Accessed Bubble" feature */}
-        {/* <NewlyAdded
-          area="5 / 3 / span 3 / span 1"
-        /> */}
 
       </Grid>
 

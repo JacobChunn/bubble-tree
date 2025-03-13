@@ -31,7 +31,7 @@ export default function Header({
       justifyContent="space-between"
       alignItems="center"
       shrink="0"
-      position="sticky"
+      //position="sticky"
       // borderBottom="1px SOLID rgba(232,236,240,1)"
       padding={{base: "4px 4px 4px 4px", medium: "4px 79px 4px 79px"}}
       backgroundColor="rgb(0, 135, 139)"

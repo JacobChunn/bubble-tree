@@ -96,21 +96,23 @@ export default function NewlyAdded(props: FlexProps) {
     <Flex
       {...props}
       direction="column"
-      gap="0"
+      width="90%"
+      height="90%"
+      alignItems="center"
+      justifyContent="center"
+      margin="auto"
+      
     >
-      <Label htmlFor="newly-added">Newly Added Bubbles:</Label>
+      <Label htmlFor="newly-added">What's New:</Label>
       <Flex
         id="newly-added"
         // width="calc(100% - 20px)"
-        width="250px"
-        height="152px"
         //height="100%"
         //flex="1"
-        margin="0 10px"
         backgroundColor="rgba(255, 255, 255, 0.5)"
         justifyContent="start"
         alignSelf="center"
-        //borderRadius="30px"
+        width = "100%"
         border="1px solid"
         position="relative"
         direction="column"
