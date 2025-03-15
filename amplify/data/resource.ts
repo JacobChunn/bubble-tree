@@ -15,6 +15,7 @@ const schema = a.schema({
       //hashedPassword: a.string().required(),
       //profileImage: a.string(),
       bio: a.string(),
+      recentlyVisited: a.string(),
       // Relationships: a User can have many Bubbles, Votes, and Comments.
       bubbles: a.hasMany("Bubble", "userID"),
       groups: a.hasMany("Group", "userID"),

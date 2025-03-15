@@ -362,10 +362,14 @@ export default function App({
               }
               style={{ cursor: "pointer" }}
               onClick={() => {
-                console.log(updateRecentlyVisited(bubble))
+                
                 console.log("deez nuts")
                 setFocusedBubble(bubble);
                 setModalState(editToggle ? "edit" : "view")
+                if(focusedBubble){
+                  console.log(updateRecentlyVisited(focusedBubble))
+                }
+                
               }}
             >
               <Text>{bubble.title}</Text>

@@ -1,7 +1,6 @@
 "use server";
 
 import { AuthFetchUserAttributesServer, AuthGetCurrentUserServer, cookiesClient } from "@/utils/amplify-utils";
-import { createUserRecord } from "./create-user-record";
 import { BubbleType } from "@/app/user/[username]/page";
 
 export async function updateRecentlyVisited(bubble: BubbleType) {
@@ -9,17 +8,22 @@ export async function updateRecentlyVisited(bubble: BubbleType) {
     // Fetch the current `recentlyVisited` value
     const currentUser = await AuthGetCurrentUserServer();
     const client = cookiesClient;
-    const user = await client.models.User.get({ id: bubble.id });
+    
+    if (!currentUser?.userId) {
+      throw new Error("User is not authenticated or missing userId.");
+    }
+    const user = await client.models.User.get({ id: currentUser.userId });
 
     if (!user) {
       throw new Error(`User not found.`);
     }
+    
 
     let recentlyVisited = user.data?.recentlyVisited || "";
 
     // Convert to an array (split by commas)
     let visitedArray = recentlyVisited ? recentlyVisited.split(",") : [];
-
+    console.log("no error")
     // Remove existing instance of bubbleID if it exists
     visitedArray = visitedArray.filter(id => id !== bubble.id);
 
@@ -38,7 +42,8 @@ export async function updateRecentlyVisited(bubble: BubbleType) {
     if (!currentUser?.userId) {
       throw new Error("User ID is undefined. Cannot update recently visited.");
     }
-
+    console.log("Existing User Data:", user.data);
+    console.log("Updated Recently Visited:", updatedRecentlyVisited);
     // Update the User record
     await client.models.User.update({
       id: currentUser.userId,
