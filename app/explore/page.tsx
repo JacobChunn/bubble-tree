@@ -97,7 +97,7 @@ export default function App() {
 
         return (
           searchResults.simplifiedBubbleData.map((bubble, index) => (
-            <Suspense>
+            <Suspense key={index}>
               <Link href={`/user/${bubble.author}` + '?' + createQueryString('bubbleid', bubble.id)} key={index} style={{ textDecoration: "none", color: "inherit" }}>
                 <Flex
                   key={index}
@@ -122,22 +122,25 @@ export default function App() {
 
         return (
           searchResults.simplifiedAuthorData.map((author, index) => (
-            <Flex
-              key={index}
-              padding="10px"
-              //backgroundColor="rgba(81, 194, 194, 0.62)"
-              //borderRadius="8px"
-              //border="1px solid"
-
-              borderColor="rgba(0, 0, 0, 0.33)"
-              style={{ cursor: "pointer", borderBottom: "1px solid" }}
-            // onClick={() => {
-            //   setFocusedBubble(bubble);
-            //   setModalState(editToggle ? "edit" : "view")
-            // }}
-            >
-              <Text>{author.username}</Text>
-            </Flex>
+            <Suspense key={index}>
+              <Link href={`/user/${author.username}`} style={{ textDecoration: "none", color: "inherit" }}>
+                <Flex
+                  key={index}
+                  padding="10px"
+                  //backgroundColor="rgba(81, 194, 194, 0.62)"
+                  //borderRadius="8px"
+                  //border="1px solid"
+                  borderColor="rgba(0, 0, 0, 0.33)"
+                  style={{ cursor: "pointer", borderBottom: "1px solid" }}
+                // onClick={() => {
+                //   setFocusedBubble(bubble);
+                //   setModalState(editToggle ? "edit" : "view")
+                // }}
+                >
+                  <Text>{author.username}</Text>
+                </Flex>
+              </Link>
+            </Suspense>
           ))
         )
     }

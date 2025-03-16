@@ -62,7 +62,7 @@ export default function NewlyAdded(props: FlexProps) {
 
     return (
       newlyAdded.simplifiedBubbleData.map((bubble, index) => (
-        <Suspense>
+        <Suspense key={index}>
           <Link href={`/user/${bubble.author}` + '?' + createQueryString('bubbleid', bubble.id)} key={index} style={{ textDecoration: "none", color: "inherit" }}>
             <Flex
               key={index}

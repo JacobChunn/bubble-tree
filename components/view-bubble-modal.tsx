@@ -4,6 +4,9 @@ import { XMarkIcon } from '@heroicons/react/24/solid'
 import { Button, Flex, TextAreaField, TextField, Text } from '@aws-amplify/ui-react';
 import { BubbleType, GroupType, LoadingType } from '@/app/user/[username]/page';
 import ColorSwatch from './color-swatch';
+import duplicateUserBubble from '@/app/actions/duplicate-user-bubble';
+import { useRouter } from 'next/navigation';
+import getUsername from '@/app/actions/get-username';
 
 
 interface ModalProps {
@@ -12,7 +15,9 @@ interface ModalProps {
   focusedBubble: BubbleType | null,
   groups: GroupType[] | null,
   loadingGroups: LoadingType,
+  canDuplicate: boolean,
 }
+
 
 export default function ViewBubbleModal({
   isOpen,
@@ -20,14 +25,39 @@ export default function ViewBubbleModal({
   focusedBubble,
   groups,
   loadingGroups,
+  canDuplicate,
 }: ModalProps) {
   if (!isOpen || !focusedBubble) return null;
+
+  const router = useRouter();
 
   console.log("focusedBubble.groupID: ", focusedBubble.groupID)
 
   const group = groups?.find((group) => group.id == focusedBubble.groupID)
-  
+
   console.log("ViewBubble Group: ", group)
+  console.log("Can duplicate: ", canDuplicate)
+
+  async function duplicateBubble(bubble: BubbleType) {
+    const bubbleInfo = {
+      title: bubble.title,
+      content: bubble.content,
+      bubbleCoordinates: bubble.bubbleCoordinates,
+      groupID: bubble.groupID ?? undefined,
+    }
+    const usernamePromise = getUsername();
+    const duplicatePromise = duplicateUserBubble(bubbleInfo);
+  
+    const username = await usernamePromise;
+    const duplicateRes = await duplicatePromise;
+  
+    // Redirect to newly created bubble if duplicated
+    if (duplicateRes) {
+      
+      router.push("/user/" + username + "?bubbleid=" + duplicateRes.id);
+    }
+  }
+  
 
   return (
     <div className="modal-overlay">
@@ -49,32 +79,47 @@ export default function ViewBubbleModal({
           <Flex
             gap="0px"
           >
-            {loadingGroups == "loaded" && group?
-            <>
-              <Text
-                //fontFamily="Roboto"
-                fontSize={{ base: "16px", small: "16px" }}
-                fontWeight="400"
-                color="rgb(0, 0, 0)"
-                // lineHeight="32px"
-                alignSelf="center"
-                textAlign="left"
-                display="block"
-                shrink="0"
-                position="relative"
-                whiteSpace="pre-wrap"
-              >
-                Group: {group.name} <br/>
-              </Text>
-              <ColorSwatch swatch={`rgb(${group.color.r},${group.color.g},${group.color.b})`} />
-            </>
-            : null}
+            {loadingGroups == "loaded" && group ?
+              <>
+                <Text
+                  //fontFamily="Roboto"
+                  fontSize={{ base: "16px", small: "16px" }}
+                  fontWeight="400"
+                  color="rgb(0, 0, 0)"
+                  // lineHeight="32px"
+                  alignSelf="center"
+                  textAlign="left"
+                  display="block"
+                  shrink="0"
+                  position="relative"
+                  whiteSpace="pre-wrap"
+                >
+                  Group: {group.name} <br />
+                </Text>
+                <ColorSwatch swatch={`rgb(${group.color.r},${group.color.g},${group.color.b})`} />
+              </>
+              : null}
           </Flex>
-          <XMarkIcon
-            width="30px"
-            style={{ cursor: 'pointer' }}
-            onClick={onClose}
-          />
+          <Flex
+            direction="row"
+          >
+            {canDuplicate ?
+              <Button
+                size='small'
+                onClick={() => duplicateBubble(focusedBubble)}
+              >
+                Duplicate
+              </Button>
+              :
+              null
+            }
+            <XMarkIcon
+              width="30px"
+              style={{ cursor: 'pointer' }}
+              onClick={onClose}
+            />
+          </Flex>
+
         </Flex>
 
         {/* Modal Body */}

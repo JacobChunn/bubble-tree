@@ -20,6 +20,7 @@ import CreateGroupModal from "@/components/create-group-modal";
 import { useSearchParams } from "next/navigation";
 import { CreateGroupType } from "@/app/actions/create-group";
 import { getUserGroups } from "@/app/actions/get-user-groups";
+import getCurrentUsername from "@/app/actions/get-current-username";
 
 //const client = generateClient<Schema>();
 
@@ -71,6 +72,8 @@ export default function App({
   const searchParams = useSearchParams();
   const [groups, setGroups] = useState<GroupType[] | null>(null);
   const [loadingGroups, setLoadingGroups] = useState<LoadingType>("unloaded");
+  const [username, setUsername] = useState<string | null>(null);
+  const [searchParamUsername, setSearchParamUsername] = useState<string | null>(null);
 
   //console.log("hi from frontend")
 
@@ -78,7 +81,7 @@ export default function App({
   const addBubble = (newBubble: BubbleType) => {
     setBubbles((prevBubbles) => (prevBubbles ? [...prevBubbles, newBubble] : [newBubble]));
   };
-  
+
   // Function to replace a bubble in the bubbles state array. Replaces the bubble with id of replaceBubbleID
   const updateBubble = (replaceBubbleID: string, editedBubble: BubbleType) => {
     setBubbles((prevBubbles) => {
@@ -107,73 +110,79 @@ export default function App({
 
   // Load Bubble records
   useEffect(() => {
-    //console.log("hi from useEffect", authStatus)
-    if (authStatus == "authenticated") {
-      const loadBubbleRecords = async () => {
-        setLoadingBubbles("loading")
-        const { username } = await params;
-        //console.log("frontend username param: ", username)
-        const bubbleRecords = await getUserBubbleRecords(username);
-        console.log("retrived bubbleRecords: ", bubbleRecords)
 
-        var loadingValue: LoadingType;
-        var bubblesValue: BubbleType[] | null;
-
-        if (bubbleRecords === false) {
-          loadingValue = "unloaded";
-          bubblesValue = null;
-        } else {
-          loadingValue = "loaded";
-          bubblesValue = bubbleRecords;
-          //bubbleRecords[0].groupID
-        }
-        //console.log("BUBBLES: ", bubblesValue)
-        //console.log("loadingValue: ", loadingValue)
-        let focusedBubbleValue = null;
-        let modalStateValue: boolean | "view" = false;
-        if(loadingValue == "loaded" && bubblesValue != null ){
-            
-            const bubbleid = searchParams.get("bubbleid");
-            if(bubbleid){
-              const newFocusedBubble = bubblesValue.find(bubble => bubble.id==bubbleid)
-              console.log(newFocusedBubble, bubbleid, bubblesValue)
-              focusedBubbleValue = newFocusedBubble ? newFocusedBubble : null;
-              modalStateValue = "view";
-            }
-        }
-        setFocusedBubble(focusedBubbleValue);
-        setModalState(modalStateValue);
-        setBubbles(bubblesValue);
-        setLoadingBubbles(loadingValue);
-      }
-
-      const loadGroups = async () => {
-        setLoadingGroups("loading")
-        const { username } = await params;
-        const groupRes = await getUserGroups(username);
-
-        var loadingValue: LoadingType;
-        var groupsValue: GroupType[] | null;
-
-        if (groupRes === false) {
-          loadingValue = "unloaded";
-          groupsValue = null;
-        } else {
-          loadingValue = "loaded";
-          groupsValue = groupRes;
-        }
-
-        console.log("Groups: ", groupsValue)
-
-        setGroups(groupsValue);
-        setLoadingGroups(loadingValue);
-      }
-
-      loadBubbleRecords();
-      loadGroups();
+    const loadUsername = async () => {
+      const usernameRes = await getCurrentUsername();
+      setUsername(usernameRes ? usernameRes : null);
     }
 
-  }, [authStatus])
+    const loadBubbleRecords = async () => {
+      setLoadingBubbles("loading")
+      const { username } = await params;
+      setSearchParamUsername(username);
+      //console.log("frontend username param: ", username)
+      const bubbleRecords = await getUserBubbleRecords(username);
+      console.log("retrived bubbleRecords: ", bubbleRecords)
+
+      var loadingValue: LoadingType;
+      var bubblesValue: BubbleType[] | null;
+
+      if (bubbleRecords === false) {
+        loadingValue = "unloaded";
+        bubblesValue = null;
+      } else {
+        loadingValue = "loaded";
+        bubblesValue = bubbleRecords;
+        //bubbleRecords[0].groupID
+      }
+      //console.log("BUBBLES: ", bubblesValue)
+      //console.log("loadingValue: ", loadingValue)
+      let focusedBubbleValue = null;
+      let modalStateValue: boolean | "view" = false;
+      if (loadingValue == "loaded" && bubblesValue != null) {
+
+        const bubbleid = searchParams.get("bubbleid");
+        if (bubbleid) {
+          const newFocusedBubble = bubblesValue.find(bubble => bubble.id == bubbleid)
+          console.log(newFocusedBubble, bubbleid, bubblesValue)
+          focusedBubbleValue = newFocusedBubble ? newFocusedBubble : null;
+          modalStateValue = "view";
+        }
+      }
+      setFocusedBubble(focusedBubbleValue);
+      setModalState(modalStateValue);
+      setBubbles(bubblesValue);
+      setLoadingBubbles(loadingValue);
+    }
+
+    const loadGroups = async () => {
+      setLoadingGroups("loading")
+      const { username } = await params;
+      const groupRes = await getUserGroups(username);
+
+      var loadingValue: LoadingType;
+      var groupsValue: GroupType[] | null;
+
+      if (groupRes === false) {
+        loadingValue = "unloaded";
+        groupsValue = null;
+      } else {
+        loadingValue = "loaded";
+        groupsValue = groupRes;
+      }
+
+      console.log("Groups: ", groupsValue)
+
+      setGroups(groupsValue);
+      setLoadingGroups(loadingValue);
+    }
+
+    loadUsername();
+    loadBubbleRecords();
+    loadGroups();
+
+
+  }, [])
 
   function getColorByGroupID(groupID: string) {
     if (!groups) return "rgb(0,0,0)"
@@ -204,6 +213,8 @@ export default function App({
     }
   }
 
+  console.log("u,u: ", username, searchParamUsername)
+
   return (
     // <AuthWrapper>
     <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -221,6 +232,7 @@ export default function App({
         focusedBubble={focusedBubble}
         groups={groups}
         loadingGroups={loadingGroups}
+        canDuplicate={searchParamUsername != null && username != searchParamUsername}
       />
       <EditBubbleModal
         isOpen={modalState == "edit"}
@@ -236,99 +248,105 @@ export default function App({
         onClose={() => setModalState(false)}
         addGroup={addGroup}
       />
-      <Flex
-        width="100%"
-        justifyContent="center"
-        alignSelf="center"
-        direction="column"
-        textAlign="center"
-        gap="0px"
-      //height="62px"
-      >
 
-        {/* Button bar */}
+      {/* Button bar container */}
+      {username == searchParamUsername ?
         <Flex
-          margin="10px"
-          padding="10px"
-          borderRadius="40px"
-          backgroundColor="rgba(0,0,0,0.3)"
+          width="100%"
+          justifyContent="center"
+          alignSelf="center"
+          direction="column"
+          textAlign="center"
+          gap="0px"
+        //height="62px"
         >
 
-          {/* Create Bubble Button */}
-          <Button
-            gap="8px"
-            direction="row"
-            justifyContent="flex-start"
-            alignItems="center"
-            shrink="0"
-            position="relative"
-            padding="12px 8px 12px 8px"
-            borderRadius="20px"
-            borderColor="rgb(0,0,0)"
-            onClick={() => setModalState("create")}
+          {/* Button bar */}
+          <Flex
+            margin="10px 10px 0px 10px"
+            padding="10px"
+            borderRadius="40px"
+            backgroundColor="rgba(0,0,0,0.3)"
           >
-            <Text
-              //fontFamily="Roboto"
-              fontSize={{ base: "12px", small: "12px" }}
-              fontWeight="500"
-              color="rgba(255,255,255,1)"
-              lineHeight="16px"
-              textAlign="left"
-              display="block"
+
+            {/* Create Bubble Button */}
+            <Button
+              gap="8px"
+              direction="row"
+              justifyContent="flex-start"
+              alignItems="center"
               shrink="0"
               position="relative"
-              whiteSpace="pre-wrap"
+              padding="12px 8px 12px 8px"
+              borderRadius="20px"
+              borderColor="rgb(0,0,0)"
+              onClick={() => setModalState("create")}
             >
-              Create Bubble
-            </Text>
-          </Button>
+              <Text
+                //fontFamily="Roboto"
+                fontSize={{ base: "12px", small: "12px" }}
+                fontWeight="500"
+                color="rgba(255,255,255,1)"
+                lineHeight="16px"
+                textAlign="left"
+                display="block"
+                shrink="0"
+                position="relative"
+                whiteSpace="pre-wrap"
+              >
+                Create Bubble
+              </Text>
+            </Button>
 
-          {/* Edit toggle switch */}
-          <SwitchField
-            label="Edit"
-            labelPosition="end"
-            isChecked={editToggle}
-            onChange={() => setEditToggle(!editToggle)}
-          />
+            {/* Edit toggle switch */}
+            <SwitchField
+              label="Edit"
+              labelPosition="end"
+              isChecked={editToggle}
+              onChange={() => setEditToggle(!editToggle)}
+            />
 
-          {/* Create Group Button */}
-          <Button
-            gap="8px"
-            direction="row"
-            justifyContent="flex-start"
-            alignItems="center"
-            shrink="0"
-            position="relative"
-            padding="12px 8px 12px 8px"
-            borderRadius="20px"
-            borderColor="rgb(0,0,0)"
-            onClick={() => setModalState("createGroup")}
-          >
-            <Text
-              //fontFamily="Roboto"
-              fontSize={{ base: "12px", small: "12px" }}
-              fontWeight="500"
-              color="rgba(255,255,255,1)"
-              lineHeight="16px"
-              textAlign="left"
-              display="block"
+            {/* Create Group Button */}
+            <Button
+              gap="8px"
+              direction="row"
+              justifyContent="flex-start"
+              alignItems="center"
               shrink="0"
               position="relative"
-              whiteSpace="pre-wrap"
+              padding="12px 8px 12px 8px"
+              borderRadius="20px"
+              borderColor="rgb(0,0,0)"
+              onClick={() => setModalState("createGroup")}
             >
-              Create Group
-            </Text>
-          </Button>
+              <Text
+                //fontFamily="Roboto"
+                fontSize={{ base: "12px", small: "12px" }}
+                fontWeight="500"
+                color="rgba(255,255,255,1)"
+                lineHeight="16px"
+                textAlign="left"
+                display="block"
+                shrink="0"
+                position="relative"
+                whiteSpace="pre-wrap"
+              >
+                Create Group
+              </Text>
+            </Button>
+          </Flex>
+
         </Flex>
-
-      </Flex>
+        :
+        null
+      }
 
       {/* Bubble Display Area*/}
       <Flex
         width="calc(100% - 20px)"
         //height="100%"
         flex="1"
-        margin="0 10px 10px 10px"
+        margin="10px 10px 10px 10px"
         backgroundColor="rgba(255, 255, 255, 0.5)"
         justifyContent="center"
         alignSelf="center"
@@ -346,9 +364,9 @@ export default function App({
               padding="10px"
               backgroundColor={
                 bubble.groupID && loadingGroups == "loaded" ?
-                lightenColor(getColorByGroupID(bubble.groupID))
-                :
-                "rgba(81, 194, 194, 0.62)"
+                  lightenColor(getColorByGroupID(bubble.groupID))
+                  :
+                  "rgba(81, 194, 194, 0.62)"
               }
               borderRadius="8px"
               border="4px solid"

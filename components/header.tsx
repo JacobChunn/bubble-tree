@@ -3,7 +3,8 @@
 import { Flex, Image, Text, useAuthenticator } from '@aws-amplify/ui-react';
 import MenuItem from './menu-item';
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import getCurrentUsername from '@/app/actions/get-current-username';
 
 interface HeaderProps {
 
@@ -13,7 +14,19 @@ export default function Header({
 
 }: HeaderProps) {
 
+  const [username, setUsername] = useState<null | string>(null);
+
   const { authStatus, signOut } = useAuthenticator(context => [context.authStatus]);
+
+  useEffect(() => {
+    const loadUsername = async () => {
+      const usernameRes = await getCurrentUsername();
+
+      setUsername(usernameRes ? usernameRes : null);
+    }
+
+    loadUsername();
+  }, [])
 
   // Handle logout
   const handleLogout = () => {
@@ -65,10 +78,21 @@ export default function Header({
         shrink="0"
         position="relative"
       >
+        {username ?
+        <Text
+          color="white"
+          alignSelf="center"
+          textAlign="center"
+        >
+          Welcome, {username}
+        </Text>
+        :
+        null
+        }
         <MenuItem
           gap="8px"
           direction="row"
-          justifyContent="flex-start"
+          justifyContent="center"
           alignItems="center"
           shrink="0"
           position="relative"
