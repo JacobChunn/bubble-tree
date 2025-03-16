@@ -74,6 +74,12 @@ export default function App({
   const [loadingGroups, setLoadingGroups] = useState<LoadingType>("unloaded");
 
   //console.log("hi from frontend")
+  const openBubble = (bubble: BubbleType | null)=>{
+    setFocusedBubble(bubble)
+    if(bubble){
+    updateRecentlyVisited(bubble)
+    }
+  }
 
   // Function to append bubbles to the bubbles state array
   const addBubble = (newBubble: BubbleType) => {
@@ -142,7 +148,7 @@ export default function App({
               modalStateValue = "view";
             }
         }
-        setFocusedBubble(focusedBubbleValue);
+        openBubble(focusedBubbleValue);
         setModalState(modalStateValue);
         setBubbles(bubblesValue);
         setLoadingBubbles(loadingValue);
@@ -353,7 +359,6 @@ export default function App({
               }
               borderRadius="8px"
               border="4px solid"
-
               borderColor={
                 bubble.groupID && loadingGroups == "loaded" ?
                   getColorByGroupID(bubble.groupID)
@@ -362,9 +367,7 @@ export default function App({
               }
               style={{ cursor: "pointer" }}
               onClick={() => {
-                
-                console.log("deez nuts")
-                setFocusedBubble(bubble);
+                openBubble(bubble);
                 setModalState(editToggle ? "edit" : "view")
                 if(focusedBubble){
                   console.log(updateRecentlyVisited(focusedBubble))

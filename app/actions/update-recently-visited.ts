@@ -4,56 +4,70 @@ import { AuthFetchUserAttributesServer, AuthGetCurrentUserServer, cookiesClient 
 import { BubbleType } from "@/app/user/[username]/page";
 
 export async function updateRecentlyVisited(bubble: BubbleType) {
+  console.log("function called!!!!!")
   try {
     // Fetch the current `recentlyVisited` value
     const currentUser = await AuthGetCurrentUserServer();
+    const userAttributes = await AuthFetchUserAttributesServer();
     const client = cookiesClient;
-    
-    if (!currentUser?.userId) {
-      throw new Error("User is not authenticated or missing userId.");
+    //get cognito user
+    if (!currentUser || !userAttributes) {
+      return false;
     }
-    const user = await client.models.User.get({ id: currentUser.userId });
+    const username = userAttributes.preferred_username
+    if (!username) return false;
 
-    if (!user) {
-      throw new Error(`User not found.`);
+    console.log("USER ID!!!!!!!!!!!!!!!!", currentUser.userId)
+    //get record in db
+
+    const user: any = await client.models.User.list(
+      {
+        filter: {
+        username: {eq: username}
+
+      }
     }
-    
+    );
+    console.log("USER OBJECT!!!!!!!!!!!!!!!!", user)
+    if (!user || !user.data || user.data.length==0) {
+      return false;
+    }
+    console.log("im here!!!!!")
 
-    let recentlyVisited = user.data?.recentlyVisited || "";
+    let recentlyVisited = user.data[0].recentlyVisited ?? []
 
-    // Convert to an array (split by commas)
-    let visitedArray = recentlyVisited ? recentlyVisited.split(",") : [];
     console.log("no error")
     // Remove existing instance of bubbleID if it exists
-    visitedArray = visitedArray.filter(id => id !== bubble.id);
+    recentlyVisited = recentlyVisited.filter((id: string) => id !== bubble.id);
 
     // Add the new bubble ID at the start
-    visitedArray.unshift(bubble.id);
+    recentlyVisited.unshift(bubble.id);
 
     // Keep only the last 5 visited bubbles
-    if (visitedArray.length > 5) {
-      visitedArray.pop();
+    if (recentlyVisited.length > 5) {
+      recentlyVisited.pop();
     }
-
-    // Convert back to a comma-separated string for database storage
-    const updatedRecentlyVisited = visitedArray.join(",");
-
+    
     // Ensure current user exists to make TypeScript happy
     if (!currentUser?.userId) {
       throw new Error("User ID is undefined. Cannot update recently visited.");
     }
     console.log("Existing User Data:", user.data);
-    console.log("Updated Recently Visited:", updatedRecentlyVisited);
+    console.log("Existing User Data OF 0 index:", user.data[0]);
     // Update the User record
-    await client.models.User.update({
-      id: currentUser.userId,
-      recentlyVisited: updatedRecentlyVisited,
+    console.log("USERID IS HERE !!!", user.data[0].id)
+    const response = await client.models.User.update({
+      id: user.data[0].id,
+      recentlyVisited: recentlyVisited,
     });
-
-    // Return the updated array (this is the resolved value)
-    return Promise.resolve(visitedArray);  // Ensure a resolved promise is returned
+    console.log("Here's the response:", response)
+    if(response.errors != null){
+        return false
+    }
+    // Return true because the query succesfully was ran
+    return true;
   } catch (error) {
     console.error("Error in updateRecentlyVisited:", error);
-    return Promise.reject(error);  // Optionally, return a rejected promise if there's an error
+    return false;
   }
 }

@@ -29,9 +29,7 @@ export async function createGroup(groupInfo: CreateGroupType) {
 
     const userExists = await createUserRecord()
     if (userExists == false) return false;
-
     const client = cookiesClient;
-
     const userID = await getUserIdByUsername(username)
     if (!userID) return false;
 

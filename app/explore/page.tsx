@@ -14,6 +14,7 @@ import { getSearchResults, SearchType } from "../actions/get-search-results";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import NewlyAdded from "@/components/newly-added";
+import RecentlyVisited from "@/components/recently-visited";
 
 //const client = generateClient<Schema>();
 // in getRecentlyVisited(), make sure createUserRecord is called inside server action.
@@ -221,7 +222,7 @@ export default function App() {
             <NewlyAdded/>
         </Flex>
         <Flex width = "100%" height = "100%" style={{ outline: "1px solid blue" }} area="4 / 3 / span 2 / span 1">
-            <NewlyAdded/>
+            <RecentlyVisited/>
         </Flex>
         {/* Space reserved for later "Recently Accessed Bubble" feature */}
 
