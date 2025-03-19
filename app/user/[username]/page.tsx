@@ -21,6 +21,7 @@ import { useSearchParams } from "next/navigation";
 import { CreateGroupType } from "@/app/actions/create-group";
 import { getUserGroups } from "@/app/actions/get-user-groups";
 import getCurrentUsername from "@/app/actions/get-current-username";
+import {updateRecentlyVisited } from "@/app/actions/update-recently-visited";
 
 //const client = generateClient<Schema>();
 
@@ -76,6 +77,12 @@ export default function App({
   const [searchParamUsername, setSearchParamUsername] = useState<string | null>(null);
 
   //console.log("hi from frontend")
+  const openBubble = (bubble: BubbleType | null)=>{
+    setFocusedBubble(bubble)
+    if(bubble){
+    updateRecentlyVisited(bubble)
+    }
+  }
 
   // Function to append bubbles to the bubbles state array
   const addBubble = (newBubble: BubbleType) => {
@@ -127,33 +134,33 @@ export default function App({
       var loadingValue: LoadingType;
       var bubblesValue: BubbleType[] | null;
 
-      if (bubbleRecords === false) {
-        loadingValue = "unloaded";
-        bubblesValue = null;
-      } else {
-        loadingValue = "loaded";
-        bubblesValue = bubbleRecords;
-        //bubbleRecords[0].groupID
-      }
-      //console.log("BUBBLES: ", bubblesValue)
-      //console.log("loadingValue: ", loadingValue)
-      let focusedBubbleValue = null;
-      let modalStateValue: boolean | "view" = false;
-      if (loadingValue == "loaded" && bubblesValue != null) {
-
-        const bubbleid = searchParams.get("bubbleid");
-        if (bubbleid) {
-          const newFocusedBubble = bubblesValue.find(bubble => bubble.id == bubbleid)
-          console.log(newFocusedBubble, bubbleid, bubblesValue)
-          focusedBubbleValue = newFocusedBubble ? newFocusedBubble : null;
-          modalStateValue = "view";
+        if (bubbleRecords === false) {
+          loadingValue = "unloaded";
+          bubblesValue = null;
+        } else {
+          loadingValue = "loaded";
+          bubblesValue = bubbleRecords;
+          //bubbleRecords[0].groupID
         }
+        //console.log("BUBBLES: ", bubblesValue)
+        //console.log("loadingValue: ", loadingValue)
+        let focusedBubbleValue = null;
+        let modalStateValue: boolean | "view" = false;
+        if(loadingValue == "loaded" && bubblesValue != null ){
+            
+            const bubbleid = searchParams.get("bubbleid");
+            if(bubbleid){
+              const newFocusedBubble = bubblesValue.find(bubble => bubble.id==bubbleid)
+              console.log(newFocusedBubble, bubbleid, bubblesValue)
+              focusedBubbleValue = newFocusedBubble ? newFocusedBubble : null;
+              modalStateValue = "view";
+            }
+        }
+        openBubble(focusedBubbleValue);
+        setModalState(modalStateValue);
+        setBubbles(bubblesValue);
+        setLoadingBubbles(loadingValue);
       }
-      setFocusedBubble(focusedBubbleValue);
-      setModalState(modalStateValue);
-      setBubbles(bubblesValue);
-      setLoadingBubbles(loadingValue);
-    }
 
     const loadGroups = async () => {
       setLoadingGroups("loading")
@@ -370,7 +377,6 @@ export default function App({
               }
               borderRadius="8px"
               border="4px solid"
-
               borderColor={
                 bubble.groupID && loadingGroups == "loaded" ?
                   getColorByGroupID(bubble.groupID)
@@ -379,8 +385,12 @@ export default function App({
               }
               style={{ cursor: "pointer" }}
               onClick={() => {
-                setFocusedBubble(bubble);
+                openBubble(bubble);
                 setModalState(editToggle ? "edit" : "view")
+                if(focusedBubble){
+                  console.log(updateRecentlyVisited(focusedBubble))
+                }
+                
               }}
             >
               <Text>{bubble.title}</Text>
