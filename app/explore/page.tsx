@@ -156,11 +156,11 @@ export default function App() {
         templateRows="1fr 1fr 1fr 1fr 1fr 1fr 1fr"
         width="100%"
         height="100%"
-        style={{ border: "2px solid red" }}
+        
       >
 
         {/* Explore Section Header */}
-        <div style={{ height: "100%", width: "100%", gridArea: "1 / 2 / span 1 / span 1", outline: "1px solid blue", textAlign: "center"}}>
+        <div style={{ height: "100%", width: "100%", gridArea: "1 / 2 / span 1 / span 1", textAlign: "center"}}>
             <h1>
               Explore Page
             </h1>
@@ -172,7 +172,6 @@ export default function App() {
           justifyContent="center"
           alignItems="center"
           area="2 / 2 / span 1 / span 1"
-          style={{ outline: "1px solid blue" }}
           width= "100%"  // Full column width
           height= "100%" // Full row height
         >
@@ -213,15 +212,15 @@ export default function App() {
           position="relative"
           direction="column"
           gap="0"
-          style={{ overflowY: "auto", outline: "1px solid red" }}
+          style={{ overflowY: "auto" }}
         >
           {loadingResults == "loaded" ? generateResultsFieldRows() : null}
         </Flex>
 
-        <Flex width = "100%" height = "100%" style={{ outline: "1px solid blue" }} area="2 / 3 / span 2 / span 1">
+        <Flex width = "100%" height = "100%" area="2 / 3 / span 2 / span 1">
             <NewlyAdded/>
         </Flex>
-        <Flex width = "100%" height = "100%" style={{ outline: "1px solid blue" }} area="4 / 3 / span 2 / span 1">
+        <Flex width = "100%" height = "100%" area="4 / 3 / span 2 / span 1">
             <RecentlyVisited/>
         </Flex>
         {/* Space reserved for later "Recently Accessed Bubble" feature */}
