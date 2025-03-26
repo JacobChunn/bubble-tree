@@ -15,7 +15,8 @@ interface ModalProps {
   focusedBubble: BubbleType | null,
   groups: GroupType[] | null,
   loadingGroups: LoadingType,
-  canDuplicate: boolean,
+  isNotOwnBubble: boolean,
+  onComment: () => void,
 }
 
 
@@ -25,7 +26,8 @@ export default function ViewBubbleModal({
   focusedBubble,
   groups,
   loadingGroups,
-  canDuplicate,
+  isNotOwnBubble,
+  onComment,
 }: ModalProps) {
   if (!isOpen || !focusedBubble) return null;
 
@@ -36,7 +38,7 @@ export default function ViewBubbleModal({
   const group = groups?.find((group) => group.id == focusedBubble.groupID)
 
   console.log("ViewBubble Group: ", group)
-  console.log("Can duplicate: ", canDuplicate)
+  console.log("Can duplicate: ", isNotOwnBubble)
 
   async function duplicateBubble(bubble: BubbleType) {
     const bubbleInfo = {
@@ -103,7 +105,7 @@ export default function ViewBubbleModal({
           <Flex
             direction="row"
           >
-            {canDuplicate ?
+            {isNotOwnBubble ?
               <Button
                 size='small'
                 onClick={() => duplicateBubble(focusedBubble)}
@@ -168,6 +170,14 @@ export default function ViewBubbleModal({
               value={focusedBubble.content}
               readOnly
             />
+          </Flex>
+          <Flex>
+            <Button
+              size='small'
+              onClick={onComment}
+            >
+              Comments
+            </Button>
           </Flex>
         </Flex>
 

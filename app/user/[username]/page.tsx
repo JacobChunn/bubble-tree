@@ -22,6 +22,7 @@ import { CreateGroupType } from "@/app/actions/create-group";
 import { getUserGroups } from "@/app/actions/get-user-groups";
 import getCurrentUsername from "@/app/actions/get-current-username";
 import {updateRecentlyVisited } from "@/app/actions/update-recently-visited";
+import CommentsModal from "@/components/comments-modal";
 
 //const client = generateClient<Schema>();
 
@@ -67,7 +68,7 @@ export default function App({
 
   const [bubbles, setBubbles] = useState<BubbleType[] | null>(null);
   const [loadingBubbles, setLoadingBubbles] = useState<LoadingType>("unloaded");
-  const [modalState, setModalState] = useState<"create" | "view" | "edit" | "createGroup" | false>(false);
+  const [modalState, setModalState] = useState<"create" | "view" | "edit" | "createGroup" | "comment" | false>(false);
   const [focusedBubble, setFocusedBubble] = useState<BubbleType | null>(null);
   const [editToggle, setEditToggle] = useState(false);
   const searchParams = useSearchParams();
@@ -239,7 +240,15 @@ export default function App({
         focusedBubble={focusedBubble}
         groups={groups}
         loadingGroups={loadingGroups}
-        canDuplicate={searchParamUsername != null && username != searchParamUsername}
+        isNotOwnBubble={searchParamUsername != null && username != searchParamUsername}
+        onComment={() => setModalState("comment")}
+      />
+      <CommentsModal
+        isOpen={modalState == "comment"}
+        onClose={() => setModalState(false)}
+        onBack={() => setModalState("view")}
+        focusedBubble={focusedBubble}
+        isNotOwnProfile={searchParamUsername != null && username != searchParamUsername}
       />
       <EditBubbleModal
         isOpen={modalState == "edit"}

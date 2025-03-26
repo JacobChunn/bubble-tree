@@ -1,0 +1,256 @@
+import { createComment } from "@/app/actions/create-comment";
+import { deleteComment } from "@/app/actions/delete-comment";
+import { getComments } from "@/app/actions/get-comments";
+import { BubbleType } from "@/app/user/[username]/page";
+import { Button, Flex, Label, Text, TextAreaField } from "@aws-amplify/ui-react";
+import { ArrowLeftIcon, XMarkIcon } from '@heroicons/react/24/solid'
+import { useEffect, useState } from "react";
+
+interface ModalProps {
+  isOpen: boolean,
+  onClose: () => void,
+  onBack: () => void,
+  focusedBubble: BubbleType | null,
+  isNotOwnProfile: boolean,
+}
+
+type CommentType = {
+  id: string
+  commentText: string,
+  username: string,
+  dateCreated: string,
+}
+
+type LoadingCommentsType = "unloaded" | "loading" | "loaded";
+
+export default function CommentsModal({
+  isOpen,
+  onClose,
+  onBack,
+  focusedBubble,
+  isNotOwnProfile,
+}: ModalProps) {
+
+  const [comments, setComments] = useState<CommentType[] | null>(null);
+  const [loadingComments, setLoadingComments] = useState<LoadingCommentsType>("unloaded");
+  const [commentText, setCommentText] = useState<string>("");
+
+  useEffect(() => {
+    const loadComments = async () => {
+      setLoadingComments("loading");
+      // Do I need to check if isOpen is true and focusedBubble is set?
+      let commentsRes: false | CommentType[] = false;
+      if (isOpen && focusedBubble) {
+        commentsRes = await getComments(focusedBubble.id) ?? false;
+        console.log("commentsRes", commentsRes)
+      }
+      let commentsValue: CommentType[] | null = null;
+      let loadingCommentsValue: LoadingCommentsType = "unloaded";
+      if (commentsRes) {
+        commentsValue = commentsRes;
+        loadingCommentsValue = "loaded"
+      }
+
+      setComments(commentsValue)
+      setLoadingComments(loadingCommentsValue);
+    }
+
+    loadComments();
+  }, [isOpen])
+
+  const addComment = (comment: CommentType) => {
+    setComments((prevComments) => (prevComments ? [...prevComments, comment] : [comment]))
+  }
+
+  const removeComment = (id: string) => {
+    setComments((prevComments) => {
+      if (!prevComments) return null;
+      return prevComments.filter((comment) => comment.id !== id);
+    });
+  }
+
+  const handleDelete = async (id: string, bubbleID: string) => {
+    const res = await deleteComment(id, bubbleID)
+    if (res) {
+      console.log("delete success")
+      removeComment(id);
+    } else {
+      console.log("delete failed")
+    }
+  }
+
+  if (!isOpen || !focusedBubble) return null;
+
+  const submitComment = async () => {
+    const commentInfo = {
+      comment: commentText,
+      bubbleID: focusedBubble.id
+    }
+    const submitRes = await createComment(commentInfo);
+    console.log("submitRes", submitRes)
+    if (!submitRes) return;
+
+    addComment(submitRes)
+    setCommentText("");
+  }
+
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short"
+  };
+
+  return (
+    <div className="modal-overlay">
+      <Flex
+        //className="modal-content"
+        backgroundColor="rgb(255,255,255)"
+        width="calc(100vw - 100px)"
+        height="calc(100vh - 100px)"
+        boxShadow="10px 10px 20px rgba(0, 0, 0, 0.3)"
+        borderRadius="30px"
+        direction="column"
+        gap="0"
+      >
+        {/* Modal Header */}
+        <Flex
+          justifyContent="space-between"
+          padding="15px 15px 0 15px"
+        >
+          <ArrowLeftIcon
+            width="30px"
+            style={{ cursor: 'pointer' }}
+            onClick={onBack}
+          />
+          <XMarkIcon
+            width="30px"
+            style={{ cursor: 'pointer' }}
+            onClick={onClose}
+          />
+        </Flex>
+
+        {/* Modal Body */}
+        <Flex
+          width="100%"
+          height="100%"
+          gap="16px"
+          padding="10px"
+          direction="column"
+          justifyContent="flex-start"
+          alignItems="stretch"
+          position="relative"
+        >
+          <Text
+            //fontFamily="Roboto"
+            fontSize={{ base: "12px", small: "24px" }}
+            fontWeight="700"
+            color="rgb(0, 0, 0)"
+            lineHeight="32px"
+            textAlign="center"
+            display="block"
+            shrink="0"
+            position="relative"
+            whiteSpace="pre-wrap"
+          // textDecoration="underline"
+          >
+            Comments
+          </Text>
+
+          {/* Scrollable Comments */}
+          <Flex
+            height="200px"
+            //flex="1"
+            overflow="auto"
+            backgroundColor="rgb(255,0,0)"
+            direction="column"
+            gap="0"
+          >
+            {comments && loadingComments == "loaded" ?
+              comments.map((comment) => {
+                const dateObj = new Date(comment.dateCreated)
+                const customReadable = dateObj.toLocaleString("en-US", options);
+                return (
+                  <Flex
+                    key={comment.username + comment.dateCreated}
+                    width="100%"
+                    direction="column"
+                    paddingTop="10px"
+                    paddingBottom="10px"
+                    gap="0px"
+                  >
+                    <Flex
+                      direction="row"
+                      justifyContent="space-between"
+                      gap="10px"
+                    >
+                      <Flex
+                        direction="row"
+                      >
+                        {/* May need to align text to center */}
+                        <Text>{comment.username}</Text>
+                        {/* This is the date time */}
+                        {/* Note that the 'options' defind at top of this can be customized to change the formatting of the date time */}
+                        <Text>on {customReadable}</Text>
+                      </Flex>
+                      {/* Delete Comments Button - Only on your own profile */}
+                      {!isNotOwnProfile ?
+                        <XMarkIcon
+                          width="30px"
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => handleDelete(comment.id, focusedBubble.id)}
+                        />
+                        : null
+                      }
+                    </Flex>
+
+                    <Text>{comment.commentText}</Text>
+                  </Flex>
+                )
+              })
+
+              :
+              null
+            }
+          </Flex>
+
+          {/* Comment Drafting Section */}
+          {isNotOwnProfile ?
+            <Flex
+              height="130px"
+              padding="20px"
+              alignItems="center"
+            >
+
+              <TextAreaField
+                flex="1"
+                label="What's on your mind?"
+                placeholder="Enter comment..."
+                isRequired={true}
+                rows={2}
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+              />
+
+              <Button
+                size="small"
+                height="min-content"
+                onClick={() => {
+                  submitComment()
+                }}
+              >
+                Publish
+              </Button>
+            </Flex>
+            :
+            null
+          }
+        </Flex>
+
+      </Flex>
+    </div>
+  )
+}
