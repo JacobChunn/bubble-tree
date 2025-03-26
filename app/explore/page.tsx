@@ -40,7 +40,7 @@ export default function App() {
   const [searchValue, setSearchValue] = useState<string>("");
   const [loadingResults, setLoadingResults] = useState<LoadingResultsType>("unloaded");
   const [searchResults, setSearchResults] = useState<SearchResultType>(null);
-
+  const showBorders = true;
   const { authStatus } = useAuthenticator(context => [context.authStatus]);
 
   const searchParams = useSearchParams()
@@ -103,9 +103,6 @@ export default function App() {
                 <Flex
                   key={index}
                   padding="10px"
-                  //backgroundColor="rgba(81, 194, 194, 0.62)"
-                  //borderRadius="8px"
-                  //border="1px solid"
                   borderColor="rgba(0, 0, 0, 0.33)"
                   style={{ cursor: "pointer", borderBottom: "1px solid" }}
                 //onClick={() => { navigate(`/user/${bubble.author}`)}
@@ -155,7 +152,7 @@ export default function App() {
         justifyContent="center"
         alignSelf="center"
         alignItems="center"
-        templateColumns="1fr 2fr 1fr"
+        templateColumns="1fr 1.5fr 1fr"
         templateRows="1fr 1fr 1fr 1fr 1fr 1fr 1fr"
         width="100%"
         height="100%"
@@ -163,7 +160,7 @@ export default function App() {
       >
 
         {/* Explore Section Header */}
-        <div style={{ height: "100%", width: "100%", gridArea: "1 / 2 / span 1 / span 1", textAlign: "center"}}>
+        <div style={{ height: "100%", width: "100%", gridArea: "1 / 2 / span 1 / span 1", textAlign: "center",...(showBorders ? { border: "2px solid red" } : {}),}}>
             <h1>
               Explore Page
             </h1>
@@ -177,6 +174,9 @@ export default function App() {
           area="2 / 2 / span 1 / span 1"
           width= "100%"  // Full column width
           height= "100%" // Full row height
+          style={{
+            ...(showBorders ? { border: "2px solid red" } : {}),
+          }}
         >
           <Label>Search by: </Label>
           <ToggleButtonGroup
@@ -215,15 +215,15 @@ export default function App() {
           position="relative"
           direction="column"
           gap="0"
-          style={{ overflowY: "auto" }}
+          style={{ overflowY: "auto", ...(showBorders ? { outline: "2px solid red" } : {}),}}
         >
           {loadingResults == "loaded" ? generateResultsFieldRows() : null}
         </Flex>
 
-        <Flex width = "100%" height = "100%" area="2 / 3 / span 2 / span 1">
+        <Flex width = "100%" height = "100%" area="2 / 3 / span 2 / span 1" style={{...(showBorders ? { border: "2px solid red" } : {}),}} >
             <NewlyAdded/>
         </Flex>
-        <Flex width = "100%" height = "100%" area="4 / 3 / span 2 / span 1">
+        <Flex width = "100%" height = "100%" area="4 / 3 / span 2 / span 1" style={{...(showBorders ? { border: "2px solid red" } : {}),}}>
             <RecentlyVisited/>
         </Flex>
         {/* Space reserved for later "Recently Accessed Bubble" feature */}

@@ -3,7 +3,7 @@ import { deleteComment } from "@/app/actions/delete-comment";
 import { getComments } from "@/app/actions/get-comments";
 import { BubbleType } from "@/app/user/[username]/page";
 import { Button, Flex, Label, Text, TextAreaField } from "@aws-amplify/ui-react";
-import { ArrowLeftIcon, XMarkIcon } from '@heroicons/react/24/solid'
+import { ArrowLeftIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { useEffect, useState } from "react";
 
 interface ModalProps {
@@ -38,46 +38,46 @@ export default function CommentsModal({
   useEffect(() => {
     const loadComments = async () => {
       setLoadingComments("loading");
-      // Do I need to check if isOpen is true and focusedBubble is set?
       let commentsRes: false | CommentType[] = false;
       if (isOpen && focusedBubble) {
         commentsRes = await getComments(focusedBubble.id) ?? false;
-        console.log("commentsRes", commentsRes)
+        console.log("commentsRes", commentsRes);
       }
+
       let commentsValue: CommentType[] | null = null;
       let loadingCommentsValue: LoadingCommentsType = "unloaded";
       if (commentsRes) {
         commentsValue = commentsRes;
-        loadingCommentsValue = "loaded"
+        loadingCommentsValue = "loaded";
       }
 
-      setComments(commentsValue)
+      setComments(commentsValue);
       setLoadingComments(loadingCommentsValue);
-    }
+    };
 
     loadComments();
-  }, [isOpen])
+  }, [isOpen]);
 
   const addComment = (comment: CommentType) => {
-    setComments((prevComments) => (prevComments ? [...prevComments, comment] : [comment]))
-  }
+    setComments((prevComments) => (prevComments ? [...prevComments, comment] : [comment]));
+  };
 
   const removeComment = (id: string) => {
     setComments((prevComments) => {
       if (!prevComments) return null;
       return prevComments.filter((comment) => comment.id !== id);
     });
-  }
+  };
 
   const handleDelete = async (id: string, bubbleID: string) => {
-    const res = await deleteComment(id, bubbleID)
+    const res = await deleteComment(id, bubbleID);
     if (res) {
-      console.log("delete success")
+      console.log("delete success");
       removeComment(id);
     } else {
-      console.log("delete failed")
+      console.log("delete failed");
     }
-  }
+  };
 
   if (!isOpen || !focusedBubble) return null;
 
@@ -85,14 +85,14 @@ export default function CommentsModal({
     const commentInfo = {
       comment: commentText,
       bubbleID: focusedBubble.id
-    }
+    };
     const submitRes = await createComment(commentInfo);
-    console.log("submitRes", submitRes)
+    console.log("submitRes", submitRes);
     if (!submitRes) return;
 
-    addComment(submitRes)
+    addComment(submitRes);
     setCommentText("");
-  }
+  };
 
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
@@ -107,7 +107,6 @@ export default function CommentsModal({
   return (
     <div className="modal-overlay">
       <Flex
-        //className="modal-content"
         backgroundColor="rgb(255,255,255)"
         width="calc(100vw - 100px)"
         height="calc(100vh - 100px)"
@@ -117,10 +116,7 @@ export default function CommentsModal({
         gap="0"
       >
         {/* Modal Header */}
-        <Flex
-          justifyContent="space-between"
-          padding="15px 15px 0 15px"
-        >
+        <Flex justifyContent="space-between" padding="15px 15px 0 15px">
           <ArrowLeftIcon
             width="30px"
             style={{ cursor: 'pointer' }}
@@ -145,86 +141,69 @@ export default function CommentsModal({
           position="relative"
         >
           <Text
-            //fontFamily="Roboto"
             fontSize={{ base: "12px", small: "24px" }}
             fontWeight="700"
             color="rgb(0, 0, 0)"
             lineHeight="32px"
             textAlign="center"
             display="block"
-            shrink="0"
-            position="relative"
             whiteSpace="pre-wrap"
-          // textDecoration="underline"
           >
             Comments
           </Text>
 
           {/* Scrollable Comments */}
           <Flex
-            height="200px"
-            //flex="1"
+            height="400px"
             overflow="auto"
-            backgroundColor="rgb(255,0,0)"
+            backgroundColor="rgba(81, 194, 194, 0.2)"
             direction="column"
             gap="0"
+            borderRadius="30px"
+            margin="20px"
+            padding="20px"
           >
-            {comments && loadingComments == "loaded" ?
+            {comments && loadingComments === "loaded" &&
               comments.map((comment) => {
-                const dateObj = new Date(comment.dateCreated)
+                const dateObj = new Date(comment.dateCreated);
                 const customReadable = dateObj.toLocaleString("en-US", options);
+
                 return (
                   <Flex
                     key={comment.username + comment.dateCreated}
                     width="100%"
                     direction="column"
-                    paddingTop="10px"
-                    paddingBottom="10px"
-                    gap="0px"
+                    padding="10px"
+                    marginBottom="10px"
+                    backgroundColor="rgba(28, 165, 165, 0.2)"
+                    borderRadius="16px"
                   >
-                    <Flex
-                      direction="row"
-                      justifyContent="space-between"
-                      gap="10px"
-                    >
-                      <Flex
-                        direction="row"
-                      >
-                        {/* May need to align text to center */}
-                        <Text>{comment.username}</Text>
-                        {/* This is the date time */}
-                        {/* Note that the 'options' defind at top of this can be customized to change the formatting of the date time */}
-                        <Text>on {customReadable}</Text>
+                    <Flex direction="row" justifyContent="space-between" gap="10px">
+                      <Flex direction="row" gap="5px">
+                        <Text fontWeight="600">{comment.username}</Text>
+                        <Text color="gray">on {customReadable}</Text>
                       </Flex>
-                      {/* Delete Comments Button - Only on your own profile */}
-                      {!isNotOwnProfile ?
+                      {!isNotOwnProfile &&
                         <XMarkIcon
-                          width="30px"
+                          width="20px"
                           style={{ cursor: 'pointer' }}
                           onClick={() => handleDelete(comment.id, focusedBubble.id)}
                         />
-                        : null
                       }
                     </Flex>
-
                     <Text>{comment.commentText}</Text>
                   </Flex>
-                )
-              })
-
-              :
-              null
-            }
+                );
+              })}
           </Flex>
 
           {/* Comment Drafting Section */}
-          {isNotOwnProfile ?
+          {isNotOwnProfile &&
             <Flex
               height="130px"
               padding="20px"
               alignItems="center"
             >
-
               <TextAreaField
                 flex="1"
                 label="What's on your mind?"
@@ -234,23 +213,17 @@ export default function CommentsModal({
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
               />
-
               <Button
                 size="small"
                 height="min-content"
-                onClick={() => {
-                  submitComment()
-                }}
+                onClick={submitComment}
               >
                 Publish
               </Button>
             </Flex>
-            :
-            null
           }
         </Flex>
-
       </Flex>
     </div>
-  )
+  );
 }
