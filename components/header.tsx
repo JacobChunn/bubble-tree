@@ -55,6 +55,11 @@ export default function Header({
       }}
     >
       {/* Logo Image */}
+      <Flex
+        direction="row"
+        alignItems="center"
+        gap="8px"
+      >
       <Link href="/">
         <Image
           width="50px"
@@ -68,6 +73,8 @@ export default function Header({
           //borderRadius="5px"
         />
       </Link>
+      <Text color="white">Bubble Tree</Text>
+      </Flex>
       
       {/* Menu Item Container */}
       <Flex

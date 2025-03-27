@@ -1,0 +1,38 @@
+.bubble1 {
+  width: calc(33.33% - 20px);
+  max-height: 33vh;
+  margin: 0px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-radius: 8px;
+  border: 4px solid;
+  cursor: pointer;
+}
+
+.bubbleTitle1 {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* 👈 allows wrapping up to 3 lines */
+  -webkit-box-orient: vertical;
+}
+
+.bubbleContent1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 7;
+  -webkit-box-orient: vertical;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .bubble1 {
+    width: calc(50% - 20px);
+  }
+}

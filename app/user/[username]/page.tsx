@@ -21,8 +21,10 @@ import { useSearchParams } from "next/navigation";
 import { CreateGroupType } from "@/app/actions/create-group";
 import { getUserGroups } from "@/app/actions/get-user-groups";
 import getCurrentUsername from "@/app/actions/get-current-username";
-import {updateRecentlyVisited } from "@/app/actions/update-recently-visited";
+import { updateRecentlyVisited } from "@/app/actions/update-recently-visited";
 import CommentsModal from "@/components/comments-modal";
+import "@/app/styles/userPage.css";
+
 
 //const client = generateClient<Schema>();
 
@@ -78,10 +80,10 @@ export default function App({
   const [searchParamUsername, setSearchParamUsername] = useState<string | null>(null);
 
   //console.log("hi from frontend")
-  const openBubble = (bubble: BubbleType | null)=>{
+  const openBubble = (bubble: BubbleType | null) => {
     setFocusedBubble(bubble)
-    if(bubble){
-    updateRecentlyVisited(bubble)
+    if (bubble) {
+      updateRecentlyVisited(bubble)
     }
   }
 
@@ -135,33 +137,33 @@ export default function App({
       var loadingValue: LoadingType;
       var bubblesValue: BubbleType[] | null;
 
-        if (bubbleRecords === false) {
-          loadingValue = "unloaded";
-          bubblesValue = null;
-        } else {
-          loadingValue = "loaded";
-          bubblesValue = bubbleRecords;
-          //bubbleRecords[0].groupID
-        }
-        //console.log("BUBBLES: ", bubblesValue)
-        //console.log("loadingValue: ", loadingValue)
-        let focusedBubbleValue = null;
-        let modalStateValue: boolean | "view" = false;
-        if(loadingValue == "loaded" && bubblesValue != null ){
-            
-            const bubbleid = searchParams.get("bubbleid");
-            if(bubbleid){
-              const newFocusedBubble = bubblesValue.find(bubble => bubble.id==bubbleid)
-              console.log(newFocusedBubble, bubbleid, bubblesValue)
-              focusedBubbleValue = newFocusedBubble ? newFocusedBubble : null;
-              modalStateValue = "view";
-            }
-        }
-        openBubble(focusedBubbleValue);
-        setModalState(modalStateValue);
-        setBubbles(bubblesValue);
-        setLoadingBubbles(loadingValue);
+      if (bubbleRecords === false) {
+        loadingValue = "unloaded";
+        bubblesValue = null;
+      } else {
+        loadingValue = "loaded";
+        bubblesValue = bubbleRecords;
+        //bubbleRecords[0].groupID
       }
+      //console.log("BUBBLES: ", bubblesValue)
+      //console.log("loadingValue: ", loadingValue)
+      let focusedBubbleValue = null;
+      let modalStateValue: boolean | "view" = false;
+      if (loadingValue == "loaded" && bubblesValue != null) {
+
+        const bubbleid = searchParams.get("bubbleid");
+        if (bubbleid) {
+          const newFocusedBubble = bubblesValue.find(bubble => bubble.id == bubbleid)
+          console.log(newFocusedBubble, bubbleid, bubblesValue)
+          focusedBubbleValue = newFocusedBubble ? newFocusedBubble : null;
+          modalStateValue = "view";
+        }
+      }
+      openBubble(focusedBubbleValue);
+      setModalState(modalStateValue);
+      setBubbles(bubblesValue);
+      setLoadingBubbles(loadingValue);
+    }
 
     const loadGroups = async () => {
       setLoadingGroups("loading")
@@ -225,7 +227,9 @@ export default function App({
 
   return (
     // <AuthWrapper>
+
     <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+
       <Header />
       <CreateBubbleModal
         isOpen={modalState == "create"}
@@ -359,50 +363,34 @@ export default function App({
 
       {/* Bubble Display Area*/}
       <Flex
-        width="calc(100% - 20px)"
-        //height="100%"
-        flex="1"
-        margin="10px 10px 10px 10px"
-        backgroundColor="rgba(255, 255, 255, 0.5)"
-        justifyContent="center"
-        alignSelf="center"
-        borderRadius="30px"
-        border="1px solid"
-        position="relative"
+        width="calc(100% - 20px)" flex="1" margin="10px 10px 10px 10px" backgroundColor="rgba(255, 255, 255, 0.5)" alignSelf="center"
+        borderRadius="30px" border="1px solid" position="relative" direction="row" justifyContent="flex-start"
+        alignItems="stretch" alignContent="flex-start" wrap="wrap"
       >
         {loadingBubbles == "loaded" && bubbles != null ?
           bubbles.map((bubble, index) => (
             <Flex
-              key={index}
-              position="absolute"
-              left={`${bubble.bubbleCoordinates.x}px`}
-              top={`${bubble.bubbleCoordinates.y}px`}
-              padding="10px"
+              key={index} className="bubble1" direction="column"
               backgroundColor={
-                bubble.groupID && loadingGroups == "loaded" ?
-                  lightenColor(getColorByGroupID(bubble.groupID))
-                  :
-                  "rgba(81, 194, 194, 0.62)"
+                bubble.groupID && loadingGroups == "loaded"
+                  ? lightenColor(getColorByGroupID(bubble.groupID))
+                  : "rgba(81, 194, 194, 0.62)"
               }
-              borderRadius="8px"
-              border="4px solid"
               borderColor={
-                bubble.groupID && loadingGroups == "loaded" ?
-                  getColorByGroupID(bubble.groupID)
-                  :
-                  "rgb(25, 103, 103)"
+                bubble.groupID && loadingGroups == "loaded"
+                  ? getColorByGroupID(bubble.groupID)
+                  : "rgb(25, 103, 103)"
               }
-              style={{ cursor: "pointer" }}
               onClick={() => {
                 openBubble(bubble);
-                setModalState(editToggle ? "edit" : "view")
-                if(focusedBubble){
-                  console.log(updateRecentlyVisited(focusedBubble))
+                setModalState(editToggle ? "edit" : "view");
+                if (focusedBubble) {
+                  console.log(updateRecentlyVisited(focusedBubble));
                 }
-                
               }}
             >
-              <Text>{bubble.title}</Text>
+              <Text className="bubbleTitle1">{bubble.title}</Text>
+              <p className="bubbleContent1">{bubble.content}</p>
             </Flex>
           ))
 
@@ -411,6 +399,10 @@ export default function App({
       </Flex>
 
     </main>
-    // </AuthWrapper>
+    //</AuthWrapper> 
+
+
+
   );
+
 }

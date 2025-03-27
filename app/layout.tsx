@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./app.css";
 import AuthWrapper from "@/components/auth-wrapper";
 import ConfigureAmplifyClientSide from "@/components/configure-amplify-client-side";
-
+import "./styles/userPage.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
