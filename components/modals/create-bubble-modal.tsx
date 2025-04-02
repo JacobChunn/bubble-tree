@@ -16,6 +16,7 @@ type UnrolledCreateBubbleType = {
 interface ModalProps {
   isOpen: boolean,
   onClose: () => void,
+  openRefModal: () => void,
   addBubble: (newBubble: BubbleType) => void,
   groups: GroupType[] | null,
   loadingGroups: LoadingType,
@@ -24,6 +25,7 @@ interface ModalProps {
 export default function CreateBubbleModal({
   isOpen,
   onClose,
+  openRefModal,
   addBubble,
   groups,
   loadingGroups,
@@ -188,6 +190,35 @@ export default function CreateBubbleModal({
 
 
           </Flex>
+        </Flex>
+
+        {/* References Section */}
+        <Flex
+          padding="10px"
+          direction="row"
+        >
+          <Button
+          size='small'
+          // gap="8px"
+          // direction="row"
+          // justifyContent="flex-start"
+          // alignItems="center"
+          // shrink="0"
+          // position="relative"
+          // padding="12px 8px 12px 8px"
+          // borderRadius="20px"
+          // borderColor="rgb(0,0,0)"
+          // backgroundColor="rgb(81, 194, 194)"
+          onClick={openRefModal}
+          >
+            Add Reference
+          </Button>
+
+          {/* Display References Field */}
+          <Flex>
+
+          </Flex>
+
         </Flex>
 
         {/* Footer Section */}

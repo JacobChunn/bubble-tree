@@ -6,7 +6,7 @@ import { createBubble, CreateBubbleType } from '@/app/actions/create-bubble';
 import { useState } from 'react';
 import { createGroup, CreateGroupType } from '@/app/actions/create-group';
 import { GroupType } from '@/app/user/[username]/page';
-import ColorSwatch from './color-swatch';
+import ColorSwatch from '../color-swatch';
 
 interface ModalProps {
   isOpen: boolean,

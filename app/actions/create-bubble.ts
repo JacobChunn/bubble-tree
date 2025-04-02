@@ -2,6 +2,7 @@
 
 import { AuthFetchUserAttributesServer, AuthGetCurrentUserServer, cookiesClient } from "@/utils/amplify-utils";
 import { createUserRecord } from "./create-user-record";
+import addRefBubbles from "./add-ref-bubbles";
 
 export type CreateBubbleType = {
   title: string,
@@ -11,6 +12,7 @@ export type CreateBubbleType = {
     y: number
   },
   groupID?: string,
+  referenceIDs: string[]
 }
 
 // Only call if logged in
@@ -68,8 +70,13 @@ export async function createBubble(bubbleInfo: CreateBubbleType) {
       const { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID } = newBubble.data;
       const simplifiedBubbleData = { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID };
       console.log("Bubble created!: ", simplifiedBubbleData)
+
+      addRefBubbles(id, bubbleInfo.referenceIDs);
+
       return simplifiedBubbleData;
     }
+
+    
 
     return false;
 

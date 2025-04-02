@@ -40,6 +40,11 @@ const schema = a.schema({
       dateCreated: a.datetime().required(),
       bubbleCoordinates: a.ref('BubbleCoordinates').required(),
 
+      // Bubbles that this Bubble references (children of this bubble)
+      outgoingReferences: a.hasMany('BubbleReference', 'sourceId'),
+      // Bubbles that reference this Bubble (parents of this bubble)
+      incomingReferences: a.hasMany('BubbleReference', 'targetId'),
+
       userID: a.id().required(),
       user: a.belongsTo('User', 'userID'),
 
@@ -52,12 +57,24 @@ const schema = a.schema({
     //.secondaryIndexes((index) => [index("dateCreated")])
     .authorization((allow) => [allow.publicApiKey()]),
 
-    //Define a custom type for the Group table's color values
-    GroupColor: a.customType({
-      r: a.integer().required(),
-      g: a.integer().required(),
-      b: a.integer().required(),
-    }),
+  BubbleReference: a
+    .model({
+      // Foreign key referencing the Bubble that contains the reference
+      sourceId: a.id().required(),
+      // Foreign key referencing the Bubble being referenced
+      targetId: a.id().required(),
+      // Set up the relationship from the join model back to Bubble
+      source: a.belongsTo('Bubble', 'sourceId'),
+      target: a.belongsTo('Bubble', 'targetId'),
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
+
+  //Define a custom type for the Group table's color values
+  GroupColor: a.customType({
+    r: a.integer().required(),
+    g: a.integer().required(),
+    b: a.integer().required(),
+  }),
 
   Group: a
     .model({
