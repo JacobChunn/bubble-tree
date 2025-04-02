@@ -14,7 +14,7 @@
 .bubbleTitle1 {
   font-weight: bold;
   font-size: 16px;
-  margin-bottom: 8px;
+  
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -29,6 +29,7 @@
   -webkit-line-clamp: 7;
   -webkit-box-orient: vertical;
   font-size: 14px;
+  margin-top: -20px; /*negative margin for quick fix to reduce spacing between title and content*/
 }
 
 @media (max-width: 768px) {

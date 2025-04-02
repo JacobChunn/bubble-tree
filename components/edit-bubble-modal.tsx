@@ -1,18 +1,28 @@
+// Updated EditBubbleModal.tsx with icon selection support
 "use client"
 
-import { XMarkIcon } from '@heroicons/react/24/solid'
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import { Button, Flex, TextAreaField, TextField, Text, SelectField } from '@aws-amplify/ui-react';
-import { createBubble, CreateBubbleType } from '@/app/actions/create-bubble';
 import { useState } from 'react';
 import { editBubble, EditBubbleType } from '@/app/actions/edit-bubble';
 import { deleteBubble } from '@/app/actions/delete-bubble';
 import { BubbleType, GroupType, LoadingType } from '@/app/user/[username]/page';
+import { Icon } from '@iconify/react';
+
+const availableIcons = [
+  { label: "None", value: "" },
+  { label: "Politics", value: "mdi:vote" },
+  { label: "Healthcare", value: "mdi:heart-pulse" },
+  { label: "Environment", value: "mdi:leaf" },
+  { label: "Education", value: "mdi:school" },
+  { label: "Tech", value: "bitcoin-icons:code-filled" },
+];
 
 type UnrolledEditBubbleType = {
   title: string,
   content: string,
-  x: string, // x and y are strings because we want the
-  y: string, // textboxes to be strings and convert to numbers later
+  x: string,
+  y: string,
 }
 
 interface ModalProps {
@@ -35,27 +45,26 @@ export default function EditBubbleModal({
   loadingGroups,
 }: ModalProps) {
   if (!isOpen || !focusedBubble) return null;
+
   const [formState, setFormState] = useState<UnrolledEditBubbleType>({
-    title: focusedBubble ? focusedBubble.title : "",
-    content: focusedBubble ? focusedBubble.content : "",
-    x: focusedBubble ? String(focusedBubble.bubbleCoordinates.x) : "",
-    y: focusedBubble ? String(focusedBubble.bubbleCoordinates.y) : ""
+    title: focusedBubble.title,
+    content: focusedBubble.content,
+    x: String(focusedBubble.bubbleCoordinates.x),
+    y: String(focusedBubble.bubbleCoordinates.y),
   });
 
   const [selectedGroup, setSelectedGroup] = useState<string | undefined>(focusedBubble.groupID ?? undefined);
+  const [selectedIcon, setSelectedIcon] = useState<string>(focusedBubble.iconName ?? "");
 
 
-  const handleInputChange = (field: any) => (e: { target: any; }) => {
-    const value =
-      e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+  const handleInputChange = (field: keyof UnrolledEditBubbleType) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const value = e.target.value;
     setFormState({ ...formState, [field]: value });
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      console.log("handling submit!")
-      console.log("selectedGroup: ", selectedGroup)
       const formBubble: EditBubbleType = {
         replaceID: focusedBubble.id,
         title: formState.title,
@@ -64,70 +73,39 @@ export default function EditBubbleModal({
           x: Number(formState.x),
           y: Number(formState.y)
         },
-        groupID: selectedGroup
-      }
+        groupID: selectedGroup,
+        iconName: selectedIcon,
+      };
 
       const updatedBubble = await editBubble(formBubble);
       if (!updatedBubble) return;
-      console.log("updatedBubble: ", updatedBubble)
       updateBubble(focusedBubble.id, updatedBubble);
-
     } catch (error) {
-      console.error('Error submitting bubble creation:', error);
+      console.error('Error submitting bubble edit:', error);
     }
-    console.log("edit done")
     onClose();
   };
 
   const handleDelete = async () => {
-    const res = await deleteBubble(focusedBubble.id)
+    const res = await deleteBubble(focusedBubble.id);
     if (res) {
       removeBubble(focusedBubble.id);
       onClose();
     }
-    console.log("delete done")
-  }
+  };
 
   return (
     <div className="modal-overlay">
-      <Flex
-        //className="modal-content"
-        backgroundColor="rgb(255,255,255)"
-        width="calc(100vw - 100px)"
-        height="calc(100vh - 100px)"
-        boxShadow="10px 10px 20px rgba(0, 0, 0, 0.3)"
-        borderRadius="30px"
-        direction="column"
-        gap="0"
-      >
-        {/* Modal Header */}
-        <Flex
-          justifyContent="right"
-          padding="15px 15px 0 0"
-        >
-          <XMarkIcon
-            width="30px"
-            onClick={onClose}
-            style={{ cursor: 'pointer' }}
-          />
+      <Flex backgroundColor="rgb(255,255,255)" width="calc(100vw - 100px)" height="calc(100vh - 100px)" boxShadow="10px 10px 20px rgba(0, 0, 0, 0.3)" borderRadius="30px" direction="column" gap="0">
+        <Flex justifyContent="right" padding="15px 15px 0 0">
+          <XMarkIcon width="30px" onClick={onClose} style={{ cursor: 'pointer' }} />
         </Flex>
 
-        {/* Modal Form Body */}
-        <Flex
-          as='form'
-          onSubmit={handleSubmit}
-          id="create-bubble-form"
-          gap="16px"
-          padding="10px"
-          direction="column"
-          justifyContent="flex-start"
-          alignItems="stretch"
-          position="relative"
-        >
+        <Flex as='form' onSubmit={handleSubmit} id="create-bubble-form" gap="16px" padding="10px" direction="column" justifyContent="flex-start" alignItems="stretch" position="relative">
           <TextField
             label="Edit bubble title:"
             placeholder="Enter bubble title..."
-            isRequired={true}
+            isRequired
             width="40%"
             height="76px"
             inputMode="text"
@@ -137,10 +115,9 @@ export default function EditBubbleModal({
           />
 
           <TextAreaField
-            //className='nc'
             label="Edit bubble content:"
             placeholder="Enter bubble content..."
-            isRequired={true}
+            isRequired
             rows={3}
             width="80%"
             height="120px"
@@ -150,17 +127,12 @@ export default function EditBubbleModal({
             onChange={handleInputChange('content')}
           />
 
-          <Flex
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Flex
-              justifyContent="center"
-            >
+          <Flex justifyContent="center" alignItems="center">
+            <Flex justifyContent="center">
               <TextField
                 label="Edit bubble x coordinate:"
                 placeholder="x coordinate..."
-                isRequired={true}
+                isRequired
                 width="200px"
                 height="76px"
                 inputMode="numeric"
@@ -171,7 +143,7 @@ export default function EditBubbleModal({
               <TextField
                 label="Edit bubble y coordinate:"
                 placeholder="y coordinate..."
-                isRequired={true}
+                isRequired
                 width="200px"
                 height="76px"
                 inputMode="numeric"
@@ -181,93 +153,56 @@ export default function EditBubbleModal({
               />
             </Flex>
 
-            {loadingGroups == "loaded" && groups !== null ?
+            {loadingGroups === "loaded" && groups ? (
               <SelectField
-                style={{ float: "right" }}
                 label="Group"
                 value={selectedGroup}
                 onChange={(e) => setSelectedGroup(e.target.value)}
-              //descriptiveText="Select a group for your bubble"
               >
                 <option value={undefined}>No Group</option>
-                {groups.map((group, index) => {
-                  return (
-                    <option value={group.id} key={index}>{group.name}</option>
-                  )
-                })}
+                {groups.map((group, index) => (
+                  <option value={group.id} key={index}>{group.name}</option>
+                ))}
               </SelectField>
-              :
-              "Groups are " + loadingGroups
-            }
+            ) : (
+              `Groups are ${loadingGroups}`
+            )}
+
+            <SelectField
+              label="Select an icon"
+              value={selectedIcon}
+              onChange={(e) => setSelectedIcon(e.target.value)}
+            >
+              {availableIcons.map((icon, i) => (
+                <option value={icon.value} key={i}>{icon.label}</option>
+              ))}
+            </SelectField>
           </Flex>
         </Flex>
 
-        {/* Footer Section */}
-        <Flex
-          justifyContent="center"
-        >
-          {/* Submit Delete Bubble Button */}
+        <Flex justifyContent="center">
           <Button
             gap="8px"
-            direction="row"
-            justifyContent="flex-start"
-            alignItems="center"
-            shrink="0"
-            position="relative"
-            padding="12px 8px 12px 8px"
+            padding="12px 8px"
             borderRadius="20px"
-            borderColor="rgb(0,0,0)"
             backgroundColor="rgb(221, 0, 0)"
             onClick={handleDelete}
           >
-            <Text
-              //fontFamily="Roboto"
-              fontSize={{ base: "12px", small: "12px" }}
-              fontWeight="500"
-              color="rgba(255,255,255,1)"
-              lineHeight="16px"
-              textAlign="left"
-              display="block"
-              shrink="0"
-              position="relative"
-              whiteSpace="pre-wrap"
-            >
-              Delete Bubble
-            </Text>
+            <Text fontSize="12px" fontWeight="500" color="white">Delete Bubble</Text>
           </Button>
 
-          {/* Submit Update Bubble Button */}
           <Button
             gap="8px"
-            direction="row"
-            justifyContent="flex-start"
-            alignItems="center"
-            shrink="0"
-            position="relative"
-            padding="12px 8px 12px 8px"
+            padding="12px 8px"
             borderRadius="20px"
-            borderColor="rgb(0,0,0)"
             backgroundColor="rgb(81, 194, 194)"
             form="create-bubble-form"
             type='submit'
           >
-            <Text
-              //fontFamily="Roboto"
-              fontSize={{ base: "12px", small: "12px" }}
-              fontWeight="500"
-              color="rgba(255,255,255,1)"
-              lineHeight="16px"
-              textAlign="left"
-              display="block"
-              shrink="0"
-              position="relative"
-              whiteSpace="pre-wrap"
-            >
-              Update Bubble
-            </Text>
+            <Text fontSize="12px" fontWeight="500" color="white">Update Bubble</Text>
           </Button>
         </Flex>
       </Flex>
     </div>
   );
-};
+}

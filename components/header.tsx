@@ -69,8 +69,9 @@ export default function Header({
           position="relative"
           objectFit="scale-down"
           alt="Logo Image"
-          src='/bubble-tree-small.jpg'
+          src='/b-tree-no-bg.png'
           //borderRadius="5px"
+          
         />
       </Link>
       <Text color="white">Bubble Tree</Text>

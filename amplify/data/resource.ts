@@ -39,6 +39,7 @@ const schema = a.schema({
       author: a.string().required(),
       dateCreated: a.datetime().required(),
       bubbleCoordinates: a.ref('BubbleCoordinates').required(),
+      iconName: a.string(),
 
       userID: a.id().required(),
       user: a.belongsTo('User', 'userID'),

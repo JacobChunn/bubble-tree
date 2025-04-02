@@ -40,7 +40,7 @@ export async function getUserBubbleRecords(username: string) {
 
     if (bubbleResult.errors == undefined) {
       const simplifiedBubbleData = bubbleResult.data.map(
-        ({ id, title, content, type, author, dateCreated, bubbleCoordinates, groupID }) => ({
+        ({ id, title, content, type, author, dateCreated, bubbleCoordinates, groupID, iconName }) => ({
           id,
           title,
           content,
@@ -48,8 +48,10 @@ export async function getUserBubbleRecords(username: string) {
           author,
           dateCreated,
           bubbleCoordinates,
-          groupID
+          groupID,
+          iconName
         })
+        
       );
       //console.log("simplifiedBubbleData", simplifiedBubbleData)
       return simplifiedBubbleData;
