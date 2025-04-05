@@ -12,7 +12,8 @@ export type CreateBubbleType = {
     y: number
   },
   groupID?: string,
-  referenceIDs: string[]
+  referenceIDs?: string[],
+  iconName?: string
 }
 
 // Only call if logged in
@@ -59,7 +60,8 @@ export async function createBubble(bubbleInfo: CreateBubbleType) {
         y: bubbleInfo.bubbleCoordinates.y,
       },
       userID: currentUser.userId, // uses userID because userID will never change, unlike emails or usernames
-      groupID: sanitizedGroupID
+      groupID: sanitizedGroupID,
+      iconName: bubbleInfo.iconName
     });
 
     if (!newBubble.data) return false;
@@ -71,7 +73,9 @@ export async function createBubble(bubbleInfo: CreateBubbleType) {
       const simplifiedBubbleData = { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID };
       console.log("Bubble created!: ", simplifiedBubbleData)
 
-      addRefBubbles(id, bubbleInfo.referenceIDs);
+      if (bubbleInfo.referenceIDs) {
+        addRefBubbles(id, bubbleInfo.referenceIDs);
+      }
 
       return simplifiedBubbleData;
     }

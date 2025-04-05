@@ -1,20 +1,29 @@
 "use client"
 
+import { Button, Flex, TextAreaField, TextField, Text, SelectField, View, Label } from '@aws-amplify/ui-react'
+import { Icon } from '@iconify/react'
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { XMarkIcon } from '@heroicons/react/24/solid'
 import { XCircleIcon } from '@heroicons/react/24/outline'
-
 import { Editor, EditorState, RichUtils, DraftInlineStyle, CharacterMetadata, SelectionState, Modifier, CompositeDecorator, ContentState } from 'draft-js';
 import 'draft-js/dist/Draft.css';
-
-import { Button, Flex, TextAreaField, TextField, Text, SelectField, View, Label } from '@aws-amplify/ui-react';
 import { createBubble, CreateBubbleType } from '@/app/actions/create-bubble';
 import { editBubble, EditBubbleType } from '@/app/actions/edit-bubble';
 import { deleteBubble } from '@/app/actions/delete-bubble';
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BubbleType, GroupType, LoadingType } from '@/app/user/[username]/page';
 import { getRefBubbles } from '@/app/actions/get-ref-bubbles';
 import { HighlightWithinTextarea } from 'react-highlight-within-textarea'
 
+const CATEGORY_ICONS = [
+  { name: 'Politics', value: 'mdi:vote' },
+  { name: 'Healthcare', value: 'mdi:medical-bag' },
+  { name: 'Technology', value: 'mdi:laptop' },
+  { name: 'Education', value: 'mdi:school' },
+  { name: 'Environment', value: 'mdi:leaf' },
+  { name: 'Economy', value: 'mdi:finance' },
+  { name: 'Science', value: 'mdi:flask' },
+  { name: 'Arts', value: 'mdi:palette' }
+]
 
 type UnrolledBubbleType = {
   title: string,
@@ -155,6 +164,9 @@ export default function BubbleFormModal(props: BubbleModalProps) {
     EditorState.createEmpty()
 
   const [formState, setFormState] = useState<UnrolledBubbleType>(initialFormState);
+  const [selectedIcon, setSelectedIcon] = useState<string>(
+    mode === "edit" ? props.focusedBubble.iconName || '' : ''
+  );
   const [selectedGroup, setSelectedGroup] = useState<string | undefined>(
     mode === "edit" ? props.focusedBubble.groupID ?? undefined : undefined
   );
@@ -178,6 +190,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             y: Number(formState.y)
           },
           groupID: selectedGroup,
+          iconName: selectedIcon,
           referenceIDs: references ? references.map(item => item.id) : []
         }
         const newBubble = await createBubble(formBubble);
@@ -192,7 +205,8 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             x: Number(formState.x),
             y: Number(formState.y)
           },
-          groupID: selectedGroup
+          groupID: selectedGroup,
+          iconName: selectedIcon
         }
         const updatedBubble = await editBubble(formBubble);
         if (!updatedBubble) return;
@@ -421,6 +435,33 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             value={formState.title}
             onChange={handleInputChange('title')}
           />
+
+          {/* Icon Selector */}
+          <Flex direction="column" gap="small" width="80%" alignSelf="center">
+            <Label>Category Icon</Label>
+            <Flex gap="small" wrap="wrap">
+              {CATEGORY_ICONS.map(icon => (
+                <Button
+                  key={icon.value}
+                  onClick={() => {
+                    setSelectedIcon(icon.value);
+                    setFormState(prev => ({ ...prev, iconName: icon.value }));
+                  }}
+                  aria-selected={selectedIcon === icon.value}
+                  
+                >
+                  <Icon icon={icon.value} width={24} />
+                  <Text>{icon.name}</Text>
+                </Button>
+              ))}
+            </Flex>
+            {selectedIcon && (
+              <Flex alignItems="center" gap="small">
+                <Text>Selected:</Text>
+                <Icon icon={selectedIcon} width={24} />
+              </Flex>
+            )}
+          </Flex>
 
           <Label
             alignSelf="center"

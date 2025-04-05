@@ -1,8 +1,37 @@
-"use server"
+"use server";
 
 import { cookiesClient } from "@/utils/amplify-utils";
 import { createUserRecord } from "./create-user-record";
 import { sanitizeUsername } from "./sanitize-username";
+
+export type BubbleRecordType = {
+  id: string;
+  title: string;
+  content: string;
+  type: string;
+  author: string;
+  dateCreated: string;
+  bubbleCoordinates: { x: number; y: number };
+  iconName?: string;
+  userID: string;
+  groupID: string | null;
+  votes: {
+    items: Array<{
+      id: string;
+      voteValue: number;
+      dateCreated: string;
+      userID: string;
+    }>;
+  };
+  comments: {
+    items: Array<{
+      id: string;
+      commentText: string;
+      dateCreated: string;
+      userID: string;
+    }>;
+  };
+};
 
 
 export async function getUserBubbleRecords(username: string) {
@@ -40,7 +69,7 @@ export async function getUserBubbleRecords(username: string) {
 
     if (bubbleResult.errors == undefined) {
       const simplifiedBubbleData = bubbleResult.data.map(
-        ({ id, title, content, type, author, dateCreated, bubbleCoordinates, groupID }) => ({
+        ({ id, title, content, type, author, dateCreated, bubbleCoordinates, groupID, iconName }) => ({
           id,
           title,
           content,
@@ -48,7 +77,8 @@ export async function getUserBubbleRecords(username: string) {
           author,
           dateCreated,
           bubbleCoordinates,
-          groupID
+          groupID,
+          iconName
         })
       );
       //console.log("simplifiedBubbleData", simplifiedBubbleData)

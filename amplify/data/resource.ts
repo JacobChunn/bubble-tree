@@ -39,6 +39,7 @@ const schema = a.schema({
       author: a.string().required(),
       dateCreated: a.datetime().required(),
       bubbleCoordinates: a.ref('BubbleCoordinates').required(),
+      iconName: a.string(),
 
       // Bubbles that this Bubble references (children of this bubble)
       outgoingReferences: a.hasMany('BubbleReference', 'sourceId'),

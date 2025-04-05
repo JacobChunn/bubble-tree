@@ -1,5 +1,6 @@
 "use client";
 
+
 import { useState, useEffect } from "react";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "@/amplify/data/resource";
@@ -36,18 +37,35 @@ import BubbleFormModal, { ReferenceBubbleType } from "@/components/modals/bubble
 */
 
 export type BubbleType = {
-  id: string,
-  title: string,
-  content: string,
-  type: string,
-  author: string,
-  bubbleCoordinates: {
-    x: number,
-    y: number
-  },
-  dateCreated: string,
-  groupID: string | null
-}
+  id: string;
+  title: string;
+  content: string;
+  type: string;
+  author: string;
+  dateCreated: string;
+  bubbleCoordinates: { x: number; y: number };
+  iconName?: string | null;
+  userID?: string;
+  groupID?: string | null;
+  votes?: VoteType[];
+  comments?: CommentType[];
+};
+
+type VoteType = {
+  id: string;
+  voteValue: number;
+  dateCreated: string;
+  userID: string;
+  bubbleID: string;
+};
+
+type CommentType = {
+  id: string;
+  commentText: string;
+  dateCreated: string;
+  userID: string;
+  bubbleID: string;
+};
 
 export type GroupType = {
   id: string,
@@ -135,7 +153,7 @@ export default function App({
       setSearchParamUsername(username);
       //console.log("frontend username param: ", username)
       const bubbleRecords = await getUserBubbleRecords(username);
-      console.log("retrived bubbleRecords: ", bubbleRecords)
+      console.log("retrieved bubbleRecords: ", bubbleRecords)
 
       var loadingValue: LoadingType;
       var bubblesValue: BubbleType[] | null;
@@ -145,7 +163,12 @@ export default function App({
         bubblesValue = null;
       } else {
         loadingValue = "loaded";
-        bubblesValue = bubbleRecords;
+        bubblesValue = bubbleRecords.map(bubble => ({
+          ...bubble,
+          iconName: bubble.iconName ?? undefined,
+          userID: bubble.id ?? undefined,
+          groupID: bubble.groupID ?? null,
+        }));
         //bubbleRecords[0].groupID
       }
       //console.log("BUBBLES: ", bubblesValue)
@@ -385,24 +408,27 @@ export default function App({
       {/* Bubble Display Area*/}
       <Flex
         width="calc(100% - 20px)"
-        //height="100%"
         flex="1"
         margin="10px 10px 10px 10px"
         backgroundColor="rgba(255, 255, 255, 0.5)"
-        justifyContent="center"
+        justifyContent="flex-start"
         alignSelf="center"
         borderRadius="30px"
         border="1px solid"
-        position="relative"
+        padding="20px"
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '10px'
+        }}
       >
         {loadingBubbles == "loaded" && bubbles != null ?
           bubbles.map((bubble, index) => (
             <Flex
               key={index}
-              position="absolute"
-              left={`${bubble.bubbleCoordinates.x}px`}
-              top={`${bubble.bubbleCoordinates.y}px`}
-              padding="10px"
+              width="calc(33% - 20px)"
+              minWidth="200px"
+              padding="15px"
               backgroundColor={
                 bubble.groupID && loadingGroups == "loaded" ?
                   lightenColor(getColorByGroupID(bubble.groupID))
@@ -418,20 +444,19 @@ export default function App({
                   "rgb(25, 103, 103)"
               }
               style={{ cursor: "pointer" }}
+              direction="column"
               onClick={() => {
                 openBubble(bubble);
                 setModalState(editToggle ? "edit" : "view")
                 if (focusedBubble) {
                   console.log(updateRecentlyVisited(focusedBubble))
                 }
-
               }}
             >
-              <Text>{bubble.title}</Text>
+              <Text fontWeight="bold" fontSize="1.2rem">{bubble.title}</Text>
+              <Text marginTop="10px">{bubble.content}</Text>
             </Flex>
           ))
-
-
           : null}
       </Flex>
 

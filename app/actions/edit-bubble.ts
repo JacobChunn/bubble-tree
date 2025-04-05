@@ -12,6 +12,7 @@ export type EditBubbleType = {
     y: number
   },
   groupID?: string,
+  iconName?: string
 }
 
 // Only call if logged in
@@ -80,7 +81,8 @@ export async function editBubble(bubbleInfo: EditBubbleType) {
         y: bubbleInfo.bubbleCoordinates.y,
       },
       userID: currentUser.userId, // uses userID because userID will never change, unlike emails or usernames
-      groupID: sanitizedGroupID
+      groupID: sanitizedGroupID,
+      iconName: bubbleInfo.iconName
     });
 
     if (!updatedBubble.data) return false;
