@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import NewlyAdded from "@/components/newly-added";
 import RecentlyVisited from "@/components/recently-visited";
+import { FaceSmileIcon } from "@heroicons/react/16/solid";
 
 //const client = generateClient<Schema>();
 // in getRecentlyVisited(), make sure createUserRecord is called inside server action.
@@ -40,7 +41,7 @@ export default function App() {
   const [searchValue, setSearchValue] = useState<string>("");
   const [loadingResults, setLoadingResults] = useState<LoadingResultsType>("unloaded");
   const [searchResults, setSearchResults] = useState<SearchResultType>(null);
-  const showBorders = true;
+  const showBorders = false;
   const { authStatus } = useAuthenticator(context => [context.authStatus]);
 
   const searchParams = useSearchParams()

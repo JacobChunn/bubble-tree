@@ -436,33 +436,6 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             onChange={handleInputChange('title')}
           />
 
-          {/* Icon Selector */}
-          <Flex direction="column" gap="small" width="80%" alignSelf="center">
-            <Label>Category Icon</Label>
-            <Flex gap="small" wrap="wrap">
-              {CATEGORY_ICONS.map(icon => (
-                <Button
-                  key={icon.value}
-                  onClick={() => {
-                    setSelectedIcon(icon.value);
-                    setFormState(prev => ({ ...prev, iconName: icon.value }));
-                  }}
-                  aria-selected={selectedIcon === icon.value}
-                  
-                >
-                  <Icon icon={icon.value} width={24} />
-                  <Text>{icon.name}</Text>
-                </Button>
-              ))}
-            </Flex>
-            {selectedIcon && (
-              <Flex alignItems="center" gap="small">
-                <Text>Selected:</Text>
-                <Icon icon={selectedIcon} width={24} />
-              </Flex>
-            )}
-          </Flex>
-
           <Label
             alignSelf="center"
             fontSize="14px"
@@ -508,8 +481,6 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             onChange={handleInputChange('content')}
           /> */}
 
-
-
           {/* <HighlightWithinTextarea
               //ref={editorRef}
 
@@ -519,7 +490,6 @@ export default function BubbleFormModal(props: BubbleModalProps) {
                 setFormState({ ...formState, content: value });
               }}
             /> */}
-
 
           <Flex
             justifyContent="center"
@@ -567,8 +537,28 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             ) : (
               "Groups are " + loadingGroups
             )}
+
+            <SelectField
+              size="small"
+              label="Category Icon"
+              value={selectedIcon}
+              onChange={(e) => {
+                setSelectedIcon(e.target.value);
+                setFormState(prev => ({ ...prev, iconName: e.target.value }));
+              }}
+            >
+              <option value="">No Icon</option>
+              {CATEGORY_ICONS.map(icon => (
+                <option key={icon.value} value={icon.value}>
+                  {icon.name}
+                </option>
+              ))}
+            </SelectField>
           </Flex>
+          
         </Flex>
+
+        
 
         {/* Reference Bubble Container */}
         <Flex

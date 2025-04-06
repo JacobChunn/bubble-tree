@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useState, useEffect } from "react";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "@/amplify/data/resource";
@@ -28,12 +27,10 @@ import AddRefModal from "@/components/modals/add-ref-modal";
 import BubbleFormModal, { ReferenceBubbleType } from "@/components/modals/bubble-form-modal";
 
 //const client = generateClient<Schema>();
-
 /*
 1.) get user email
 2.) query database to get user record
 3.) create bubble referencing user record
-
 */
 
 export type BubbleType = {
@@ -77,9 +74,7 @@ export type GroupType = {
   }
 }
 
-
 export type LoadingType = "unloaded" | "loading" | "loaded"
-
 export type ModalStateType = "create" | "view" | "edit" | "createGroup" | "comment" | "addRef" | false
 
 export default function App({
@@ -135,9 +130,7 @@ export default function App({
   };
 
 
-
   const { authStatus } = useAuthenticator(context => [context.authStatus]);
-
 
   // Load Bubble records
   useEffect(() => {
@@ -453,8 +446,8 @@ export default function App({
                 }
               }}
             >
-              <Text fontWeight="bold" fontSize="1.2rem">{bubble.title}</Text>
-              <Text marginTop="10px">{bubble.content}</Text>
+              <p className="bubbleTitle1" max-width="65%">{bubble.title}</p>
+              <Text marginTop= "-15px">{bubble.content}</Text>
             </Flex>
           ))
           : null}
