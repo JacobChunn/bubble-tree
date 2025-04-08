@@ -110,9 +110,9 @@ export default function ViewBubbleModal({
     <div className="modal-overlay">
       <Flex
         //className="modal-content"
-        backgroundColor="rgb(255,255,255)"
-        width="calc(100vw - 100px)"
-        height="calc(100vh - 100px)"
+        backgroundColor= "rgb(0, 135, 139)"
+        width={{base:"100%", medium:"90%"}}
+        height="calc(90%)"
         boxShadow="10px 10px 20px rgba(0, 0, 0, 0.3)"
         borderRadius="30px"
         direction="column"
@@ -132,7 +132,7 @@ export default function ViewBubbleModal({
                   //fontFamily="Roboto"
                   fontSize={{ base: "16px", small: "16px" }}
                   fontWeight="400"
-                  color="rgb(0, 0, 0)"
+                  color="rgb(255, 255, 255)"
                   // lineHeight="32px"
                   alignSelf="center"
                   textAlign="left"
@@ -155,7 +155,19 @@ export default function ViewBubbleModal({
                 size='small'
                 onClick={() => duplicateBubble(focusedBubble)}
               >
-                Duplicate
+                <Text 
+            fontSize={{ base: "12px", small: "16px" }} 
+            fontWeight="500" 
+            color="rgba(255,255,255,1)"
+            lineHeight="16px"
+            textAlign="left"
+            display="block"
+            shrink="0"
+            position="relative"
+            whiteSpace="pre-wrap"
+            >
+              Duplicate
+            </Text>
               </Button>
               :
               null
@@ -182,7 +194,7 @@ export default function ViewBubbleModal({
             //fontFamily="Roboto"
             fontSize={{ base: "12px", small: "24px" }}
             fontWeight="700"
-            color="rgb(0, 0, 0)"
+            color="rgb(255, 255, 255)"
             lineHeight="32px"
             textAlign="center"
             display="block"
@@ -197,7 +209,7 @@ export default function ViewBubbleModal({
           <Flex
             margin="20px"
             padding="20px"
-            backgroundColor="rgba(81, 194, 194, 0.2)"
+            backgroundColor="rgba(255, 255, 255, 0.7)"
             borderRadius="30px"
           >
 
@@ -205,74 +217,88 @@ export default function ViewBubbleModal({
               label="Add bubble content:"
               placeholder="Enter bubble content..."
               isRequired={true}
-              rows={5}
+              rows={12}
               variation="quiet"
               labelHidden={true}
               width="100%"
-              height="120px"
+              height="290px"
               inputMode="text"
               alignSelf="center"
               value={focusedBubble.content}
               readOnly
             />
           </Flex>
-          {/* Reference Bubble Container */}
-          <Flex
-            padding="10px"
-            direction="row"
-            alignItems="center"
-          >
-
-            {/* Reference Bubble Display Area */}
+          <Flex width={"100%"} direction={"column"} gap={"0"}>
+            <Text
+              fontSize={{ base: "18px", small: "22px" }}
+              fontWeight="500"
+              color="rgba(255,255,255,1)"
+              lineHeight="16px"
+              textAlign="center"
+              display="block"
+              shrink="0"
+              position="relative"
+              whiteSpace="pre-wrap"
+              >
+                References:
+              </Text>
+            {/* Reference Bubble Container */}
             <Flex
-              width="100%"
-              height="100px"
-              overflow="auto"
-              backgroundColor="rgba(81, 194, 194, 0.2)"
+            
+              padding="0px 0px 10px 0px"
               direction="row"
-              gap="10px"
-              borderRadius="30px"
-              margin="20px"
-              padding="10px"
               alignItems="center"
             >
-              {references &&
-                references.map((ref, index) => {
-                  return (
-                    <Flex
-                      key={index + 1}
-                      width="100px"
-                      height="70px"
-                      backgroundColor="rgba(81, 194, 194, 0.2)"
-                      gap="0"
-                      borderRadius="30px"
-                      //padding="20px"
-                      textAlign="center"
-                      justifyContent="center"
-                      alignItems="center"
-                      fontSize="10px"
-                      position="relative"
-                      style={{
-                        cursor: 'pointer',
-                        outline: '5px solid',
-                        outlineColor: refColors[index]
-                      }}
-                    >
+              {/* Reference Bubble Display Area */}
+              <Flex
+                width="100%"
+                height="140px"
+                overflow="auto"
+                backgroundColor="rgba(255, 255, 255, 0.7)"
+                direction="row"
+                gap="10px"
+                borderRadius="30px"
+                margin="20px"
+                padding="10px"
+                alignItems="center"
+              >
+                {references &&
+                  references.map((ref, index) => {
+                    return (
                       <Flex
-                        width="100%"
-                        height="100%"
-                        overflow="hidden"
+                        key={index + 1}
+                        width="100px"
+                        height="70px"
+                        backgroundColor="rgba(142, 252, 252, 0.2)"
+                        gap="0"
+                        borderRadius="30px"
+                        //padding="20px"
                         textAlign="center"
                         justifyContent="center"
                         alignItems="center"
+                        fontSize="10px"
+                        position="relative"
+                        style={{
+                          cursor: 'pointer',
+                          outline: '5px solid',
+                          outlineColor: refColors[index]
+                        }}
                       >
-                        {ref.title}
+                        <Flex
+                          width="100%"
+                          height="100%"
+                          overflow="hidden"
+                          textAlign="center"
+                          justifyContent="center"
+                          alignItems="center"
+                        >
+                          {ref.title}
+                        </Flex>
                       </Flex>
-                    </Flex>
-                  );
-                })
-              }
-
+                    );
+                  })
+                }
+              </Flex>
             </Flex>
           </Flex>
           <Flex>
@@ -280,7 +306,19 @@ export default function ViewBubbleModal({
               size='small'
               onClick={onComment}
             >
+              <Text 
+            fontSize={{ base: "12px", small: "16px" }} 
+            fontWeight="500" 
+            color="rgba(255,255,255,1)"
+            lineHeight="16px"
+            textAlign="left"
+            display="block"
+            shrink="0"
+            position="relative"
+            whiteSpace="pre-wrap"
+            >
               Comments
+            </Text>
             </Button>
           </Flex>
         </Flex>

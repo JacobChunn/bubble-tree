@@ -90,8 +90,8 @@ export async function editBubble(bubbleInfo: EditBubbleType) {
     if (!updatedBubble.data) return false;
 
     if (updatedBubble.errors == undefined) {
-      const { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID } = updatedBubble.data;
-      const simplifiedBubbleData = { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID };
+      const { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID, iconName } = updatedBubble.data;
+      const simplifiedBubbleData = { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID, iconName };
       console.log("Bubble updated!: ", simplifiedBubbleData)
 
       if (bubbleInfo.referenceIDs) {

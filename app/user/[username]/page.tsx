@@ -13,9 +13,7 @@ import { Button, Flex, SwitchField, Text, ToggleButton, useAuthenticator } from 
 import { createBubble } from "@/app/actions/create-bubble";
 import { createUserRecord } from "@/app/actions/create-user-record";
 import { getUserBubbleRecords } from "@/app/actions/get-user-bubble-records";
-import CreateBubbleModal from "@/components/modals/create-bubble-modal";
 import ViewBubbleModal from "@/components/modals/view-bubble-modal";
-import EditBubbleModal from "@/components/modals/edit-bubble-modal";
 import CreateGroupModal from "@/components/modals/create-group-modal";
 import { useSearchParams } from "next/navigation";
 import { CreateGroupType } from "@/app/actions/create-group";
@@ -25,7 +23,7 @@ import { updateRecentlyVisited } from "@/app/actions/update-recently-visited";
 import CommentsModal from "@/components/modals/comments-modal";
 import AddRefModal from "@/components/modals/add-ref-modal";
 import BubbleFormModal, { ReferenceBubbleType } from "@/components/modals/bubble-form-modal";
-
+import { Icon } from '@iconify/react';
 //const client = generateClient<Schema>();
 /*
 1.) get user email
@@ -435,9 +433,13 @@ export default function App({
                 }
               }}
             >
+              <Flex alignItems="center" justifyContent="flex-start" gap="10px" width="100%">
               <p className="bubbleTitle1" >
                 {bubble.title}
               </p>
+              
+              {bubble.iconName && <Icon icon={bubble.iconName} height="32px" width="32px" />}
+              </Flex>
               <p className="bubbleContent">{bubble.content}</p>
             </Flex>
           ))
