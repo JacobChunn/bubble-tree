@@ -150,7 +150,7 @@ return (
   <Flex
     {...props}
     direction="column"
-    width="90%"
+    width="98%"
     height="90%"
     alignItems="center"
     justifyContent="center"
