@@ -165,7 +165,7 @@ export default function Header({
             {authStatus == "authenticated" ? "Log Out" : "Log In" }
           </Text>
         </MenuItem>
-        {authStatus === "authenticated" && (
+        {/* {authStatus === "authenticated" && (
           <MenuItem 
           gap="8px"
           direction="row"
@@ -189,7 +189,7 @@ export default function Header({
               Settings
             </Text>
           </MenuItem>
-        )}
+        )} */}
       </Flex>
     </Flex>
   );

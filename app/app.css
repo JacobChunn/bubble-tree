@@ -61,3 +61,10 @@ main {
   -webkit-line-clamp: 2; /* 👈 allows wrapping up to 2 lines */
   -webkit-box-orient: vertical;
 }
+
+.bubbleContent {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; /* Number of lines to show before truncating */
+  overflow: hidden;
+}

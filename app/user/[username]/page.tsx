@@ -75,7 +75,7 @@ export type GroupType = {
 }
 
 export type LoadingType = "unloaded" | "loading" | "loaded"
-export type ModalStateType = "create" | "view" | "edit" | "createGroup" | "comment" | "addRef" | false
+export type ModalStateType = "create" | "view" | "edit" | "createGroup" | "comment" | "addRef" | "verify" | false
 
 export default function App({
   params
@@ -246,13 +246,13 @@ export default function App({
 
   return (
     // <AuthWrapper>
-    <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <main style={{ minWidth: "100vw", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Header />
       {(modalState === "create" || modalState === "addRef") && (
         <BubbleFormModal
           mode="create"
           isOpen={true}
-          onClose={() => {setModalState(false); setReferences(null);}}
+          onClose={() => { setModalState(false); setReferences(null); }}
           groups={groups}
           loadingGroups={loadingGroups}
           addBubble={addBubble}
@@ -265,7 +265,7 @@ export default function App({
         <BubbleFormModal
           mode="edit"
           isOpen={true}
-          onClose={() => {setModalState(false); setReferences(null);}}
+          onClose={() => { setModalState(false); setReferences(null); }}
           groups={groups}
           loadingGroups={loadingGroups}
           focusedBubble={focusedBubble}
@@ -278,7 +278,7 @@ export default function App({
       )}
       <ViewBubbleModal
         isOpen={modalState == "view"}
-        onClose={() => {setModalState(false); setReferences(null);}}
+        onClose={() => { setModalState(false); setReferences(null); }}
         focusedBubble={focusedBubble}
         groups={groups}
         loadingGroups={loadingGroups}
@@ -319,79 +319,69 @@ export default function App({
         >
 
           {/* Button bar */}
+          {/* Parent Flex Container using justify-between */}
           <Flex
-            margin="10px 10px 0px 10px"
+            margin="10px"
             padding="10px"
             borderRadius="40px"
             backgroundColor="rgba(0,0,0,0.3)"
+            justifyContent="space-between"
+            alignItems="center"
           >
+            {/* Left Group Container */}
+            <Flex gap="10px">
+              {/* Create Bubble Button */}
+              <Button
+                gap="8px"
+                onClick={() => setModalState("create")}
+                padding="12px 8px"
+                borderRadius="20px"
+                borderColor="rgb(0,0,0)"
+              >
+                <Text fontSize={{ base: "12px", small: "12px" }} fontWeight="500" color="rgba(255,255,255,1)">
+                  Create Bubble
+                </Text>
+              </Button>
 
-            {/* Create Bubble Button */}
+              {/* Edit Toggle Switch */}
+              <SwitchField
+                label="Edit"
+                labelPosition="end"
+                isChecked={editToggle}
+                onChange={() => setEditToggle(!editToggle)}
+              />
+
+              {/* Create Group Button */}
+              <Button
+                gap="8px"
+                onClick={() => setModalState("createGroup")}
+                padding="12px 8px"
+                borderRadius="20px"
+                borderColor="rgb(0,0,0)"
+              >
+                <Text fontSize={{ base: "12px", small: "12px" }} fontWeight="500" color="rgba(255,255,255,1)">
+                  Create Group
+                </Text>
+              </Button>
+            </Flex>
+
+            {/* Right-aligned Get Verified Button */}
             <Button
               gap="8px"
-              direction="row"
-              justifyContent="flex-start"
-              alignItems="center"
-              shrink="0"
-              position="relative"
-              padding="12px 8px 12px 8px"
+              onClick={() => setModalState("verify")}
+              padding="12px 8px"
               borderRadius="20px"
               borderColor="rgb(0,0,0)"
-              onClick={() => setModalState("create")}
+              style={{
+                marginRight: "40px"
+              }}
             >
-              <Text
-                //fontFamily="Roboto"
-                fontSize={{ base: "12px", small: "12px" }}
-                fontWeight="500"
-                color="rgba(255,255,255,1)"
-                lineHeight="16px"
-                textAlign="left"
-                display="block"
-                shrink="0"
-                position="relative"
-                whiteSpace="pre-wrap"
-              >
-                Create Bubble
-              </Text>
-            </Button>
-
-            {/* Edit toggle switch */}
-            <SwitchField
-              label="Edit"
-              labelPosition="end"
-              isChecked={editToggle}
-              onChange={() => setEditToggle(!editToggle)}
-            />
-
-            {/* Create Group Button */}
-            <Button
-              gap="8px"
-              direction="row"
-              justifyContent="flex-start"
-              alignItems="center"
-              shrink="0"
-              position="relative"
-              padding="12px 8px 12px 8px"
-              borderRadius="20px"
-              borderColor="rgb(0,0,0)"
-              onClick={() => setModalState("createGroup")}
-            >
-              <Text
-                //fontFamily="Roboto"
-                fontSize={{ base: "12px", small: "12px" }}
-                fontWeight="500"
-                color="rgba(255,255,255,1)"
-                lineHeight="16px"
-                textAlign="left"
-                display="block"
-                shrink="0"
-                position="relative"
-                whiteSpace="pre-wrap"
-              >
-                Create Group
+              <Text fontSize={{ base: "12px", small: "12px" }} fontWeight="500" color="rgba(255,255,255,1)">
+                Get Verified
               </Text>
             </Button>
           </Flex>
+
 
         </Flex>
         :
@@ -402,56 +392,58 @@ export default function App({
       <Flex
         width="calc(100% - 20px)"
         flex="1"
-        margin="10px 10px 10px 10px"
+        margin="10px"
         backgroundColor="rgba(255, 255, 255, 0.5)"
-        justifyContent="flex-start"
         alignSelf="center"
         borderRadius="30px"
         border="1px solid"
         padding="20px"
         style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '10px'
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: "10px"
         }}
+        overflow="auto"
       >
-        {loadingBubbles == "loaded" && bubbles != null ?
-          bubbles.map((bubble, index) => (
+        {loadingBubbles === "loaded" && bubbles != null
+          ? bubbles.map((bubble, index) => (
             <Flex
               key={index}
-              width="calc(33% - 20px)"
+              // Remove the fixed width since grid items automatically adjust their width.
+              // You can keep minWidth as a fallback if needed.
               minWidth="200px"
               padding="15px"
               backgroundColor={
-                bubble.groupID && loadingGroups == "loaded" ?
-                  lightenColor(getColorByGroupID(bubble.groupID))
-                  :
-                  "rgba(81, 194, 194, 0.62)"
+                bubble.groupID && loadingGroups === "loaded"
+                  ? lightenColor(getColorByGroupID(bubble.groupID))
+                  : "rgba(81, 194, 194, 0.62)"
               }
               borderRadius="8px"
               border="4px solid"
               borderColor={
-                bubble.groupID && loadingGroups == "loaded" ?
-                  getColorByGroupID(bubble.groupID)
-                  :
-                  "rgb(25, 103, 103)"
+                bubble.groupID && loadingGroups === "loaded"
+                  ? getColorByGroupID(bubble.groupID)
+                  : "rgb(25, 103, 103)"
               }
               style={{ cursor: "pointer" }}
               direction="column"
               onClick={() => {
                 openBubble(bubble);
-                setModalState(editToggle ? "edit" : "view")
+                setModalState(editToggle ? "edit" : "view");
                 if (focusedBubble) {
-                  console.log(updateRecentlyVisited(focusedBubble))
+                  console.log(updateRecentlyVisited(focusedBubble));
                 }
               }}
             >
-              <p className="bubbleTitle1" max-width="65%">{bubble.title}</p>
-              <Text marginTop= "-15px">{bubble.content}</Text>
+              <p className="bubbleTitle1" >
+                {bubble.title}
+              </p>
+              <p className="bubbleContent">{bubble.content}</p>
             </Flex>
           ))
           : null}
       </Flex>
+
 
     </main>
     // </AuthWrapper>
