@@ -131,7 +131,7 @@ export default function App({
   };
 
 
-  const { authStatus } = useAuthenticator(context => [context.authStatus]);
+  //const { authStatus } = useAuthenticator(context => [context.authStatus]);
 
   // Load Bubble records
   useEffect(() => {
