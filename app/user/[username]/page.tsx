@@ -219,6 +219,10 @@ export default function App({
 
   }, [])
 
+  useEffect(() => {
+    console.log("Change Verified: ", verified);
+  }, [verified])
+
   function getColorByGroupID(groupID: string) {
     if (!groups) return "rgb(0,0,0)"
     const g = groups.find(group => group.id === groupID);
@@ -253,11 +257,12 @@ export default function App({
   return (
     // <AuthWrapper>
     <main style={{ minWidth: "100vw", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Header />
+      <Header verified={verified}/>
       {(modalState === "create" || modalState === "addRef") && (
         <BubbleFormModal
           mode="create"
           isOpen={true}
+          isVerified={verified}
           onClose={() => { setModalState(false); setReferences(null); }}
           groups={groups}
           loadingGroups={loadingGroups}
@@ -271,6 +276,7 @@ export default function App({
         <BubbleFormModal
           mode="edit"
           isOpen={true}
+          isVerified={verified}
           onClose={() => { setModalState(false); setReferences(null); }}
           groups={groups}
           loadingGroups={loadingGroups}
@@ -299,6 +305,7 @@ export default function App({
         onBack={() => setModalState("view")}
         focusedBubble={focusedBubble}
         isNotOwnProfile={searchParamUsername != null && username != searchParamUsername}
+        isVerified={verified}
       />
       <CreateGroupModal
         isOpen={modalState == "createGroup"}
@@ -314,6 +321,7 @@ export default function App({
       <VerifyModal
         isOpen={modalState == "verify"}
         onClose={() => { setModalState(false); }}
+        onVerify={() => { setVerified(true) }}
       />
 
       {/* Button bar container */}
@@ -362,7 +370,7 @@ export default function App({
               />
 
               {/* Create Group Button */}
-              <Button
+              {verified && <Button
                 gap="8px"
                 onClick={() => setModalState("createGroup")}
                 padding="12px 8px"
@@ -372,11 +380,12 @@ export default function App({
                 <Text fontSize={{ base: "12px", small: "12px" }} fontWeight="500" color="rgba(255,255,255,1)">
                   Create Group
                 </Text>
-              </Button>
+              </Button>}
+
             </Flex>
 
             {/* Right-aligned Get Verified Button */}
-            <Button
+            {!verified && <Button
               gap="8px"
               onClick={() => setModalState("verify")}
               padding="12px 8px"
@@ -389,7 +398,7 @@ export default function App({
               <Text fontSize={{ base: "12px", small: "12px" }} fontWeight="500" color="rgba(255,255,255,1)">
                 Get Verified
               </Text>
-            </Button>
+            </Button>}
           </Flex>
 
 
@@ -403,7 +412,7 @@ export default function App({
         width="calc(100% - 20px)"
         flex="1"
         //margin="10px"
-        justifyContent= "space-evenly"
+        justifyContent="space-evenly"
         backgroundColor="rgba(255, 255, 255, 0.5)"
         alignSelf="center"
         borderRadius="30px"
@@ -411,14 +420,14 @@ export default function App({
         padding="20px"
         wrap="wrap"
         overflow="auto"
-        //grid styling was overriding flexbox properties, so removed it
+      //grid styling was overriding flexbox properties, so removed it
       >
         {loadingBubbles === "loaded" && bubbles != null
           ? bubbles.map((bubble, index) => (
             <Flex
               key={index}
               //re-added fixed width, but fixed previous issue we were having with it
-              width = {{ small: '92%', medium: "45%" ,large: '32%' }}
+              width={{ small: '92%', medium: "45%", large: '32%' }}
               //minWidth="200px"
               //className=""
               //padding="15px"
@@ -445,12 +454,12 @@ export default function App({
               }}
             >
               <Flex alignItems="center" marginLeft="1%" justifyContent="flex-start" gap="10px" width="100%">
-              <p className="bubbleTitle1" >
-                {bubble.title}
-              </p>
-              <Flex maxWidth = "30%">
-              {bubble.iconName && <Icon icon={bubble.iconName} height = "3rem"  />}
-              </Flex>
+                <p className="bubbleTitle1" >
+                  {bubble.title}
+                </p>
+                <Flex maxWidth="30%">
+                  {bubble.iconName && <Icon icon={bubble.iconName} height="3rem" />}
+                </Flex>
               </Flex>
               <p className="bubbleContent">{bubble.content}</p>
             </Flex>

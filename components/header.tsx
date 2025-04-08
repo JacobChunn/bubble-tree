@@ -5,13 +5,15 @@ import MenuItem from './menu-item';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import getCurrentUsername from '@/app/actions/get-current-username';
+import { getVerified } from '@/app/actions/get-verified';
+import { CheckBadgeIcon } from '@heroicons/react/24/solid';
 
 interface HeaderProps {
-
+  verified?: boolean
 }
 
 export default function Header({
-
+  verified
 }: HeaderProps) {
 
   const [username, setUsername] = useState<null | string>(null);
@@ -33,6 +35,17 @@ export default function Header({
     alert("You have signed out");
     signOut();
   };
+
+  const Badge = 
+    <CheckBadgeIcon
+      style={{
+        height: "1em",
+        width: "1em",
+        display: "inline-block",
+        verticalAlign: "-10%", // or "text-bottom" depending on your alignment preference
+      }}
+    />
+  
 
   return (
     <Flex
@@ -98,7 +111,7 @@ export default function Header({
           alignSelf="center"
           textAlign="center"
         >
-          Welcome, {username}
+          Welcome, {verified ? Badge : ""}{username}
         </Text>
         :
         null

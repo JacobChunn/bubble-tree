@@ -14,6 +14,7 @@ import { createBubble } from "@/app/actions/create-bubble";
 import { createUserRecord } from "@/app/actions/create-user-record";
 import { getUserBubbleRecords } from "@/app/actions/get-user-bubble-records";
 import ViewBubbleModal from "@/components/modals/view-bubble-modal";
+import { removePhone } from "../actions/remove-phone";
 
 //const client = generateClient<Schema>();
 
@@ -60,6 +61,12 @@ export default function App({
       <h1>Username:___</h1>
       <h1>Bio: {userBio}</h1>
       
+      <Button
+        onClick={async () => {await removePhone();}}
+      >
+        Get Unverified hahahehe
+      </Button>
+
       <Flex
         width="100%"
         justifyContent="center"

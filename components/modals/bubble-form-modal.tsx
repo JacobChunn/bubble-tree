@@ -46,6 +46,7 @@ export type ReferenceBubbleType = {
 type CreateProps = {
   mode: "create",
   isOpen: boolean,
+  isVerified: boolean,
   onClose: () => void,
   openRefModal: () => void,
   addBubble: (newBubble: BubbleType) => void,
@@ -58,6 +59,7 @@ type CreateProps = {
 type EditProps = {
   mode: "edit",
   isOpen: boolean,
+  isVerified: boolean,
   onClose: () => void,
   openRefModal: () => void,
   focusedBubble: BubbleType,
@@ -111,6 +113,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
   const {
     mode,
     isOpen,
+    isVerified,
     onClose,
     groups,
     loadingGroups,
@@ -158,7 +161,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
       y: "",
     };
 
-    const initEditorState = mode === "edit" ? 
+  const initEditorState = mode === "edit" ?
     EditorState.createWithContent(ContentState.createFromText(props.focusedBubble.content))
     :
     EditorState.createEmpty()
@@ -269,13 +272,13 @@ export default function BubbleFormModal(props: BubbleModalProps) {
     if (!block) return; // guard: block does not exist
 
     console.log("REMOVE block: ", block);
-  
+
     // Ensure that the end offset does not exceed the block length.
     const blockLength = block.getLength();
     if (end > blockLength) {
       end = blockLength;
     }
-  
+
     console.log("REMOVE blockLength: ", blockLength);
 
     // Create a new selection using SelectionState.createEmpty
@@ -286,7 +289,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
     }) as SelectionState;
 
     console.log("REMOVE selection: ", selection);
-  
+
     // Remove the entity by applying 'null'
     const newContentState = Modifier.applyEntity(contentState, selection, null);
 
@@ -298,12 +301,12 @@ export default function BubbleFormModal(props: BubbleModalProps) {
 
     setEditorState(EditorState.forceSelection(newEditorState, newContentState.getSelectionAfter()));
   };
-  
+
 
   const decoratorArray = references ?
     references.map((value, index) => ({
       strategy: createHighlightStrategy(index),
-      component: (props: any) => <HighlightSpan {...props} removeHighlight={removeHighlight} color={refColors[index]}/>
+      component: (props: any) => <HighlightSpan {...props} removeHighlight={removeHighlight} color={refColors[index]} />
     }))
     :
     []
@@ -522,7 +525,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
               onChange={handleInputChange('y')}
             />
             {/* </Flex> */}
-            {loadingGroups === "loaded" && groups !== null ? (
+            {isVerified ? loadingGroups === "loaded" && groups !== null ? (
               <SelectField
                 size="small"
                 style={{ float: "right" }}
@@ -537,29 +540,32 @@ export default function BubbleFormModal(props: BubbleModalProps) {
               </SelectField>
             ) : (
               "Groups are " + loadingGroups
-            )}
+            ) : null}
 
-            <SelectField
-              size="small"
-              label="Category Icon"
-              value={selectedIcon}
-              onChange={(e) => {
-                setSelectedIcon(e.target.value);
-                setFormState(prev => ({ ...prev, iconName: e.target.value }));
-              }}
-            >
-              <option value="">No Icon</option>
-              {CATEGORY_ICONS.map(icon => (
-                <option key={icon.value} value={icon.value}>
-                  {icon.name}
-                </option>
-              ))}
-            </SelectField>
+            {isVerified ?
+              <SelectField
+                size="small"
+                label="Category Icon"
+                value={selectedIcon}
+                onChange={(e) => {
+                  setSelectedIcon(e.target.value);
+                  setFormState(prev => ({ ...prev, iconName: e.target.value }));
+                }}
+              >
+                <option value="">No Icon</option>
+                {CATEGORY_ICONS.map(icon => (
+                  <option key={icon.value} value={icon.value}>
+                    {icon.name}
+                  </option>
+                ))}
+              </SelectField>
+              : null}
+
           </Flex>
-          
+
         </Flex>
 
-        
+
 
         {/* Reference Bubble Container */}
         <Flex
@@ -612,7 +618,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
                       outlineColor: refColors[index]
                     }}
                     onMouseDown={(e) => e.preventDefault()}
-                    //onClick={() => addHighlight(index)}
+                  //onClick={() => addHighlight(index)}
 
                   >
                     <Flex
