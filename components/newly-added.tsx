@@ -10,7 +10,7 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 
 export type NewlyAddedType =
   null
-  |
+  | 
   {
     simplifiedBubbleData: { id: string, title: string, author: string, dateCreated: string, content: string, iconName: string | null }[];
   }
