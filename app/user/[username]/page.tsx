@@ -25,7 +25,7 @@ import { updateRecentlyVisited } from "@/app/actions/update-recently-visited";
 import CommentsModal from "@/components/modals/comments-modal";
 import AddRefModal from "@/components/modals/add-ref-modal";
 import BubbleFormModal, { ReferenceBubbleType } from "@/components/modals/bubble-form-modal";
-
+import { Icon } from '@iconify/react';
 //const client = generateClient<Schema>();
 /*
 1.) get user email
@@ -446,7 +446,11 @@ export default function App({
                 }
               }}
             >
+              <Flex alignItems="center" justifyContent="flex-start" gap="10px" width="100%">
               <p className="bubbleTitle1" max-width="65%">{bubble.title}</p>
+              
+              {bubble.iconName && <Icon icon={bubble.iconName} height="32px" width="32px" />}
+              </Flex>
               <Text marginTop= "-15px">{bubble.content}</Text>
             </Flex>
           ))
