@@ -20,8 +20,8 @@ interface ModalProps {
   loadingGroups: LoadingType,
   isNotOwnBubble: boolean,
   onComment: () => void,
-    setReferences: Dispatch<SetStateAction<ReferenceBubbleType[] | null>>,
-    references: ReferenceBubbleType[] | null,
+  setReferences: Dispatch<SetStateAction<ReferenceBubbleType[] | null>>,
+  references: ReferenceBubbleType[] | null,
 }
 
 
@@ -36,29 +36,29 @@ export default function ViewBubbleModal({
   setReferences,
   references,
 }: ModalProps) {
-    useEffect(() => {
-      const loadReferences = async () => {
-        if (isOpen && focusedBubble) {
-          const referencesRes = await getRefBubbles(focusedBubble.id);
-  
-          let refValue = null;
-          if (referencesRes) {
-            const inDB = true;
-            refValue = referencesRes.map(
-              ({ id, title, author, content, dateCreated, userID, groupID }) => ({
-                inDB, id, title, content, author, dateCreated, userID, groupID
-              })
-            )
-          }
-          setReferences(refValue);
-        }
-      }
-  
-      loadReferences();
-  
-    }, [isOpen, focusedBubble])
+  useEffect(() => {
+    const loadReferences = async () => {
+      if (isOpen && focusedBubble) {
+        const referencesRes = await getRefBubbles(focusedBubble.id);
 
-    const router = useRouter();
+        let refValue = null;
+        if (referencesRes) {
+          const inDB = true;
+          refValue = referencesRes.map(
+            ({ id, title, author, content, dateCreated, userID, groupID }) => ({
+              inDB, id, title, content, author, dateCreated, userID, groupID
+            })
+          )
+        }
+        setReferences(refValue);
+      }
+    }
+
+    loadReferences();
+
+  }, [isOpen, focusedBubble])
+
+  const router = useRouter();
 
   if (!isOpen || !focusedBubble) return null;
 
@@ -110,9 +110,9 @@ export default function ViewBubbleModal({
     <div className="modal-overlay">
       <Flex
         //className="modal-content"
-        backgroundColor= "rgb(0, 135, 139)"
-        width={{base:"100%", medium:"90%"}}
-        height="calc(90%)"
+        backgroundColor="rgb(0, 135, 139)"
+        width={{ base: "100%", medium: "90%" }}
+        height="90%"
         boxShadow="10px 10px 20px rgba(0, 0, 0, 0.3)"
         borderRadius="30px"
         direction="column"
@@ -120,6 +120,7 @@ export default function ViewBubbleModal({
       >
         {/* Modal Header */}
         <Flex
+          height="10%"
           justifyContent="space-between"
           padding="15px 15px 0 15px"
         >
@@ -155,19 +156,19 @@ export default function ViewBubbleModal({
                 size='small'
                 onClick={() => duplicateBubble(focusedBubble)}
               >
-                <Text 
-            fontSize={{ base: "12px", small: "16px" }} 
-            fontWeight="500" 
-            color="rgba(255,255,255,1)"
-            lineHeight="16px"
-            textAlign="left"
-            display="block"
-            shrink="0"
-            position="relative"
-            whiteSpace="pre-wrap"
-            >
-              Duplicate
-            </Text>
+                <Text
+                  fontSize={{ base: "12px", small: "16px" }}
+                  fontWeight="500"
+                  color="rgba(255,255,255,1)"
+                  lineHeight="16px"
+                  textAlign="left"
+                  display="block"
+                  shrink="0"
+                  position="relative"
+                  whiteSpace="pre-wrap"
+                >
+                  Duplicate
+                </Text>
               </Button>
               :
               null
@@ -183,7 +184,7 @@ export default function ViewBubbleModal({
 
         {/* Modal Body */}
         <Flex
-          //height="20%"
+          height="80%"
           gap="16px"
           padding="10px"
           direction="column"
@@ -191,140 +192,180 @@ export default function ViewBubbleModal({
           alignItems="stretch"
           position="relative"
         >
-          <Text
-            //fontFamily="Roboto"
-            fontSize={{ base: "12px", small: "24px" }}
-            fontWeight="700"
-            color="rgb(255, 255, 255)"
-            lineHeight="32px"
-            textAlign="center"
-            display="block"
-            shrink="0"
-            position="relative"
-            whiteSpace="pre-wrap"
-            textDecoration="underline"
-          >
-            {focusedBubble.title}
-          </Text>
-
+          {/* Top section (content body) */}
           <Flex
-            height="20%"
-            margin="20px"
-            padding="10px"
-            backgroundColor="rgba(255, 255, 255, 0.7)"
-            borderRadius="30px"
+            width="100%"
+            height="50%"
+            direction="column"
+            gap="0"
           >
-
-            <TextAreaField
-              label="Add bubble content:"
-              placeholder="Enter bubble content..."
-              isRequired={true}
-              rows={12}
-              variation="quiet"
-              labelHidden={true}
-              width="100%"
-              //height="290px"
-              height="100%"
-              padding="0px"
-              inputMode="text"
-              alignSelf="center"
-              value={focusedBubble.content}
-              readOnly
-            />
-          </Flex>
-          <Flex width={"100%"} direction={"column"} gap={"0"}>
+            {/* Title */}
             <Text
-              fontSize={{ base: "18px", small: "22px" }}
-              fontWeight="500"
-              color="rgba(255,255,255,1)"
-              lineHeight="16px"
+              height="20%"
+              //fontFamily="Roboto"
+              //fontSize={{ base: "12px", small: "24px" }}
+              fontSize="24px"
+              fontWeight="700"
+              color="rgb(255, 255, 255)"
+              lineHeight="32px"
               textAlign="center"
               display="block"
               shrink="0"
               position="relative"
               whiteSpace="pre-wrap"
+              textDecoration="underline"
+            >
+              {focusedBubble.title}
+            </Text>
+
+            {/* Content */}
+            <Flex
+              height="calc(80% - 40px)" // calc bc of margins
+              margin="20px"
+              padding="10px"
+              backgroundColor="rgba(255, 255, 255, 0.7)"
+              borderRadius="30px"
+            >
+              <TextAreaField
+                label="Add bubble content:"
+                placeholder="Enter bubble content..."
+                isRequired={true}
+                rows={12}
+                variation="quiet"
+                labelHidden={true}
+                width="100%"
+                //height="290px"
+                height="100%"
+                padding="0px"
+                inputMode="text"
+                alignSelf="center"
+                value={focusedBubble.content}
+                readOnly
+              />
+            </Flex>
+
+          </Flex>
+
+          {/* Bottom section (reference body) */}
+          <Flex
+            width="100%"
+            height="50%"
+            direction="column"
+          >
+            <Flex
+              width={"100%"}
+              height="80%"
+              direction={"column"}
+              gap={"5px"}
+            >
+              <Text
+                width="100%"
+                height="20%"
+                fontSize={{ base: "18px", small: "22px" }}
+                fontWeight="500"
+                color="rgba(255,255,255,1)"
+                lineHeight="16px"
+                textAlign="center"
+                display="block"
+                shrink="0"
+                position="relative"
+                whiteSpace="pre-wrap"
               >
                 References:
               </Text>
-            {/* Reference Bubble Container */}
-            <Flex
-            
-              padding="0px 0px 10px 0px"
-              direction="row"
-              alignItems="center"
-            >
-              {/* Reference Bubble Display Area */}
+              {/* Reference Bubble Container */}
               <Flex
                 width="100%"
-                height="140px"
-                overflow="auto"
-                backgroundColor="rgba(255, 255, 255, 0.7)"
+                height="80%"
+                padding="0px 0px 10px 0px"
                 direction="row"
-                gap="10px"
-                borderRadius="30px"
-                margin="20px"
-                padding="10px"
                 alignItems="center"
               >
-                {references &&
-                  references.map((ref, index) => {
-                    return (
-                      <Flex
-                        key={index + 1}
-                        width="100px"
-                        height="70px"
-                        backgroundColor="rgba(142, 252, 252, 0.2)"
-                        gap="0"
-                        borderRadius="30px"
-                        //padding="20px"
-                        textAlign="center"
-                        justifyContent="center"
-                        alignItems="center"
-                        fontSize="10px"
-                        position="relative"
-                        style={{
-                          cursor: 'pointer',
-                          outline: '5px solid',
-                          outlineColor: refColors[index]
-                        }}
-                      >
+                {/* Reference Bubble Display Area */}
+                <Flex
+                  width="100%"
+                  height="100%"
+                  overflow="auto"
+                  backgroundColor="rgba(255, 255, 255, 0.7)"
+                  direction="row"
+                  gap="10px"
+                  borderRadius="30px"
+                  margin="20px"
+                  padding="10px"
+                  alignItems="center"
+                  justifyContent="start"
+                >
+                  {references &&
+                    references.map((ref, index) => {
+                      return (
                         <Flex
-                          width="100%"
-                          height="100%"
-                          overflow="hidden"
+                          key={index + 1}
+                          width="100px"
+                          height="70px"
+                          shrink="0"
+                          backgroundColor="rgba(142, 252, 252, 0.2)"
+                          gap="0"
+                          borderRadius="30px"
+                          //padding="20px"
                           textAlign="center"
                           justifyContent="center"
                           alignItems="center"
+                          fontSize="10px"
+                          position="relative"
+                          style={{
+                            cursor: 'pointer',
+                            outline: '5px solid',
+                            outlineColor: refColors[index]
+                          }}
                         >
-                          {ref.title}
+                          <Flex
+                            width="100%"
+                            height="100%"
+                            overflow="hidden"
+                            textAlign="center"
+                            justifyContent="center"
+                            alignItems="center"
+                          >
+                            {ref.title}
+                          </Flex>
                         </Flex>
-                      </Flex>
-                    );
-                  })
-                }
+                      );
+                    })
+                  }
+                </Flex>
+              </Flex>
+            </Flex>
+
+            {/* Comment Button */}
+            <Flex
+              width="100%"
+              height="20%"
+            >
+              <Flex
+                height="40px"
+              >
+                <Button
+                  size='small'
+                  onClick={onComment}
+                >
+                  <Text
+                    fontSize={{ base: "12px", small: "16px" }}
+                    fontWeight="500"
+                    color="rgba(255,255,255,1)"
+                    lineHeight="16px"
+                    textAlign="left"
+                    display="block"
+                    shrink="0"
+                    position="relative"
+                    whiteSpace="pre-wrap"
+                  >
+                    Comments
+                  </Text>
+                </Button>
               </Flex>
             </Flex>
           </Flex>
-          <Flex>
-            <Button
-              size='small'
-              onClick={onComment}
-            >
-              <Text 
-            fontSize={{ base: "12px", small: "16px" }} 
-            fontWeight="500" 
-            color="rgba(255,255,255,1)"
-            lineHeight="16px"
-            textAlign="left"
-            display="block"
-            shrink="0"
-            position="relative"
-            whiteSpace="pre-wrap"
-            >
-              Comments
-            </Text>
-            </Button>
-          </Flex>
+
         </Flex>
 
       </Flex>
