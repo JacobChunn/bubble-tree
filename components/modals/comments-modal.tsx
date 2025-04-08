@@ -12,6 +12,7 @@ interface ModalProps {
   onBack: () => void,
   focusedBubble: BubbleType | null,
   isNotOwnProfile: boolean,
+  isVerified: boolean,
 }
 
 type CommentType = {
@@ -29,6 +30,7 @@ export default function CommentsModal({
   onBack,
   focusedBubble,
   isNotOwnProfile,
+  isVerified,
 }: ModalProps) {
 
   const [comments, setComments] = useState<CommentType[] | null>(null);
@@ -198,7 +200,7 @@ export default function CommentsModal({
           </Flex>
 
           {/* Comment Drafting Section */}
-          {isNotOwnProfile &&
+          { isVerified &&
             <Flex
               height="130px"
               padding="20px"

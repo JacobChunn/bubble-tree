@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 interface ModalProps {
   isOpen: boolean,
   onClose: () => void,
+  onVerify: () => void,
 }
 
 type LoadingType = "unloaded" | "loading" | "loaded";
@@ -13,6 +14,7 @@ type LoadingType = "unloaded" | "loading" | "loaded";
 export default function Verify({
   isOpen,
   onClose,
+  onVerify,
 }: ModalProps) {
 
   const [phone, setPhone] = useState<string>("");
@@ -26,6 +28,9 @@ export default function Verify({
     const phoneRes = await addPhone(phone);
 
     setLoading(phoneRes ? "loaded" : "unloaded");
+
+    onVerify();
+
     onClose();
   }
 
