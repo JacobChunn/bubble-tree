@@ -257,7 +257,7 @@ export default function App({
   return (
     // <AuthWrapper>
     <main style={{ minWidth: "100vw", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Header verified={verified} />
+      <Header verified={verified} searchParamUsername={searchParamUsername} />
       {(modalState === "create" || modalState === "addRef") && (
         <BubbleFormModal
           mode="create"
@@ -324,97 +324,97 @@ export default function App({
         onVerify={() => { setVerified(true) }}
       />
 
-      <Flex
-        width="100%"
-        justifyContent="center"
-        alignSelf="center"
-        direction="column"
-        textAlign="center"
-        gap="0px"
-      >
-        {/* Button bar */}
+      {username === searchParamUsername ?
         <Flex
-          margin="10px"
-          padding={username !== searchParamUsername ? "20px" : "10px"} // bigger padding
-          height={username !== searchParamUsername ? "50px" : "auto"} // optional bigger height
-          borderRadius="40px"
-          backgroundColor="rgba(0,0,0,0.3)"
-          justifyContent="space-between"
-          alignItems="center"
-          position="relative"
+          width="100%"
+          justifyContent="center"
+          alignSelf="center"
+          direction="column"
+          textAlign="center"
+          gap="0px"
         >
-
-          {/* Left Group */}
-          <Flex gap="10px">
-            {username === searchParamUsername && (
-              <>
-                <Button
-                  gap="8px"
-                  onClick={() => setModalState("create")}
-                  padding="12px 8px"
-                  borderRadius="20px"
-                  borderColor="rgb(0,0,0)"
-                >
-                  <Text fontSize={{ base: "12px", small: "12px" }} fontWeight="500" color="rgba(255,255,255,1)">
-                    Create Bubble
-                  </Text>
-                </Button>
-
-                <SwitchField
-                  label="Edit"
-                  labelPosition="end"
-                  isChecked={editToggle}
-                  onChange={() => setEditToggle(!editToggle)}
-                />
-
-                {verified && <Button
-                  gap="8px"
-                  onClick={() => setModalState("createGroup")}
-                  padding="12px 8px"
-                  borderRadius="20px"
-                  borderColor="rgb(0,0,0)"
-                >
-                  <Text fontSize={{ base: "12px", small: "12px" }} fontWeight="500" color="rgba(255,255,255,1)">
-                    Create Group
-                  </Text>
-                </Button>}
-
-              </>
-            )}
-          </Flex>
-
-          {/* Centered Username */}
-          <Flex position="absolute" left="50%" transform="translateX(-50%)">
-            <Text fontSize="18px" fontWeight="600" color="white">
-              {username === searchParamUsername ? "My Profile" : `${searchParamUsername}'s Profile`}
-            </Text>
-          </Flex>
-
-          {/* Right-aligned Get Verified Button */}
-          {!verified && <Button
-            gap="8px"
-            onClick={() => setModalState("verify")}
-            padding="12px 8px"
-            borderRadius="20px"
-            borderColor="rgb(0,0,0)"
-            style={{
-              marginRight: "40px"
-            }}
+          {/* Button bar */}
+          <Flex
+            margin="10px 10px 0px 10px"
+            padding={username !== searchParamUsername ? "20px" : "10px"} // bigger padding
+            height={username !== searchParamUsername ? "50px" : "auto"} // optional bigger height
+            borderRadius="40px"
+            backgroundColor="rgba(0,0,0,0.3)"
+            justifyContent="space-between"
+            alignItems="center"
+            position="relative"
           >
-            <Text fontSize={{ base: "12px", small: "12px" }} fontWeight="500" color="rgba(255,255,255,1)">
-              Get Verified
-            </Text>
-          </Button>}
+
+            {/* Left Group */}
+            <Flex gap="10px">
+              {username === searchParamUsername && (
+                <>
+                  <Button
+                    gap="8px"
+                    onClick={() => setModalState("create")}
+                    padding="12px 8px"
+                    borderRadius="20px"
+                    borderColor="rgb(0,0,0)"
+                  >
+                    <Text fontSize={{ base: "12px", small: "12px" }} fontWeight="500" color="rgba(255,255,255,1)">
+                      Create Bubble
+                    </Text>
+                  </Button>
+
+                  <SwitchField
+                    label="Edit"
+                    labelPosition="end"
+                    isChecked={editToggle}
+                    onChange={() => setEditToggle(!editToggle)}
+                  />
+
+                  {verified && <Button
+                    gap="8px"
+                    onClick={() => setModalState("createGroup")}
+                    padding="12px 8px"
+                    borderRadius="20px"
+                    borderColor="rgb(0,0,0)"
+                  >
+                    <Text fontSize={{ base: "12px", small: "12px" }} fontWeight="500" color="rgba(255,255,255,1)">
+                      Create Group
+                    </Text>
+                  </Button>}
+
+                </>
+              )}
+            </Flex>
+
+
+
+            {/* Right-aligned Get Verified Button */}
+            {!verified && <Button
+              gap="8px"
+              onClick={() => setModalState("verify")}
+              padding="12px 8px"
+              borderRadius="20px"
+              borderColor="rgb(0,0,0)"
+              style={{
+                marginRight: "40px"
+              }}
+            >
+              <Text fontSize={{ base: "12px", small: "12px" }} fontWeight="500" color="rgba(255,255,255,1)">
+                Get Verified
+              </Text>
+            </Button>}
+          </Flex>
         </Flex>
-      </Flex>
+        :
+        null
+      }
 
 
 
       {/* Bubble Display Area*/}
       <Flex
+        height="calc(100% - 20px)"
         width="calc(100% - 20px)"
         flex="1"
-        //margin="10px"
+        margin="10px 0px"
         justifyContent="space-evenly"
         backgroundColor="rgba(255, 255, 255, 0.5)"
         alignSelf="center"
@@ -469,7 +469,7 @@ export default function App({
           ))
           : null}
       </Flex>
-      
+
 
     </main>
     // </AuthWrapper>
