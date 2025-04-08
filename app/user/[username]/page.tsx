@@ -24,6 +24,8 @@ import CommentsModal from "@/components/modals/comments-modal";
 import AddRefModal from "@/components/modals/add-ref-modal";
 import BubbleFormModal, { ReferenceBubbleType } from "@/components/modals/bubble-form-modal";
 import { Icon } from '@iconify/react';
+import VerifyModal from "@/components/modals/verify-modal";
+import { getVerified } from "@/app/actions/get-verified";
 //const client = generateClient<Schema>();
 /*
 1.) get user email
@@ -90,6 +92,7 @@ export default function App({
   const [groups, setGroups] = useState<GroupType[] | null>(null);
   const [loadingGroups, setLoadingGroups] = useState<LoadingType>("unloaded");
   const [username, setUsername] = useState<string | null>(null);
+  const [verified, setVerified] = useState<boolean>(false);
   const [searchParamUsername, setSearchParamUsername] = useState<string | null>(null);
   const [references, setReferences] = useState<ReferenceBubbleType[] | null>(null);
 
@@ -135,8 +138,13 @@ export default function App({
 
     const loadUsername = async () => {
       const usernameRes = await getCurrentUsername();
+      const verifiedRes = usernameRes ? await getVerified(usernameRes) : false;
+      console.log("Verified?: ", verifiedRes)
       setUsername(usernameRes ? usernameRes : null);
+      setVerified(verifiedRes);
     }
+
+
 
     const loadBubbleRecords = async () => {
       setLoadingBubbles("loading")
@@ -302,6 +310,10 @@ export default function App({
         modalState={modalState}
         onBack={(state: ModalStateType) => setModalState(state)}
         setReferences={setReferences}
+      />
+      <VerifyModal
+        isOpen={modalState == "verify"}
+        onClose={() => { setModalState(false); }}
       />
 
       {/* Button bar container */}
