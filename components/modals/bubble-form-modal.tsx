@@ -397,9 +397,9 @@ export default function BubbleFormModal(props: BubbleModalProps) {
   return (
     <div className="modal-overlay">
       <Flex
-        backgroundColor="rgb(255,255,255)"
-        width="calc(100vw - 20px)"
-        height="calc(100vh - 20px)"
+        backgroundColor="rgb(0, 135, 139)"
+        width={{ base: "100%", medium: "90%" }}
+        height="90%"
         boxShadow="10px 10px 20px rgba(0, 0, 0, 0.3)"
         borderRadius="30px"
         direction="column"
@@ -407,8 +407,10 @@ export default function BubbleFormModal(props: BubbleModalProps) {
       >
         {/* Modal Header */}
         <Flex
-          justifyContent="right"
-          padding="15px 15px 0 0"
+          height="10%"
+          justifyContent="flex-end"
+          alignItems="center"
+          padding="15px"
         >
           <XMarkIcon
             width="30px"
@@ -416,292 +418,218 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             style={{ cursor: 'pointer' }}
           />
         </Flex>
-
-        {/* Modal Form Body */}
+  
+        {/* Modal Body */}
         <Flex
-          id="bubble-form"
-          gap="16px"
-          padding="10px"
+          height="80%"
+          gap="20px"
+          padding="20px"
           direction="column"
-          justifyContent="flex-start"
-          alignItems="stretch"
-          position="relative"
+          alignItems="center"
+          overflow="auto"
         >
+          {/* Title Input */}
           <TextField
+            className="white-label white-placeholder"
             size="small"
             label={mode === "edit" ? "Edit bubble title:" : "Add bubble title:"}
-            placeholder={mode === "edit" ? "Enter bubble title..." : "Enter bubble title..."}
+            placeholder="Enter bubble title..."
             isRequired={true}
             width="40%"
-            //height="76px"
             inputMode="text"
-            alignSelf="center"
             value={formState.title}
             onChange={handleInputChange('title')}
+            style={{ backgroundColor: 'rgb(161, 235, 238)' }}
           />
 
-          <Label
-            alignSelf="center"
-            fontSize="14px"
-          >
-            Add Content:
-          </Label>
 
-          {/* <div
-            style={{
-              borderBottom: "1px solid"
-            }}
-          />
+  
+          {/* Content Input */}
+{/* Content Input */}
+<TextAreaField
+  ref={textAreaRef}
+  className="white-label white-placeholder"
+  size="small"
+  label={mode === "edit" ? "Edit bubble content:" : "Add bubble content:"}
+  isRequired={true}
+  rows={4}
+  width="80%"
+  inputMode="text"
+  value={formState.content}
+  onChange={handleInputChange('content')}
+  style={{ backgroundColor: 'rgb(161, 235, 238)' }}
+  labelHidden={false} // Make sure the label is visible
+/>
 
-          <Editor
-            editorState={editorState}
-            onChange={setEditorState}
-            //handleKeyCommand={handleKeyCommand}
-            customStyleMap={styleMap}
-            
-          //placeholder="Type some text and select it, then click 'Toggle Highlight' to apply a highlight."
 
-          />
+{/* Coordinate & Group/Category Selection */}
+<Flex
+  direction="row"
+  gap="16px"
+  justifyContent="center"
+  alignItems="center"
+>
+  <TextField
+    className="white-label white-placeholder"
+    size="small"
+    label="X Coordinate"
+    placeholder="x..."
+    isRequired={true}
+    width="150px"
+    inputMode="numeric"
+    pattern="[0-9]*"
+    value={formState.x}
+    onChange={handleInputChange('x')}
+    style={{ backgroundColor: 'rgb(161, 235, 238)' }}
+  />
+  <TextField
+    className="white-label white-placeholder"
+    size="small"
+    label="Y Coordinate"
+    placeholder="y..."
+    isRequired={true}
+    width="150px"
+    inputMode="numeric"
+    pattern="[0-9]*"
+    value={formState.y}
+    onChange={handleInputChange('y')}
+    style={{ backgroundColor: 'rgb(161, 235, 238)' }}
+  />
+  {isVerified && loadingGroups === "loaded" && groups !== null && (
+  <SelectField
+    className="white-label"
+    size="small"
+    label="Group"
+    value={selectedGroup}
+    onChange={(e) => setSelectedGroup(e.target.value)}
+    style={{ backgroundColor: 'rgb(161, 235, 238)', color: 'black' }} // Set text color to black
+  >
+    <option value={undefined}>No Group</option>
+    {groups.map((group, index) => (
+      <option value={group.id} key={index} style={{ color: 'black' }}> {/* Option text color to black */}
+        {group.name}
+      </option>
+    ))}
+  </SelectField>
+)}
 
-          <div
-            style={{
-              borderTop: "1px solid"
-            }}
-          /> */}
+{isVerified && (
+  <SelectField
+    className="white-label"
+    size="small"
+    label="Category Icon"
+    value={selectedIcon}
+    onChange={(e) => {
+      setSelectedIcon(e.target.value);
+      setFormState(prev => ({ ...prev, iconName: e.target.value }));
+    }}
+    style={{ backgroundColor: 'rgb(161, 235, 238)', color: 'black' }} // Set text color to black
+  >
+    <option value="">No Icon</option>
+    {CATEGORY_ICONS.map(icon => (
+      <option key={icon.value} value={icon.value} style={{ color: 'black' }}> {/* Option text color to black */}
+        {icon.name}
+      </option>
+    ))}
+  </SelectField>
+)}
 
-          <TextAreaField
-            ref={textAreaRef}
-            labelHidden
-            size="small"
-            label={mode === "edit" ? "Edit bubble content:" : "Add bubble content:"}
-            //placeholder={mode === "edit" ? "Enter bubble content..." : "Enter bubble content..."}
-            isRequired={true}
-            rows={2}
-            width="80%"
-            //height="120px"
-            inputMode="text"
-            alignSelf="center"
-            value={formState.content}
-            onChange={handleInputChange('content')}
-          />
+</Flex>
 
-          {/* <HighlightWithinTextarea
-              //ref={editorRef}
-
-              placeholder=""
-              value={formState.content}
-              onChange={(value) => {
-                setFormState({ ...formState, content: value });
-              }}
-            /> */}
-
+  
+          {/* Reference Section */}
           <Flex
-            justifyContent="center"
-            alignItems="start"
+            width="100%"
+            direction="column"
+            alignItems="center"
+            gap="10px"
           >
-            {/* <Flex justifyContent="center"> */}
-            <TextField
-              size="small"
-              label={mode === "edit" ? "Edit bubble x coordinate:" : "Add bubble x coordinate:"}
-              placeholder="x coordinate..."
-              isRequired={true}
-              width="200px"
-              //height="76px"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={formState.x}
-              onChange={handleInputChange('x')}
-            />
-            <TextField
-              size="small"
-              label={mode === "edit" ? "Edit bubble y coordinate:" : "Add bubble y coordinate:"}
-              placeholder="y coordinate..."
-              isRequired={true}
-              width="200px"
-              //height="76px"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={formState.y}
-              onChange={handleInputChange('y')}
-            />
-            {/* </Flex> */}
-            {isVerified ? loadingGroups === "loaded" && groups !== null ? (
-              <SelectField
-                size="small"
-                style={{ float: "right" }}
-                label="Group"
-                value={selectedGroup}
-                onChange={(e) => setSelectedGroup(e.target.value)}
-              >
-                <option value={undefined}>No Group</option>
-                {groups.map((group, index) => (
-                  <option value={group.id} key={index}>{group.name}</option>
-                ))}
-              </SelectField>
-            ) : (
-              "Groups are " + loadingGroups
-            ) : null}
-
-            {isVerified ?
-              <SelectField
-                size="small"
-                label="Category Icon"
-                value={selectedIcon}
-                onChange={(e) => {
-                  setSelectedIcon(e.target.value);
-                  setFormState(prev => ({ ...prev, iconName: e.target.value }));
-                }}
-              >
-                <option value="">No Icon</option>
-                {CATEGORY_ICONS.map(icon => (
-                  <option key={icon.value} value={icon.value}>
-                    {icon.name}
-                  </option>
-                ))}
-              </SelectField>
-              : null}
-
-          </Flex>
-
-        </Flex>
-
-
-
-        {/* Reference Bubble Container */}
-        <Flex
-          padding="10px"
-          direction="row"
-          alignItems="center"
-        >
-          <Flex>
             <Button
               size="small"
-              whiteSpace="nowrap"
               onClick={props.openRefModal}
+              style={{ color: 'white' }}
+              backgroundColor="rgb(81, 194, 194)"
             >
               Add Reference
             </Button>
-          </Flex>
-
-          {/* Reference Bubble Display Area */}
-          <Flex
-            width="100%"
-            height="100px"
-            overflow="auto"
-            backgroundColor="rgba(81, 194, 194, 0.2)"
-            direction="row"
-            gap="10px"
-            borderRadius="30px"
-            margin="20px"
-            padding="10px"
-            alignItems="center"
-          >
-            {references &&
-              references.map((ref, index) => {
-                return (
+  
+            <Flex
+              width="90%"
+              height="100px"
+              overflow="auto"
+              backgroundColor="rgba(255, 255, 255, 0.7)"
+              direction="row"
+              gap="10px"
+              borderRadius="30px"
+              padding="10px"
+              alignItems="center"
+              justifyContent="start"
+            >
+              {references && references.map((ref, index) => (
+                <Flex
+                  key={ref.id}
+                  width="100px"
+                  height="70px"
+                  backgroundColor="rgba(142, 252, 252, 0.2)"
+                  borderRadius="30px"
+                  fontSize="10px"
+                  position="relative"
+                  justifyContent="center"
+                  alignItems="center"
+                  textAlign="center"
+                  style={{
+                    outline: '5px solid',
+                    outlineColor: refColors[index]
+                  }}
+                >
                   <Flex
-                    key={index + 1}
-                    width="100px"
-                    height="70px"
-                    backgroundColor="rgba(81, 194, 194, 0.2)"
-                    gap="0"
-                    borderRadius="30px"
-                    //padding="20px"
-                    textAlign="center"
+                    width="100%"
+                    height="100%"
+                    overflow="hidden"
                     justifyContent="center"
                     alignItems="center"
-                    fontSize="10px"
-                    position="relative"
-                    style={{
-                      //cursor: 'pointer',
-                      outline: '5px solid',
-                      outlineColor: refColors[index]
-                    }}
-                    onMouseDown={(e) => e.preventDefault()}
-                  //onClick={() => addHighlight(index)}
-
                   >
-                    <Flex
-                      width="100%"
-                      height="100%"
-                      overflow="hidden"
-                      textAlign="center"
-                      justifyContent="center"
-                      alignItems="center"
-                    >
-                      {ref.title}
-                    </Flex>
-                    <XCircleIcon
-                      width="20px"
-                      style={{
-                        cursor: 'pointer',
-                        position: 'absolute',  // Position the icon absolutely within the parent
-                        top: '-5',
-                        right: '-5',
-                      }}
-                      color='rgb(255,0,0)'
-                      onClick={() => deleteReference(ref.id)}
-                    />
-                    <Flex
-                      position="absolute"
-                      top="-5"
-                      left="-5"
-                    >
-
-                    </Flex>
+                    {ref.title}
                   </Flex>
-                );
-              })
-            }
-
+                  <XCircleIcon
+                    width="20px"
+                    style={{
+                      cursor: 'pointer',
+                      position: 'absolute',
+                      top: '-5px',
+                      right: '-5px',
+                    }}
+                    color='rgb(255,0,0)'
+                    onClick={() => deleteReference(ref.id)}
+                  />
+                </Flex>
+              ))}
+            </Flex>
           </Flex>
         </Flex>
-
-        {/* Footer Section */}
-        <Flex justifyContent="center" gap="16px" padding="10px">
+  
+        {/* Footer */}
+        <Flex
+          height="10%"
+          justifyContent="center"
+          alignItems="center"
+          gap="16px"
+        >
           {mode === "edit" && (
             <Button
-              gap="8px"
-              direction="row"
-              justifyContent="flex-start"
-              alignItems="center"
-              padding="12px 8px"
               borderRadius="20px"
-              borderColor="rgb(0,0,0)"
               backgroundColor="rgb(221, 0, 0)"
               onClick={handleDelete}
             >
-              <Text
-                fontSize={{ base: "12px", small: "12px" }}
-                fontWeight="500"
-                color="rgba(255,255,255,1)"
-                lineHeight="16px"
-                textAlign="left"
-                whiteSpace="pre-wrap"
-              >
-                Delete Bubble
-              </Text>
+              <Text color="white">Delete Bubble</Text>
             </Button>
           )}
           <Button
-            gap="8px"
-            direction="row"
-            justifyContent="flex-start"
-            alignItems="center"
-            padding="12px 8px"
             borderRadius="20px"
-            borderColor="rgb(0,0,0)"
             backgroundColor="rgb(81, 194, 194)"
             onClick={handleSubmit}
           >
-            <Text
-              fontSize={{ base: "12px", small: "12px" }}
-              fontWeight="500"
-              color="rgba(255,255,255,1)"
-              lineHeight="16px"
-              textAlign="left"
-              whiteSpace="pre-wrap"
-            >
+            <Text color="white">
               {mode === "edit" ? "Update Bubble" : "Create Bubble"}
             </Text>
           </Button>
@@ -709,4 +637,5 @@ export default function BubbleFormModal(props: BubbleModalProps) {
       </Flex>
     </div>
   );
+  
 }

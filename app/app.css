@@ -78,3 +78,17 @@ main {
   margin-left: 1%;
   margin-bottom: -7%;
 }
+
+.white-label label {
+  color: white !important;
+}
+
+.white-placeholder input::placeholder,
+.white-placeholder textarea::placeholder {
+  color: white !important;
+  opacity: 0.7;
+}
+
+.white-label select {
+  color: white;
+}
