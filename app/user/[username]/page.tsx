@@ -406,9 +406,9 @@ export default function App({
             <Flex
               key={index}
               //re-added fixed width, but fixed previous issue we were having with it
-              width = "32%"
-              minWidth="200px"
-              
+              width = {{ small: '80%', medium: "45%" ,large: '32%' }}
+              //minWidth="200px"
+              //className=""
               //padding="15px"
               backgroundColor={
                 bubble.groupID && loadingGroups === "loaded"
