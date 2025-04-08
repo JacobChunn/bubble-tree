@@ -443,7 +443,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             Add Content:
           </Label>
 
-          <div
+          {/* <div
             style={{
               borderBottom: "1px solid"
             }}
@@ -463,9 +463,9 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             style={{
               borderTop: "1px solid"
             }}
-          />
+          /> */}
 
-          {/* <TextAreaField
+          <TextAreaField
             ref={textAreaRef}
             labelHidden
             size="small"
@@ -479,7 +479,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             alignSelf="center"
             value={formState.content}
             onChange={handleInputChange('content')}
-          /> */}
+          />
 
           {/* <HighlightWithinTextarea
               //ref={editorRef}
