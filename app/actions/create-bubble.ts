@@ -74,7 +74,7 @@ export async function createBubble(bubbleInfo: CreateBubbleType) {
       console.log("Bubble created!: ", simplifiedBubbleData)
 
       if (bubbleInfo.referenceIDs) {
-        addRefBubbles(id, bubbleInfo.referenceIDs);
+        await addRefBubbles(id, bubbleInfo.referenceIDs);
       }
 
       return simplifiedBubbleData;

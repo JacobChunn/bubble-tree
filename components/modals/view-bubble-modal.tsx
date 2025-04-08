@@ -58,9 +58,10 @@ export default function ViewBubbleModal({
   
     }, [isOpen, focusedBubble])
 
+    const router = useRouter();
+
   if (!isOpen || !focusedBubble) return null;
 
-  const router = useRouter();
 
   console.log("focusedBubble.groupID: ", focusedBubble.groupID)
 

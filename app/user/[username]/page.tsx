@@ -248,7 +248,7 @@ export default function App({
     // <AuthWrapper>
     <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Header />
-      {modalState === "create" && (
+      {(modalState === "create" || modalState === "addRef") && (
         <BubbleFormModal
           mode="create"
           isOpen={true}
@@ -261,7 +261,7 @@ export default function App({
           references={references}
         />
       )}
-      {modalState === "edit" && focusedBubble && (
+      {(modalState === "edit" || modalState === "addRef") && focusedBubble && (
         <BubbleFormModal
           mode="edit"
           isOpen={true}
@@ -278,7 +278,7 @@ export default function App({
       )}
       <ViewBubbleModal
         isOpen={modalState == "view"}
-        onClose={() => setModalState(false)}
+        onClose={() => {setModalState(false); setReferences(null);}}
         focusedBubble={focusedBubble}
         groups={groups}
         loadingGroups={loadingGroups}

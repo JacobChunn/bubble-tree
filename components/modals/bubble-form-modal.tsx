@@ -206,7 +206,8 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             y: Number(formState.y)
           },
           groupID: selectedGroup,
-          iconName: selectedIcon
+          iconName: selectedIcon,
+          referenceIDs: references ? references.map(item => item.id) : []
         }
         const updatedBubble = await editBubble(formBubble);
         if (!updatedBubble) return;
@@ -606,12 +607,12 @@ export default function BubbleFormModal(props: BubbleModalProps) {
                     fontSize="10px"
                     position="relative"
                     style={{
-                      cursor: 'pointer',
+                      //cursor: 'pointer',
                       outline: '5px solid',
                       outlineColor: refColors[index]
                     }}
                     onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => addHighlight(index)}
+                    //onClick={() => addHighlight(index)}
 
                   >
                     <Flex

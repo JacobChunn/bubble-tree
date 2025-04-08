@@ -2,6 +2,7 @@
 
 import { AuthFetchUserAttributesServer, AuthGetCurrentUserServer, cookiesClient } from "@/utils/amplify-utils";
 import { createUserRecord } from "./create-user-record";
+import updateRefBubbles from "./update-ref-bubbles";
 
 export type EditBubbleType = {
   replaceID: string,
@@ -12,6 +13,7 @@ export type EditBubbleType = {
     y: number
   },
   groupID?: string,
+  referenceIDs: string[],
   iconName?: string
 }
 
@@ -91,6 +93,11 @@ export async function editBubble(bubbleInfo: EditBubbleType) {
       const { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID } = updatedBubble.data;
       const simplifiedBubbleData = { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID };
       console.log("Bubble updated!: ", simplifiedBubbleData)
+
+      if (bubbleInfo.referenceIDs) {
+        await updateRefBubbles(id, bubbleInfo.referenceIDs)
+      }
+
       return simplifiedBubbleData;
     }
 
