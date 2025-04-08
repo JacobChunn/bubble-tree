@@ -183,6 +183,7 @@ export default function ViewBubbleModal({
 
         {/* Modal Body */}
         <Flex
+          //height="20%"
           gap="16px"
           padding="10px"
           direction="column"
@@ -207,8 +208,9 @@ export default function ViewBubbleModal({
           </Text>
 
           <Flex
+            height="20%"
             margin="20px"
-            padding="20px"
+            padding="10px"
             backgroundColor="rgba(255, 255, 255, 0.7)"
             borderRadius="30px"
           >
@@ -221,7 +223,9 @@ export default function ViewBubbleModal({
               variation="quiet"
               labelHidden={true}
               width="100%"
-              height="290px"
+              //height="290px"
+              height="100%"
+              padding="0px"
               inputMode="text"
               alignSelf="center"
               value={focusedBubble.content}
