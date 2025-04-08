@@ -1,7 +1,7 @@
 "use client"
 
 import { getNewlyAdded } from "@/app/actions/get-newly-added";
-import { LoadingResultsType } from "@/app/explore/page";
+import { LoadingResultsType } from "@/components/search";
 import { Flex, FlexProps, Label, Text } from "@aws-amplify/ui-react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
