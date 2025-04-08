@@ -69,8 +69,8 @@ export async function createBubble(bubbleInfo: CreateBubbleType) {
     if (newBubble.errors == undefined) {
       console.log("newBubble.data: ", newBubble.data)
 
-      const { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID } = newBubble.data;
-      const simplifiedBubbleData = { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID };
+      const { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID, iconName } = newBubble.data;
+      const simplifiedBubbleData = { id, title, content, type, author, dateCreated, bubbleCoordinates, groupID, iconName };
       console.log("Bubble created!: ", simplifiedBubbleData)
 
       if (bubbleInfo.referenceIDs) {
