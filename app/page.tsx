@@ -13,10 +13,6 @@ import { Button, Flex, SwitchField, Text, ToggleButton, useAuthenticator } from 
 import { createBubble } from "./actions/create-bubble";
 import { createUserRecord } from "./actions/create-user-record";
 import { getUserBubbleRecords } from "./actions/get-user-bubble-records";
-import CreateBubbleModal from "@/components/modals/create-bubble-modal";
-import ViewBubbleModal from "@/components/modals/view-bubble-modal";
-import EditBubbleModal from "@/components/modals/edit-bubble-modal";
-
 //const client = generateClient<Schema>();
 
 /*
@@ -27,14 +23,7 @@ import EditBubbleModal from "@/components/modals/edit-bubble-modal";
 */
 
 
-
-
-
 export default function App() {
-
-
-
-
   
     // Load Bubble records
   // useEffect(() => {

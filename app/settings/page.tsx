@@ -13,9 +13,7 @@ import { AccountSettings, Button, Flex, SwitchField, Text, ToggleButton, useAuth
 import { createBubble } from "@/app/actions/create-bubble";
 import { createUserRecord } from "@/app/actions/create-user-record";
 import { getUserBubbleRecords } from "@/app/actions/get-user-bubble-records";
-import CreateBubbleModal from "@/components/modals/create-bubble-modal";
 import ViewBubbleModal from "@/components/modals/view-bubble-modal";
-import EditBubbleModal from "@/components/modals/edit-bubble-modal";
 
 //const client = generateClient<Schema>();
 
