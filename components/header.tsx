@@ -54,19 +54,33 @@ export default function Header({
         zIndex: 1000,
       }}
     >
-      {/* Logo Image */}
-      <Link href="/">
-        <Image
-          width="50px"
-          height="50px"
-          display="block"
-          shrink="0"
-          position="relative"
-          objectFit="scale-down"
-          alt="Logo Image"
-          src='/b_tree_no_bg.png'
-          //borderRadius="5px"
-        />
+      {/* Logo Image and Title */}
+      <Link href="/" style={{ textDecoration: "none" }}>
+        <Flex
+          direction="row"
+          alignItems="center"
+          gap="8px"
+        >
+          <Image
+            width="50px"
+            height="50px"
+            display="block"
+            shrink="0"
+            position="relative"
+            objectFit="scale-down"
+            alt="Logo Image"
+            src='/b_tree_no_bg.png'
+          />
+          <Text
+            fontSize={{ base: "16px", medium: "20px" }}
+            fontWeight="600"
+            color="white"
+            lineHeight="1"
+            whiteSpace="nowrap"
+          >
+            Bubble Tree
+          </Text>
+        </Flex>
       </Link>
       
       {/* Menu Item Container */}
