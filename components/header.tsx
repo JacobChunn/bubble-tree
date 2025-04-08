@@ -245,26 +245,28 @@ export default function Header({
       <Flex
         width="100%"
         justifyContent="space-between"
-        backgroundColor="rgb(0, 135, 139)"
+        backgroundColor="rgb(46, 152, 156)"
+        //backgroundColor="rgb(0, 135, 139)" // old color
         direction="row"
       >
-        {searchParamUsername ? 
-        <Text
-          fontSize={{ base: "10px", small: "12px", medium: "16px" }}
-          fontWeight="500"
-          color="rgba(255,255,255,1)"
-          lineHeight="16px"
-          textAlign="left"
-          display="block"
-          shrink="0"
-          position="relative"
-          whiteSpace="pre-wrap"
-          margin={{ base: "5px", small: "5px", medium: "5px 100px" }}
-        >
-          {username === searchParamUsername ? "My Profile" : `${searchParamUsername}'s Profile`}
-        </Text>
-        :
-        <Flex/>
+        {searchParamUsername ?
+          <Text
+            fontSize={{ base: "10px", small: "12px", medium: "16px" }}
+            fontWeight="500"
+            color="rgba(255,255,255,1)"
+            lineHeight="16px"
+            textAlign="center"
+            alignSelf="center"
+            display="block"
+            shrink="0"
+            position="relative"
+            whiteSpace="pre-wrap"
+            margin={{ base: "5px", small: "5px", medium: "5px 100px" }}
+          >
+            {username === searchParamUsername ? "My Profile" : `${searchParamUsername}'s Profile`}
+          </Text>
+          :
+          <Flex />
         }
 
         {username ?
@@ -278,7 +280,7 @@ export default function Header({
             Welcome, {verified ? Badge : ""}{username}
           </Text>
           :
-          <Flex/>
+          <Flex />
         }
       </Flex>
     </Flex>

@@ -88,8 +88,8 @@ export default function CreateGroupModal({
       <Flex
         //className="modal-content"
         backgroundColor="rgb(255,255,255)"
-        width="calc(100vw - 100px)"
-        height="calc(100vh - 100px)"
+        width={{ base: "100%", medium: "50%" }}
+        height="50%"
         boxShadow="10px 10px 20px rgba(0, 0, 0, 0.3)"
         borderRadius="30px"
         direction="column"
@@ -97,6 +97,8 @@ export default function CreateGroupModal({
       >
         {/* Modal Header */}
         <Flex
+          width="100%"
+          height="50px"
           justifyContent="right"
           padding="15px 15px 0 0"
           onClick={onClose}
@@ -105,27 +107,13 @@ export default function CreateGroupModal({
           <XMarkIcon width="30px" />
         </Flex>
 
-
-        {/* <div>
-          <form
-            id="create-group-form"
-          >
-            <input>
-            </input>
-          </form>
-          <button
-            form="create-group-form"
-            type='submit'
-          >
-          </button>
-        </div> */}
-
-
         {/* Modal Form Body */}
         <Flex
           as='form'
           onSubmit={handleSubmit}
           id="create-group-form"
+          width="100%"
+          height="calc(85% - 50px)"
           gap="16px"
           padding="10px"
           direction="column"
@@ -133,11 +121,30 @@ export default function CreateGroupModal({
           alignItems="stretch"
           position="relative"
         >
+          <Text
+            height="10%"
+            //fontFamily="Roboto"
+            //fontSize={{ base: "12px", small: "24px" }}
+            fontSize="24px"
+            fontWeight="700"
+            color="rgb(0, 0, 0)"
+            lineHeight="32px"
+            textAlign="center"
+            display="block"
+            shrink="0"
+            position="relative"
+            whiteSpace="pre-wrap"
+            textDecoration="underline"
+          >
+            Comments
+          </Text>
+
           <TextField
             label="Add new group name:"
             placeholder="Enter new group name..."
             isRequired={true}
-            width="40%"
+            width="80%"
+            maxWidth="250px"
             height="76px"
             inputMode="text"
             alignSelf="center"
@@ -173,18 +180,22 @@ export default function CreateGroupModal({
                   variant="large"
                   isSelected={isSelected}
                   onClick={() => setSelectedColor(rgbObj)}
-                  style={{cursor: "pointer"}}
+                  style={{ cursor: "pointer" }}
                 />
               );
             })}
           </div>
+
         </Flex>
 
         {/* Footer Section */}
         <Flex
           justifyContent="center"
+          width="100%"
+          height="20%"
         >
           <Button
+            height="42px"
             gap="8px"
             direction="row"
             justifyContent="flex-start"
@@ -214,6 +225,7 @@ export default function CreateGroupModal({
             </Text>
           </Button>
         </Flex>
+
       </Flex>
     </div>
   );
