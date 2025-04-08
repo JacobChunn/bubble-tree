@@ -390,27 +390,26 @@ export default function App({
       <Flex
         width="calc(100% - 20px)"
         flex="1"
-        margin="10px"
+        //margin="10px"
+        justifyContent= "space-evenly"
         backgroundColor="rgba(255, 255, 255, 0.5)"
         alignSelf="center"
         borderRadius="30px"
         border="1px solid"
         padding="20px"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "10px"
-        }}
+        wrap="wrap"
         overflow="auto"
+        //grid styling was overriding flexbox properties, so removed it
       >
         {loadingBubbles === "loaded" && bubbles != null
           ? bubbles.map((bubble, index) => (
             <Flex
               key={index}
-              // Remove the fixed width since grid items automatically adjust their width.
-              // You can keep minWidth as a fallback if needed.
+              //re-added fixed width, but fixed previous issue we were having with it
+              width = "32%"
               minWidth="200px"
-              padding="15px"
+              
+              //padding="15px"
               backgroundColor={
                 bubble.groupID && loadingGroups === "loaded"
                   ? lightenColor(getColorByGroupID(bubble.groupID))
@@ -433,12 +432,13 @@ export default function App({
                 }
               }}
             >
-              <Flex alignItems="center" justifyContent="flex-start" gap="10px" width="100%">
+              <Flex alignItems="center" marginLeft="1%" justifyContent="flex-start" gap="10px" width="100%">
               <p className="bubbleTitle1" >
                 {bubble.title}
               </p>
-              
-              {bubble.iconName && <Icon icon={bubble.iconName} height="32px" width="32px" />}
+              <Flex maxWidth = "30%">
+              {bubble.iconName && <Icon icon={bubble.iconName} height = "3rem"  />}
+              </Flex>
               </Flex>
               <p className="bubbleContent">{bubble.content}</p>
             </Flex>
