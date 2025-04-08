@@ -98,27 +98,32 @@ export default function CommentsModal({
 
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
-    month: "long",
+    month: "short",
     day: "numeric",
-    hour: "2-digit",
+    hour: "numeric",
     minute: "2-digit",
-    second: "2-digit",
-    timeZoneName: "short"
+    second: undefined,
+    timeZoneName: undefined
   };
 
   return (
     <div className="modal-overlay">
       <Flex
         backgroundColor="rgb(255,255,255)"
-        width="calc(100vw - 100px)"
-        height="calc(100vh - 100px)"
+        width={{ base: "100%", medium: "90%" }}
+        height="90%"
         boxShadow="10px 10px 20px rgba(0, 0, 0, 0.3)"
         borderRadius="30px"
         direction="column"
         gap="0"
       >
         {/* Modal Header */}
-        <Flex justifyContent="space-between" padding="15px 15px 0 15px">
+        <Flex
+          width="100%"
+          height="50px"
+          justifyContent="space-between"
+          padding="15px 15px 0 15px"
+        >
           <ArrowLeftIcon
             width="30px"
             style={{ cursor: 'pointer' }}
@@ -134,7 +139,7 @@ export default function CommentsModal({
         {/* Modal Body */}
         <Flex
           width="100%"
-          height="100%"
+          height="calc(100% - 50px)"
           gap="16px"
           padding="10px"
           direction="column"
@@ -143,20 +148,26 @@ export default function CommentsModal({
           position="relative"
         >
           <Text
-            fontSize={{ base: "12px", small: "24px" }}
+            height="5%"
+            //fontFamily="Roboto"
+            //fontSize={{ base: "12px", small: "24px" }}
+            fontSize="24px"
             fontWeight="700"
             color="rgb(0, 0, 0)"
             lineHeight="32px"
             textAlign="center"
             display="block"
+            shrink="0"
+            position="relative"
             whiteSpace="pre-wrap"
+            textDecoration="underline"
           >
             Comments
           </Text>
 
           {/* Scrollable Comments */}
           <Flex
-            height="400px"
+            height="75%"
             overflow="auto"
             backgroundColor="rgba(81, 194, 194, 0.2)"
             direction="column"
@@ -183,7 +194,7 @@ export default function CommentsModal({
                     <Flex direction="row" justifyContent="space-between" gap="10px">
                       <Flex direction="row" gap="5px">
                         <Text fontWeight="600">{comment.username}</Text>
-                        <Text color="gray">on {customReadable}</Text>
+                        <Text color="gray">&nbsp;{customReadable}</Text>
                       </Flex>
                       {!isNotOwnProfile &&
                         <XMarkIcon
@@ -200,9 +211,9 @@ export default function CommentsModal({
           </Flex>
 
           {/* Comment Drafting Section */}
-          { isVerified &&
+          {isVerified &&
             <Flex
-              height="130px"
+              height="20%"
               padding="20px"
               alignItems="center"
             >
@@ -225,6 +236,7 @@ export default function CommentsModal({
             </Flex>
           }
         </Flex>
+
       </Flex>
     </div>
   );
