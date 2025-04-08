@@ -88,15 +88,20 @@ export default function AddRefModal({
     <div className="modal-overlay">
       <Flex
         backgroundColor="rgb(255,255,255)"
-        width="calc(100vw - 100px)"
-        height="calc(100vh - 100px)"
+        width={{ base: "100%", medium: "90%" }}
+        height="90%"
         boxShadow="10px 10px 20px rgba(0, 0, 0, 0.3)"
         borderRadius="30px"
         direction="column"
         gap="0"
       >
         {/* Modal Header */}
-        <Flex justifyContent="space-between" padding="15px 15px 0 15px">
+        <Flex
+          width="100%"
+          height="50px"
+          justifyContent="space-between"
+          padding="15px 15px 0 15px"
+        >
           <ArrowLeftIcon
             width="30px"
             style={{ cursor: 'pointer' }}
@@ -107,7 +112,7 @@ export default function AddRefModal({
         {/* Modal Body */}
         <Flex
           width="100%"
-          height="100%"
+          height="calc(100% - 50px)"
           gap="16px"
           padding="10px"
           direction="column"
@@ -116,20 +121,30 @@ export default function AddRefModal({
           position="relative"
         >
           <Text
-            fontSize={{ base: "12px", small: "24px" }}
+            height="5%"
+            //fontFamily="Roboto"
+            //fontSize={{ base: "12px", small: "24px" }}
+            fontSize="24px"
             fontWeight="700"
             color="rgb(0, 0, 0)"
             lineHeight="32px"
             textAlign="center"
             display="block"
+            shrink="0"
+            position="relative"
             whiteSpace="pre-wrap"
+            //textDecoration="underline"
           >
             Add a Reference
           </Text>
 
           {/* Reference Search Functionality */}
           <Flex
-            alignItems="end"
+            width="100%"
+            height={{base: "35%", small: "10%"}}
+            alignItems={{base: "center", small: "end"}}
+            justifyContent="center"
+            direction={{base: "column", small: "row"}}
           >
             <RadioGroupField
               legend="Search for"
@@ -199,7 +214,7 @@ export default function AddRefModal({
 
           {/* Scrollable Bubble Results */}
           <Flex
-            height="200px"
+            height={{base: "60%", small: "85%"}}
             overflow="auto"
             backgroundColor="rgba(81, 194, 194, 0.2)"
             direction="column"
@@ -237,6 +252,7 @@ export default function AddRefModal({
           </Flex>
 
         </Flex>
+
       </Flex>
     </div>
   );

@@ -134,9 +134,9 @@ export default function CreateGroupModal({
             shrink="0"
             position="relative"
             whiteSpace="pre-wrap"
-            textDecoration="underline"
+            //textDecoration="underline"
           >
-            Comments
+            Create Group
           </Text>
 
           <TextField

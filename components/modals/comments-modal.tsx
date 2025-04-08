@@ -160,7 +160,7 @@ export default function CommentsModal({
             shrink="0"
             position="relative"
             whiteSpace="pre-wrap"
-            textDecoration="underline"
+            //textDecoration="underline"
           >
             Comments
           </Text>
