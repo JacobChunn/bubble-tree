@@ -72,3 +72,9 @@ main {
   -webkit-line-clamp: 9; /* Number of lines to show before truncating */
   overflow: hidden;
 }
+.bubbleAuthor1{
+  font-size: 1rem;
+  margin-top: 2%;
+  margin-left: 1%;
+  margin-bottom: -7%;
+}

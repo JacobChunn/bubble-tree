@@ -174,6 +174,31 @@ export default function Header({
           shrink="0"
           position="relative"
           padding="12px 8px 12px 8px"
+          href="/explore2"
+        >
+          <Text
+            //fontFamily="Roboto"
+            fontSize={{base: "12px", small: "16px"}}
+            fontWeight="500"
+            color="rgba(255,255,255,1)"
+            lineHeight="16px"
+            textAlign="left"
+            display="block"
+            shrink="0"
+            position="relative"
+            whiteSpace="pre-wrap"
+          >
+            Explore2
+          </Text>
+        </MenuItem>
+        <MenuItem
+          gap="8px"
+          direction="row"
+          justifyContent="flex-start"
+          alignItems="center"
+          shrink="0"
+          position="relative"
+          padding="12px 8px 12px 8px"
           href={authStatus == "authenticated" ? "/" : "/auth" }
           onClick={authStatus == "authenticated" ? handleLogout  : undefined }
         >

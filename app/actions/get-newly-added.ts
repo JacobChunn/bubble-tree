@@ -27,8 +27,8 @@ function getRecentIDs(bubbleDatesAndIDs: {
 }
 
 function sortBubbleDataByDate(
-  data: { id: string; title: string; author: string; dateCreated: string }[]
-): { id: string; title: string; author: string; dateCreated: string }[] {
+  data: { id: string; title: string; author: string; dateCreated: string; content: string; iconName: string | null }[]
+): { id: string; title: string; author: string; dateCreated: string; content: string; iconName: string | null }[] {
   return data.slice().sort(
     (a, b) =>
       new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime()
@@ -81,8 +81,8 @@ export async function getNewlyAdded() {
     //console.log("IN NEWLY ADDED 4", bubbleResults)
 
     const simplifiedBubbleDataUnsorted = bubbleResults.data.map(
-      ({ id, title, author, dateCreated }) => ({
-        id, title, author, dateCreated
+      ({ id, title, author, dateCreated, content, iconName }) => ({
+        id, title, author, dateCreated, content, iconName
       })
     );
 
