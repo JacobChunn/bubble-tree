@@ -111,8 +111,8 @@ export default function ViewBubbleModal({
       <Flex
         //className="modal-content"
         backgroundColor= "rgb(0, 135, 139)"
-        width="calc(100vw - 100px)"
-        height="calc(100vh - 500px)"
+        width="calc(90%)"
+        height="calc(90%)"
         boxShadow="10px 10px 20px rgba(0, 0, 0, 0.3)"
         borderRadius="30px"
         direction="column"
