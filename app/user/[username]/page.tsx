@@ -75,7 +75,7 @@ export type GroupType = {
 }
 
 export type LoadingType = "unloaded" | "loading" | "loaded"
-export type ModalStateType = "create" | "view" | "edit" | "createGroup" | "comment" | "addRef" | "verify" | false
+export type ModalStateType = "create" | "view" | "edit" | "createGroup" | "comment" | "addRefCreate" | "addRefEdit" | "verify" | false
 
 export default function App({
   params
@@ -139,7 +139,7 @@ export default function App({
     const loadUsername = async () => {
       const usernameRes = await getCurrentUsername();
       const verifiedRes = usernameRes ? await getVerified(usernameRes) : false;
-      console.log("Verified?: ", verifiedRes)
+      //console.log("Verified?: ", verifiedRes)
       setUsername(usernameRes ? usernameRes : null);
       setVerified(verifiedRes);
     }
@@ -152,7 +152,7 @@ export default function App({
       setSearchParamUsername(username);
       //console.log("frontend username param: ", username)
       const bubbleRecords = await getUserBubbleRecords(username);
-      console.log("retrieved bubbleRecords: ", bubbleRecords)
+      //console.log("retrieved bubbleRecords: ", bubbleRecords)
 
       var loadingValue: LoadingType;
       var bubblesValue: BubbleType[] | null;
@@ -179,7 +179,7 @@ export default function App({
         const bubbleid = searchParams.get("bubbleid");
         if (bubbleid) {
           const newFocusedBubble = bubblesValue.find(bubble => bubble.id == bubbleid)
-          console.log(newFocusedBubble, bubbleid, bubblesValue)
+          //console.log(newFocusedBubble, bubbleid, bubblesValue)
           focusedBubbleValue = newFocusedBubble ? newFocusedBubble : null;
           modalStateValue = "view";
         }
@@ -206,7 +206,7 @@ export default function App({
         groupsValue = groupRes;
       }
 
-      console.log("Groups: ", groupsValue)
+      //console.log("Groups: ", groupsValue)
 
       setGroups(groupsValue);
       setLoadingGroups(loadingValue);
@@ -219,9 +219,9 @@ export default function App({
 
   }, [])
 
-  useEffect(() => {
-    console.log("Change Verified: ", verified);
-  }, [verified])
+  // useEffect(() => {
+  //   console.log("Change Verified: ", verified);
+  // }, [verified])
 
   useEffect(() => {
     console.log("Change References: ", references);
@@ -256,13 +256,13 @@ export default function App({
     }
   }
 
-  console.log("u,u: ", username, searchParamUsername)
+  //console.log("u,u: ", username, searchParamUsername)
 
   return (
     // <AuthWrapper>
     <main style={{ minWidth: "100vw", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Header verified={verified} searchParamUsername={searchParamUsername} />
-      {(modalState === "create" || modalState === "addRef") && (
+      {(modalState === "create" || modalState === "addRefCreate") && (
         <BubbleFormModal
           mode="create"
           isOpen={true}
@@ -271,30 +271,30 @@ export default function App({
           groups={groups}
           loadingGroups={loadingGroups}
           addBubble={addBubble}
-          openRefModal={() => setModalState("addRef")}
+          openRefModal={() => setModalState("addRefCreate")}
           setReferences={setReferences}
           references={references}
         />
       )}
-      {(modalState === "edit" || modalState === "addRef") && focusedBubble && (
+      {(modalState === "edit" || modalState === "addRefEdit") && focusedBubble && (
         <BubbleFormModal
           mode="edit"
           isOpen={true}
           isVerified={verified}
-          onClose={() => { setModalState(false); setReferences(null); }}
+          onClose={() => { setReferences(null); setModalState(false); }}
           groups={groups}
           loadingGroups={loadingGroups}
           focusedBubble={focusedBubble}
           updateBubble={updateBubble}
           removeBubble={removeBubble}
-          openRefModal={() => setModalState("addRef")}
+          openRefModal={() => setModalState("addRefEdit")}
           setReferences={setReferences}
           references={references}
         />
       )}
       <ViewBubbleModal
         isOpen={modalState == "view"}
-        onClose={() => { setModalState(false); setReferences(null); }}
+        onClose={() => { setReferences(null); setModalState(false); }}
         focusedBubble={focusedBubble}
         groups={groups}
         loadingGroups={loadingGroups}
@@ -317,7 +317,7 @@ export default function App({
         addGroup={addGroup}
       />
       <AddRefModal
-        isOpen={modalState == "addRef"}
+        isOpen={modalState == "addRefCreate" || modalState == "addRefEdit"}
         modalState={modalState}
         onBack={(state: ModalStateType) => {setModalState(state);}}
         setReferences={setReferences}

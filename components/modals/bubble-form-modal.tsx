@@ -123,7 +123,8 @@ export default function BubbleFormModal(props: BubbleModalProps) {
 
   useEffect(() => {
     const loadReferences = async () => {
-      if (isOpen && mode === "edit") {
+      if (isOpen && mode === "edit" && props.focusedBubble) {
+        console.log("SETTING REFERENCES IN USEEFFECT", mode)
         const referencesRes = await getRefBubbles(props.focusedBubble.id);
 
         let refValue = null;
@@ -142,6 +143,11 @@ export default function BubbleFormModal(props: BubbleModalProps) {
     loadReferences();
 
   }, [isOpen, mode])
+
+  useEffect(() => {
+    setReferences(null)
+    console.log("Bubble form modal useEffect!!!")
+  }, [mode])
 
 
   if (!isOpen) return null;
@@ -263,7 +269,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
     :
     undefined;
 
-  console.log(styleMap)
+  //console.log(styleMap)
 
   const removeHighlight = (blockKey: string, start: number, end: number) => {
     const contentState = editorState.getCurrentContent();
@@ -271,7 +277,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
     const block = contentState.getBlockForKey(blockKey);
     if (!block) return; // guard: block does not exist
 
-    console.log("REMOVE block: ", block);
+    //console.log("REMOVE block: ", block);
 
     // Ensure that the end offset does not exceed the block length.
     const blockLength = block.getLength();
@@ -279,7 +285,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
       end = blockLength;
     }
 
-    console.log("REMOVE blockLength: ", blockLength);
+    //console.log("REMOVE blockLength: ", blockLength);
 
     // Create a new selection using SelectionState.createEmpty
     const selection = SelectionState.createEmpty(blockKey).merge({
@@ -288,16 +294,16 @@ export default function BubbleFormModal(props: BubbleModalProps) {
       isBackward: false,
     }) as SelectionState;
 
-    console.log("REMOVE selection: ", selection);
+    //console.log("REMOVE selection: ", selection);
 
     // Remove the entity by applying 'null'
     const newContentState = Modifier.applyEntity(contentState, selection, null);
 
-    console.log("REMOVE newContentState: ", newContentState);
+    //console.log("REMOVE newContentState: ", newContentState);
 
     const newEditorState = EditorState.push(editorState, newContentState, 'apply-entity');
 
-    console.log("REMOVE newEditorState: ", newEditorState);
+    //console.log("REMOVE newEditorState: ", newEditorState);
 
     setEditorState(EditorState.forceSelection(newEditorState, newContentState.getSelectionAfter()));
   };
@@ -371,16 +377,16 @@ export default function BubbleFormModal(props: BubbleModalProps) {
     const length = block.getLength()
 
     const filter = (value: CharacterMetadata) => {
-      console.log("value: ", value)
+      //console.log("value: ", value)
       return true
     }
 
     const callback = (start: number, end: number) => {
-      console.log("Start & End: ", start, end)
+      //console.log("Start & End: ", start, end)
       return
     }
 
-    console.log("EDITOR: ", block.findStyleRanges(filter, callback))
+    //console.log("EDITOR: ", block.findStyleRanges(filter, callback))
 
     // if (length >= 2) {
     //   console.log(chars.get(0).getStyle().toArray(), chars.get(1).getStyle().toArray()[0])
@@ -392,7 +398,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
   }, [editorState])
 
 
-  console.log()
+  //console.log()
 
   return (
     <div className="modal-overlay">
@@ -428,6 +434,24 @@ export default function BubbleFormModal(props: BubbleModalProps) {
           alignItems="center"
           overflow="auto"
         >
+          <Text
+            height="5%"
+            //fontFamily="Roboto"
+            //fontSize={{ base: "12px", small: "24px" }}
+            fontSize="24px"
+            fontWeight="700"
+            color="rgb(255, 255, 255)"
+            lineHeight="32px"
+            textAlign="center"
+            display="block"
+            shrink="0"
+            position="relative"
+            whiteSpace="pre-wrap"
+            //textDecoration="underline"
+          >
+            {mode == "edit" ? "Edit Bubble" : "Create Bubble"}
+          </Text>
+
           {/* Title Input */}
           <TextField
             className="white-label white-placeholder"
@@ -435,7 +459,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             label={mode === "edit" ? "Edit bubble title:" : "Add bubble title:"}
             placeholder="Enter bubble title..."
             isRequired={true}
-            width="40%"
+            width={{base: "90%", small: "40%"}}
             inputMode="text"
             value={formState.title}
             onChange={handleInputChange('title')}
@@ -444,7 +468,6 @@ export default function BubbleFormModal(props: BubbleModalProps) {
 
 
 
-          {/* Content Input */}
           {/* Content Input */}
           <TextAreaField
             ref={textAreaRef}
@@ -469,7 +492,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             justifyContent="center"
             alignItems="center"
           >
-            <TextField
+            {/* <TextField
               className="white-label white-placeholder"
               size="small"
               label="X Coordinate"
@@ -494,7 +517,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
               value={formState.y}
               onChange={handleInputChange('y')}
               style={{ backgroundColor: 'rgb(161, 235, 238)' }}
-            />
+            /> */}
             {isVerified && loadingGroups === "loaded" && groups !== null && (
               <SelectField
                 className="white-label"
@@ -570,6 +593,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
                   key={ref.id + index}
                   width="100px"
                   height="70px"
+                  shrink="0"
                   backgroundColor="rgba(142, 252, 252, 0.2)"
                   borderRadius="30px"
                   fontSize="10px"

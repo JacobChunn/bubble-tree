@@ -23,7 +23,7 @@ export default function AddRefModal({
   setReferences,
 }: ModalProps) {
 
-  const [returnModalState, setReturnModalState] = useState<ModalStateType>(false);
+  //const [returnModalState, setReturnModalState] = useState<ModalStateType>(false);
   const [searchType, setSearchType] = useState<"own" | "other">("own");
   const [authorSearch, setAuthorSearch] = useState<string>("");
   const [titleSearch, setTitleSearch] = useState<string>("");
@@ -32,18 +32,18 @@ export default function AddRefModal({
   const [loadingBubbles, setLoadingBubbles] = useState<LoadingType>("unloaded");
   const [bubbles, setBubbles] = useState<ReferenceBubbleType[] | null>(null)
 
-  useEffect(() => {
-    // Keep track if addRef modal state came from edit or create
-    // If modal state is addRef, preserve the previous state
-    let returnModalStateVal: ModalStateType = false;
-    if (modalState == "edit" || modalState == "create") {
-      returnModalStateVal = modalState;
-    } else if (modalState == "addRef") {
-      returnModalStateVal = returnModalState;
-    }
+  // useEffect(() => {
+  //   // Keep track if addRef modal state came from edit or create
+  //   // If modal state is addRef, preserve the previous state
+  //   let returnModalStateVal: ModalStateType = false;
+  //   if (modalState == "edit" || modalState == "create") {
+  //     returnModalStateVal = modalState;
+  //   } else if (modalState == "addRef") {
+  //     returnModalStateVal = returnModalState;
+  //   }
 
-    setReturnModalState(returnModalStateVal)
-  }, [modalState])
+  //   setReturnModalState(returnModalStateVal)
+  // }, [modalState])
 
   if (!isOpen) return null;
 
@@ -80,8 +80,9 @@ export default function AddRefModal({
 
 
   const handleAdd = async (bubble: ReferenceBubbleType) => {
+    console.log("IN HANDLE ADD")
     setReferences(prev => { return prev ? [...prev, bubble] : [bubble] })
-    onBack(returnModalState)
+    onBack(modalState == "addRefCreate" ? "create" : "edit")
   }
 
   return (
@@ -105,7 +106,7 @@ export default function AddRefModal({
           <ArrowLeftIcon
             width="30px"
             style={{ cursor: 'pointer' }}
-            onClick={() => onBack(returnModalState)}
+            onClick={() => onBack(modalState == "addRefCreate" ? "create" : "edit")}
           />
         </Flex>
 

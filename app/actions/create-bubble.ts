@@ -56,8 +56,8 @@ export async function createBubble(bubbleInfo: CreateBubbleType) {
       author: username,
       dateCreated: new Date().toISOString(),
       bubbleCoordinates: {
-        x: bubbleInfo.bubbleCoordinates.x,
-        y: bubbleInfo.bubbleCoordinates.y,
+        x: 0,
+        y: 0,
       },
       userID: currentUser.userId, // uses userID because userID will never change, unlike emails or usernames
       groupID: sanitizedGroupID,
