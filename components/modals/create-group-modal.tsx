@@ -87,7 +87,7 @@ export default function CreateGroupModal({
     <div className="modal-overlay">
       <Flex
         //className="modal-content"
-        backgroundColor="rgb(255,255,255)"
+        backgroundColor="rgb(0, 135, 139)"
         width={{ base: "100%", medium: "50%" }}
         height="50%"
         boxShadow="10px 10px 20px rgba(0, 0, 0, 0.3)"
@@ -127,7 +127,7 @@ export default function CreateGroupModal({
             //fontSize={{ base: "12px", small: "24px" }}
             fontSize="24px"
             fontWeight="700"
-            color="rgb(0, 0, 0)"
+            color="rgb(255, 255, 255)"
             lineHeight="32px"
             textAlign="center"
             display="block"
@@ -140,6 +140,7 @@ export default function CreateGroupModal({
           </Text>
 
           <TextField
+            className="white-label white-placeholder"
             label="Add new group name:"
             placeholder="Enter new group name..."
             isRequired={true}

@@ -109,7 +109,7 @@ export default function CommentsModal({
   return (
     <div className="modal-overlay">
       <Flex
-        backgroundColor="rgb(255,255,255)"
+        backgroundColor="rgb(0, 135, 139)"
         width={{ base: "100%", medium: "90%" }}
         height="90%"
         boxShadow="10px 10px 20px rgba(0, 0, 0, 0.3)"
@@ -153,62 +153,63 @@ export default function CommentsModal({
             //fontSize={{ base: "12px", small: "24px" }}
             fontSize="24px"
             fontWeight="700"
-            color="rgb(0, 0, 0)"
+            color="rgb(255, 255, 255)"
             lineHeight="32px"
             textAlign="center"
             display="block"
             shrink="0"
             position="relative"
             whiteSpace="pre-wrap"
-            //textDecoration="underline"
+            textDecoration="underline"
           >
             Comments
           </Text>
 
           {/* Scrollable Comments */}
-          <Flex
-            height="75%"
-            overflow="auto"
-            backgroundColor="rgba(81, 194, 194, 0.2)"
-            direction="column"
-            gap="0"
-            borderRadius="30px"
-            margin="20px"
-            padding="20px"
-          >
-            {comments && loadingComments === "loaded" &&
-              comments.map((comment) => {
-                const dateObj = new Date(comment.dateCreated);
-                const customReadable = dateObj.toLocaleString("en-US", options);
+<Flex
+  height="75%"
+  overflow="auto"
+  backgroundColor="rgba(161, 235, 238, 0.2)"  // Updated background color to light teal
+  direction="column"
+  gap="0"
+  borderRadius="30px"
+  margin="20px"
+  padding="20px"
+>
+  {comments && loadingComments === "loaded" &&
+    comments.map((comment) => {
+      const dateObj = new Date(comment.dateCreated);
+      const customReadable = dateObj.toLocaleString("en-US", options);
 
-                return (
-                  <Flex
-                    key={comment.username + comment.dateCreated}
-                    width="100%"
-                    direction="column"
-                    padding="10px"
-                    marginBottom="10px"
-                    backgroundColor="rgba(28, 165, 165, 0.2)"
-                    borderRadius="16px"
-                  >
-                    <Flex direction="row" justifyContent="space-between" gap="10px">
-                      <Flex direction="row" gap="5px">
-                        <Text fontWeight="600">{comment.username}</Text>
-                        <Text color="gray">&nbsp;{customReadable}</Text>
-                      </Flex>
-                      {!isNotOwnProfile &&
-                        <XMarkIcon
-                          width="20px"
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => handleDelete(comment.id, focusedBubble.id)}
-                        />
-                      }
-                    </Flex>
-                    <Text>{comment.commentText}</Text>
-                  </Flex>
-                );
-              })}
+      return (
+        <Flex
+          key={comment.username + comment.dateCreated}
+          width="100%"
+          direction="column"
+          padding="10px"
+          marginBottom="10px"
+          backgroundColor="rgb(161, 235, 238)"  // Updated comment background color to light teal
+          borderRadius="16px"
+        >
+          <Flex direction="row" justifyContent="space-between" gap="10px">
+            <Flex direction="row" gap="5px">
+              <Text fontWeight="600">{comment.username}</Text>
+              <Text color="gray">&nbsp;{customReadable}</Text>
+            </Flex>
+            {!isNotOwnProfile &&
+              <XMarkIcon
+                width="20px"
+                style={{ cursor: 'pointer' }}
+                onClick={() => handleDelete(comment.id, focusedBubble.id)}
+              />
+            }
           </Flex>
+          <Text>{comment.commentText}</Text>
+        </Flex>
+      );
+    })}
+</Flex>
+
 
           {/* Comment Drafting Section */}
           {isVerified &&
@@ -225,11 +226,18 @@ export default function CommentsModal({
                 rows={2}
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
+                style={{ backgroundColor: 'rgb(161, 235, 238)' }}
+                className="textarea-label" // Apply the custom class here
               />
+
+
+
               <Button
                 size="small"
                 height="min-content"
                 onClick={submitComment}
+                style={{ color: 'white' }}
+                backgroundColor="rgb(81, 194, 194)"
               >
                 Publish
               </Button>
