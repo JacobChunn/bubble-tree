@@ -1,8 +1,9 @@
 "use client"
 
 import { getRecentlyVisited } from "@/app/actions/get-recently-visited";
-import { LoadingResultsType } from "@/app/explore/page";
+import { LoadingResultsType } from "@/components/search";
 import { Flex, FlexProps, Label, Text } from "@aws-amplify/ui-react";
+import { Icon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
@@ -11,7 +12,7 @@ export type RecentlyVisitedType =
   null
   |
   {
-    simplifiedBubbleData: { id: string, title: string, author: string, dateCreated: string }[];
+    simplifiedBubbleData: { id: string, title: string, author: string, dateCreated: string, content: string, iconName: string | null }[];
   }
 
 export default function RecentlyVisited(props: FlexProps) {
@@ -56,43 +57,48 @@ export default function RecentlyVisited(props: FlexProps) {
   }, [])
 
   const generateResultsFieldRows = () => {
+    const bubbles = recentlyVisited?.simplifiedBubbleData;
     if (!recentlyVisited) return null;
-
-    if (!recentlyVisited.simplifiedBubbleData) return null;
-
-    return (
-      recentlyVisited.simplifiedBubbleData.map((bubble, index) => (
-        <Suspense>
-          <Link href={`/user/${bubble.author}` + '?' + createQueryString('bubbleid', bubble.id)} key={index} style={{ textDecoration: "none", color: "inherit" }}>
-            <Flex
-              key={index}
-              padding="4px 10px"
-              //backgroundColor="rgba(81, 194, 194, 0.62)"
-              //borderRadius="8px"
-              //border="1px solid"
-              style={{
-                cursor: "pointer",
-                borderBottom: index !== recentlyVisited.simplifiedBubbleData.length - 1 ? "1px solid rgba(0, 0, 0, 0.33)" : "none"
-              }}
-            // onClick={() => {
-            //   setFocusedBubble(bubble);
-            //   setModalState(editToggle ? "edit" : "view")
-            // }}
-            >
-              <Text
-                fontSize="14px"
-              >
+    if (!(recentlyVisited.simplifiedBubbleData)) return null;
+    if (loadingResults!=="loaded") return null;
+    return recentlyVisited.simplifiedBubbleData.map((bubble, index) => (
+      <Suspense key={index}>
+        <Flex width={{ small: '92%', medium: "45%", large: '32%' }}>
+        <Link href={`/user/${bubble.author}` + '?' + createQueryString('bubbleid', bubble.id)}  key={index} style={{ textDecoration: "none", color: "inherit", width :"100%" }}>
+          <Flex
+            key={index}
+            width="100%"
+            backgroundColor={
+               "rgba(81, 194, 194, 0.62)"
+            }
+            borderRadius="8px"
+            border="4px solid"
+            borderColor={ "rgb(25, 103, 103)"
+            }
+            style={{ cursor: "pointer" }}
+            direction="column"
+          >
+            <p className="bubbleAuthor1" >
+                user: {bubble.author}
+              </p>
+            <Flex alignItems="center" marginLeft="1%" justifyContent="flex-start" gap="10px" width="100%">
+              <p className="bubbleTitle1" >
                 {bubble.title}
-              </Text>
+              </p>
+              <Flex maxWidth="30%">
+                {bubble.iconName && <Icon icon={bubble.iconName} height="3rem" />}
+              </Flex>
             </Flex>
+            <p className="bubbleContent">{bubble.content}</p>
+          </Flex>
           </Link>
-        </Suspense>
-      ))
-    )
+          </Flex>
+          </Suspense>
+        ))
   }
 
-
   return (
+    
     <Flex
       {...props}
       direction="column"
@@ -104,6 +110,7 @@ export default function RecentlyVisited(props: FlexProps) {
       
     >
       <Label htmlFor="recently-visited">Recently Visited:</Label>
+      
       <Flex
         id="recently-visited"
         // width="calc(100% - 20px)"
@@ -115,12 +122,22 @@ export default function RecentlyVisited(props: FlexProps) {
         width = "100%"
         border="1px solid"
         position="relative"
+        borderRadius="8px"
         direction="column"
         gap="0"
         style={{ overflowY: "auto" }}
       >
-        {loadingResults == "loaded" ? generateResultsFieldRows() : null}
+        <Flex
+          width="calc(100% - 20px)"
+          flex="1"
+          justifyContent="space-evenly"
+          wrap="wrap"
+          overflow="auto"
+        >
+          {loadingResults == "loaded" ? generateResultsFieldRows() : null}
+        </Flex>
       </Flex>
     </Flex>
   )
 }
+

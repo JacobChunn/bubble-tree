@@ -62,8 +62,8 @@ export async function getRecentlyVisited() {
         
         //unsorted
         const simplifiedBubbleData = bubbleResults.map(
-            ({ id, title, author, dateCreated }) => ({
-                id, title, author, dateCreated
+            ({ id, title, author, dateCreated, content, iconName }) => ({
+                id, title, author, dateCreated, content, iconName
             })
         );
         console.log("THIS IS SIMPLIFIED BUBBLE DATA UNSORTED:", simplifiedBubbleData)
