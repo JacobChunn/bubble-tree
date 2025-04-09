@@ -38,7 +38,7 @@ export default function Verify({
     <div className="modal-overlay">
       <Flex
         style={{
-          background: "linear-gradient(135deg, #ffffff, #f3f4f6)"
+          background: "linear-gradient(135deg,rgb(0, 135, 139),rgb(0, 135, 139))"
         }}
         width={{ base: "100%", medium: "700px" }}
         height={{ base: "80%", medium: "50%" }}
@@ -55,9 +55,9 @@ export default function Verify({
           justifyContent="space-between"
           alignItems="center"
           padding="15px"
-          backgroundColor="#f1f5f9"
+          backgroundColor="rgb(0, 135, 139)"
           style={{
-            borderBottom: "1px solid #e5e7eb"
+            borderBottom: "1px solid rgba(0, 110, 114, 0.88)"
           }}
         >
           {/* Empty div added to keep spacing if you plan on adding a left icon later */}
@@ -83,7 +83,7 @@ export default function Verify({
             fontSize="24px"
             fontWeight="700"
             textAlign="center"
-            color="#1f2937"
+            color="white"
           >
             Verify Your Profile
           </Text>
@@ -98,7 +98,7 @@ export default function Verify({
               width={{ base: "90%", medium: "50%" }}
               height={{ base: "80%", medium: "100%" }}
               padding="20px"
-              color="#4b5563"
+              color="rgb(214, 214, 214)"
               alignSelf="center"
             >
               Verify your profile now! For a small fee of $7, you can have access to our premium BubbleTree features, including:
@@ -111,6 +111,7 @@ export default function Verify({
               height={{ base: "20%", medium: "100%" }}
               label="Phone number"
               alignSelf="center"
+              className="custom-phone-field"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
@@ -124,12 +125,15 @@ export default function Verify({
           justifyContent="center"
         >
           <Button
-            isLoading={loading == "loading"}
+            isLoading={loading === "loading"}
             onClick={handleSubmit}
             height="40px"
+            color="rgba(255,255,255,1)"
+            backgroundColor="rgb(81, 194, 194)"
           >
             Pay & Submit
           </Button>
+
         </Flex>
 
       </Flex>
