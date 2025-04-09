@@ -19,6 +19,8 @@ export type CreateBubbleType = {
 // Only call if logged in
 export async function createBubble(bubbleInfo: CreateBubbleType) {
   try {
+    console.log("IN CREATE BUBBLE!!!")
+    console.log(bubbleInfo)
     const currentUser = await AuthGetCurrentUserServer();
     const userAttributes = await AuthFetchUserAttributesServer();
     if (!currentUser || !userAttributes) return false;
@@ -36,19 +38,27 @@ export async function createBubble(bubbleInfo: CreateBubbleType) {
 
     let sanitizedGroupID: string | undefined = undefined;
     if (bubbleInfo.groupID) {
-      const result = await client.models.Group.list({
-        filter: {
-          id: {eq: bubbleInfo.groupID}
-        }
+      // const result2 = await client.models.Group.list({
+      //   // filter: {
+      //   //   id: {eq: bubbleInfo.groupID}
+      //   // }
+      // });
+      //console.log(result2)
+      const result = await client.models.Group.get({
+        id: bubbleInfo.groupID
       });
 
-      if (result.errors == undefined && result.data.length > 0) {
-        sanitizedGroupID = result.data[0].id
+      console.log("IN CREATE BUBBLE 2", result)
+      
+
+      if (result.errors == undefined && result.data ) {
+        sanitizedGroupID = result.data.id
       } else {
         return false
       }
     }
-
+    //return false
+    console.log("IN CREATE BUBBLE 3")
     const newBubble = await client.models.Bubble.create({
       title: bubbleInfo.title,
       content: bubbleInfo.content,
@@ -63,6 +73,8 @@ export async function createBubble(bubbleInfo: CreateBubbleType) {
       groupID: sanitizedGroupID,
       iconName: bubbleInfo.iconName
     });
+
+    console.log("IN CREATE BUBBLE 4", newBubble)
 
     if (!newBubble.data) return false;
 
@@ -80,7 +92,7 @@ export async function createBubble(bubbleInfo: CreateBubbleType) {
       return simplifiedBubbleData;
     }
 
-    
+
 
     return false;
 

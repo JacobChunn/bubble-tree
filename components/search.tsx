@@ -3,7 +3,7 @@
 import { useState, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Text, Flex, Label, ToggleButton, ToggleButtonGroup, SearchField } from "@aws-amplify/ui-react";
+import { Text, Flex, Label, ToggleButton, ToggleButtonGroup, SearchField, Input, Button } from "@aws-amplify/ui-react";
 
 // Import the types and the function needed for search
 import { getSearchResults, SearchType } from "@/app/actions/get-search-results";
@@ -13,15 +13,15 @@ export type LoadingResultsType = "unloaded" | "loading" | "loaded";
 export type SearchResultType =
   | null
   | {
-      type: "author";
-      simplifiedAuthorData: { username: string }[];
-      simplifiedBubbleData?: undefined;
-    }
+    type: "author";
+    simplifiedAuthorData: { username: string }[];
+    simplifiedBubbleData?: undefined;
+  }
   | {
-      type: "title";
-      simplifiedBubbleData: { id: string; title: string; author: string }[];
-      simplifiedAuthorData?: undefined;
-    };
+    type: "title";
+    simplifiedBubbleData: { id: string; title: string; author: string }[];
+    simplifiedAuthorData?: undefined;
+  };
 
 /**
  * A dedicated Search component, handling all search UI and logic:
@@ -111,7 +111,13 @@ export default function Search() {
   return (
     <Flex direction="column" width="100%" height="100%">
       {/* Search Controls */}
-      <Flex justifyContent="center" alignItems="center" width="100%" height="auto" padding="1rem">
+      <Flex
+        justifyContent="center"
+        alignItems="center"
+        width="100%"
+        height="auto"
+        padding="1rem"
+      >
         <Label style={{ marginRight: "1rem" }}>Search by:</Label>
         <ToggleButtonGroup
           value={searchType}
@@ -123,26 +129,43 @@ export default function Search() {
           <ToggleButton value="author">Author</ToggleButton>
         </ToggleButtonGroup>
 
-        <SearchField
-          label="Search"
-          placeholder="Search here..."
-          size="small"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-          onSubmit={handleSubmit}
-          onClear={() => setSearchValue("")}
-          style={{ marginLeft: "1rem" }}
-        />
+        <Flex
+        >
+          <Input
+            width="200px"
+            //margin="0"
+            //label="Search"
+            placeholder="Search here..."
+            size="small"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onSubmit={handleSubmit}
+            //onClear={() => setSearchValue("")}
+            style={{ marginLeft: "1rem" }}
+          />
+          <Button
+            size="small"
+          >
+            Search
+          </Button>
+        </Flex>
       </Flex>
 
       {/* Results Display */}
       <Flex
-        direction="column"
-        width="100%"
-        height="auto"
+        width="calc(100% - 20px)"
+        flex="1"
+        //margin="10px"
+        //justifyContent="space-evenly"
+        backgroundColor="rgba(255, 255, 255, 0.5)"
+        alignSelf="center"
+        borderRadius="30px"
         border="1px solid"
-        padding="0"
-        style={{ overflowY: "auto" }}
+        padding="20px"
+        //wrap="wrap"
+        overflow="auto"
+        direction="column"
+      //grid styling was overriding flexbox properties, so removed it
       >
         {loadingResults === "loaded" ? generateResultsFieldRows() : null}
       </Flex>

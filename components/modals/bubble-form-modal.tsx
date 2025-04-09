@@ -529,7 +529,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
               >
                 <option value={undefined}>No Group</option>
                 {groups.map((group, index) => (
-                  <option value={group.id + index} key={index} style={{ color: 'black' }}> {/* Option text color to black */}
+                  <option value={group.id} key={index} style={{ color: 'black' }}> {/* Option text color to black */}
                     {group.name}
                   </option>
                 ))}
