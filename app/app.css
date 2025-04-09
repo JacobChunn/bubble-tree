@@ -98,3 +98,14 @@ main {
 .textarea-label div label {
   color: white !important;
 }
+.custom-phone-field label {
+  color: rgb(214, 214, 214);
+}
+
+.custom-phone-field select {
+  background-color: rgb(81, 194, 194); 
+  color: white; 
+  border-radius: 8px;
+  padding: 6px;
+}
+
