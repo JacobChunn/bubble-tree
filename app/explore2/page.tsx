@@ -3,7 +3,7 @@ import { useState } from "react";
 import Header from "@/components/header";
 import NewlyAdded from "@/components/newly-added";
 import RecentlyVisited from "@/components/recently-visited";
-import Search from "@/components/Search";
+import Search from "@/components/search";
 import "@aws-amplify/ui-react/styles.css";
 import "@/app/app.css";
 import { Flex, Button } from "@aws-amplify/ui-react";
