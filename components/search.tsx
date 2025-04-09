@@ -117,17 +117,23 @@ export default function Search() {
         width="100%"
         height="auto"
         padding="1rem"
+        direction={{base: "column", medium: "row"}}
       >
-        <Label style={{ marginRight: "1rem" }}>Search by:</Label>
-        <ToggleButtonGroup
-          value={searchType}
-          isExclusive
-          isSelectionRequired
-          onChange={(value) => setSearchType(value as SearchType)}
+        <Flex
+          direction="row"
+          alignItems="center"
         >
-          <ToggleButton value="title">Title</ToggleButton>
-          <ToggleButton value="author">Author</ToggleButton>
-        </ToggleButtonGroup>
+          <Label style={{ marginRight: "1rem" }}>Search by:</Label>
+          <ToggleButtonGroup
+            value={searchType}
+            isExclusive
+            isSelectionRequired
+            onChange={(value) => setSearchType(value as SearchType)}
+          >
+            <ToggleButton value="title">Title</ToggleButton>
+            <ToggleButton value="author">Author</ToggleButton>
+          </ToggleButtonGroup>
+        </Flex>
 
         <Flex
         >
@@ -139,12 +145,13 @@ export default function Search() {
             size="small"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            onSubmit={handleSubmit}
+            
             //onClear={() => setSearchValue("")}
             style={{ marginLeft: "1rem" }}
           />
           <Button
             size="small"
+            onClick={handleSubmit}
           >
             Search
           </Button>

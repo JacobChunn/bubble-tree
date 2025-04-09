@@ -162,7 +162,7 @@ export default function Header({
               Explore
             </Text>
           </MenuItem>
-          <MenuItem
+          {/* <MenuItem
             gap="8px"
             direction="row"
             justifyContent="flex-start"
@@ -186,7 +186,7 @@ export default function Header({
             >
               Explore2
             </Text>
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem
             gap="8px"
             direction="row"
