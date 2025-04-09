@@ -92,3 +92,9 @@ main {
 .white-label select {
   color: white;
 }
+
+.textarea-label * label,
+.textarea-label label,
+.textarea-label div label {
+  color: white !important;
+}
