@@ -223,6 +223,10 @@ export default function App({
     console.log("Change Verified: ", verified);
   }, [verified])
 
+  useEffect(() => {
+    console.log("Change References: ", references);
+  }, [references])
+
   function getColorByGroupID(groupID: string) {
     if (!groups) return "rgb(0,0,0)"
     const g = groups.find(group => group.id === groupID);
@@ -315,7 +319,7 @@ export default function App({
       <AddRefModal
         isOpen={modalState == "addRef"}
         modalState={modalState}
-        onBack={(state: ModalStateType) => setModalState(state)}
+        onBack={(state: ModalStateType) => {setModalState(state);}}
         setReferences={setReferences}
       />
       <VerifyModal

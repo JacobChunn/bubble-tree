@@ -224,10 +224,10 @@ export default function AddRefModal({
             padding="20px"
           >
             {bubbles && loadingBubbles === "loaded" &&
-              bubbles.map((bubble) => {
+              bubbles.map((bubble, index) => {
                 return (
                   <Flex
-                    key={bubble.id}
+                    key={bubble.id + index}
                     width="100%"
                     direction="column"
                     padding="10px"

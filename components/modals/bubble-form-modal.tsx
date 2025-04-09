@@ -187,7 +187,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
       if (mode === "create") {
         const formBubble: CreateBubbleType = {
           title: formState.title,
-          content: editorState.getCurrentContent().getPlainText(),
+          content: formState.content,
           bubbleCoordinates: {
             x: Number(formState.x),
             y: Number(formState.y)
@@ -303,25 +303,25 @@ export default function BubbleFormModal(props: BubbleModalProps) {
   };
 
 
-  const decoratorArray = references ?
-    references.map((value, index) => ({
-      strategy: createHighlightStrategy(index),
-      component: (props: any) => <HighlightSpan {...props} removeHighlight={removeHighlight} color={refColors[index]} />
-    }))
-    :
-    []
+  // const decoratorArray = references ?
+  //   references.map((value, index) => ({
+  //     strategy: createHighlightStrategy(index),
+  //     component: (props: any) => <HighlightSpan {...props} removeHighlight={removeHighlight} color={refColors[index]} />
+  //   }))
+  //   :
+  //   []
 
   // Create a CompositeDecorator with two strategies for "HIGHLIGHT 0" and "HIGHLIGHT 1"
-  const compositeDecorator = useMemo(
-    () =>
-      new CompositeDecorator(decoratorArray),
-    [references, removeHighlight, createHighlightStrategy]
-  );
+  // const compositeDecorator = useMemo(
+  //   () =>
+  //     new CompositeDecorator(decoratorArray),
+  //   [references, removeHighlight, createHighlightStrategy]
+  // );
 
   // If the current editorState doesn't have our decorator, set it.
-  if (!editorState.getDecorator()) {
-    setEditorState(EditorState.set(editorState, { decorator: compositeDecorator }));
-  }
+  // if (!editorState.getDecorator()) {
+  //   setEditorState(EditorState.set(editorState, { decorator: compositeDecorator }));
+  // }
 
   // Add highlight to the selected text with the given index (0 or 1)
   const addHighlight = useCallback(
@@ -418,7 +418,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             style={{ cursor: 'pointer' }}
           />
         </Flex>
-  
+
         {/* Modal Body */}
         <Flex
           height="80%"
@@ -443,100 +443,100 @@ export default function BubbleFormModal(props: BubbleModalProps) {
           />
 
 
-  
+
           {/* Content Input */}
-{/* Content Input */}
-<TextAreaField
-  ref={textAreaRef}
-  className="white-label white-placeholder"
-  size="small"
-  label={mode === "edit" ? "Edit bubble content:" : "Add bubble content:"}
-  isRequired={true}
-  rows={4}
-  width="80%"
-  inputMode="text"
-  value={formState.content}
-  onChange={handleInputChange('content')}
-  style={{ backgroundColor: 'rgb(161, 235, 238)' }}
-  labelHidden={false} // Make sure the label is visible
-/>
+          {/* Content Input */}
+          <TextAreaField
+            ref={textAreaRef}
+            className="white-label white-placeholder"
+            size="small"
+            label={mode === "edit" ? "Edit bubble content:" : "Add bubble content:"}
+            isRequired={true}
+            rows={4}
+            width="80%"
+            inputMode="text"
+            value={formState.content}
+            onChange={handleInputChange('content')}
+            style={{ backgroundColor: 'rgb(161, 235, 238)' }}
+            labelHidden={false} // Make sure the label is visible
+          />
 
 
-{/* Coordinate & Group/Category Selection */}
-<Flex
-  direction="row"
-  gap="16px"
-  justifyContent="center"
-  alignItems="center"
->
-  <TextField
-    className="white-label white-placeholder"
-    size="small"
-    label="X Coordinate"
-    placeholder="x..."
-    isRequired={true}
-    width="150px"
-    inputMode="numeric"
-    pattern="[0-9]*"
-    value={formState.x}
-    onChange={handleInputChange('x')}
-    style={{ backgroundColor: 'rgb(161, 235, 238)' }}
-  />
-  <TextField
-    className="white-label white-placeholder"
-    size="small"
-    label="Y Coordinate"
-    placeholder="y..."
-    isRequired={true}
-    width="150px"
-    inputMode="numeric"
-    pattern="[0-9]*"
-    value={formState.y}
-    onChange={handleInputChange('y')}
-    style={{ backgroundColor: 'rgb(161, 235, 238)' }}
-  />
-  {isVerified && loadingGroups === "loaded" && groups !== null && (
-  <SelectField
-    className="white-label"
-    size="small"
-    label="Group"
-    value={selectedGroup}
-    onChange={(e) => setSelectedGroup(e.target.value)}
-    style={{ backgroundColor: 'rgb(161, 235, 238)', color: 'black' }} // Set text color to black
-  >
-    <option value={undefined}>No Group</option>
-    {groups.map((group, index) => (
-      <option value={group.id} key={index} style={{ color: 'black' }}> {/* Option text color to black */}
-        {group.name}
-      </option>
-    ))}
-  </SelectField>
-)}
+          {/* Coordinate & Group/Category Selection */}
+          <Flex
+            direction="row"
+            gap="16px"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <TextField
+              className="white-label white-placeholder"
+              size="small"
+              label="X Coordinate"
+              placeholder="x..."
+              isRequired={true}
+              width="150px"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={formState.x}
+              onChange={handleInputChange('x')}
+              style={{ backgroundColor: 'rgb(161, 235, 238)' }}
+            />
+            <TextField
+              className="white-label white-placeholder"
+              size="small"
+              label="Y Coordinate"
+              placeholder="y..."
+              isRequired={true}
+              width="150px"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={formState.y}
+              onChange={handleInputChange('y')}
+              style={{ backgroundColor: 'rgb(161, 235, 238)' }}
+            />
+            {isVerified && loadingGroups === "loaded" && groups !== null && (
+              <SelectField
+                className="white-label"
+                size="small"
+                label="Group"
+                value={selectedGroup}
+                onChange={(e) => setSelectedGroup(e.target.value)}
+                style={{ backgroundColor: 'rgb(161, 235, 238)', color: 'black' }} // Set text color to black
+              >
+                <option value={undefined}>No Group</option>
+                {groups.map((group, index) => (
+                  <option value={group.id + index} key={index} style={{ color: 'black' }}> {/* Option text color to black */}
+                    {group.name}
+                  </option>
+                ))}
+              </SelectField>
+            )}
 
-{isVerified && (
-  <SelectField
-    className="white-label"
-    size="small"
-    label="Category Icon"
-    value={selectedIcon}
-    onChange={(e) => {
-      setSelectedIcon(e.target.value);
-      setFormState(prev => ({ ...prev, iconName: e.target.value }));
-    }}
-    style={{ backgroundColor: 'rgb(161, 235, 238)', color: 'black' }} // Set text color to black
-  >
-    <option value="">No Icon</option>
-    {CATEGORY_ICONS.map(icon => (
-      <option key={icon.value} value={icon.value} style={{ color: 'black' }}> {/* Option text color to black */}
-        {icon.name}
-      </option>
-    ))}
-  </SelectField>
-)}
+            {isVerified && (
+              <SelectField
+                className="white-label"
+                size="small"
+                label="Category Icon"
+                value={selectedIcon}
+                onChange={(e) => {
+                  setSelectedIcon(e.target.value);
+                  setFormState(prev => ({ ...prev, iconName: e.target.value }));
+                }}
+                style={{ backgroundColor: 'rgb(161, 235, 238)', color: 'black' }} // Set text color to black
+              >
+                <option value="">No Icon</option>
+                {CATEGORY_ICONS.map((icon, index) => (
+                  <option key={icon.value + index} value={icon.value} style={{ color: 'black' }}> {/* Option text color to black */}
+                    {icon.name}
+                  </option>
+                ))}
+              </SelectField>
+            )}
 
-</Flex>
+          </Flex>
 
-  
+
           {/* Reference Section */}
           <Flex
             width="100%"
@@ -552,7 +552,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             >
               Add Reference
             </Button>
-  
+
             <Flex
               width="90%"
               height="100px"
@@ -567,7 +567,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             >
               {references && references.map((ref, index) => (
                 <Flex
-                  key={ref.id}
+                  key={ref.id + index}
                   width="100px"
                   height="70px"
                   backgroundColor="rgba(142, 252, 252, 0.2)"
@@ -607,7 +607,7 @@ export default function BubbleFormModal(props: BubbleModalProps) {
             </Flex>
           </Flex>
         </Flex>
-  
+
         {/* Footer */}
         <Flex
           height="10%"
@@ -637,5 +637,5 @@ export default function BubbleFormModal(props: BubbleModalProps) {
       </Flex>
     </div>
   );
-  
+
 }
