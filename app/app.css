@@ -109,3 +109,13 @@ main {
   padding: 6px;
 }
 
+.white-radio fieldset > legend {
+  color: white !important;
+}
+
+.white-radio label {
+  color: white !important;
+}
+
+
+

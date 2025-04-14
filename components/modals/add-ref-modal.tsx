@@ -88,7 +88,7 @@ export default function AddRefModal({
   return (
     <div className="modal-overlay">
       <Flex
-        backgroundColor="rgb(255,255,255)"
+        backgroundColor="rgb(0, 135, 139)"
         width={{ base: "100%", medium: "90%" }}
         height="90%"
         boxShadow="10px 10px 20px rgba(0, 0, 0, 0.3)"
@@ -127,7 +127,7 @@ export default function AddRefModal({
             //fontSize={{ base: "12px", small: "24px" }}
             fontSize="24px"
             fontWeight="700"
-            color="rgb(0, 0, 0)"
+            color="rgb(255, 255, 255)"
             lineHeight="32px"
             textAlign="center"
             display="block"
@@ -147,18 +147,17 @@ export default function AddRefModal({
             justifyContent="center"
             direction={{base: "column", small: "row"}}
           >
-            <RadioGroupField
-              legend="Search for"
-              name="refSearch"
-              variation="plain"
-              size="small"
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value as SearchTypeType)}
-            >
-              <Radio value="own">Own bubbles</Radio>
-              <Radio value="other">Others' bubbles</Radio>
-            </RadioGroupField>
-
+              <RadioGroupField
+                legend="Search for"
+                name="refSearch"
+                variation="plain"
+                size="small"
+                value={searchType}
+                onChange={(e) => setSearchType(e.target.value as SearchTypeType)}
+              >
+                <Radio value="own">Own bubbles</Radio>
+                <Radio value="other">Others' bubbles</Radio>
+              </RadioGroupField>
             <Flex
               direction="column"
               gap="0"
@@ -166,6 +165,7 @@ export default function AddRefModal({
               <Label
                 fontSize="14px"
                 htmlFor="title"
+                style={{ color: 'white' }}
               >
                 Title
               </Label>
@@ -186,6 +186,7 @@ export default function AddRefModal({
                 <Label
                   fontSize="14px"
                   htmlFor="author"
+                  style={{ color: 'white' }}
                 >
                   Author (optional)
                 </Label>
@@ -207,6 +208,7 @@ export default function AddRefModal({
                 size="small"
                 onClick={handleSearch}
                 isLoading={loadingBubbles == "loading"}
+                color="rgba(255,255,255,1)"
               >
                 Search
               </Button>
@@ -233,12 +235,12 @@ export default function AddRefModal({
                     direction="column"
                     padding="10px"
                     marginBottom="10px"
-                    backgroundColor="rgba(28, 165, 165, 0.2)"
+                    backgroundColor="rgba(28, 165, 165, 0.88)"
                     borderRadius="16px"
                   >
                     <Flex direction="row" justifyContent="space-between" gap="10px">
                       <Flex direction="row" gap="5px">
-                        <Text fontWeight="600">{bubble.author}</Text>
+                        <Text fontWeight="600" color="rgba(255,255,255,1)">{bubble.author}</Text>
                       </Flex>
                       <PlusIcon
                         width="20px"
@@ -246,7 +248,9 @@ export default function AddRefModal({
                         onClick={() => handleAdd(bubble)}
                       />
                     </Flex>
-                    <Text>{bubble.title}</Text>
+                    <Text
+                    color="rgba(255,255,255,1)">
+                      {bubble.title}</Text>
                   </Flex>
                 );
               })}
