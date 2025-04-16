@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Header from "@/components/header";
 import NewlyAdded from "@/components/newly-added";
 import RecentlyVisited from "@/components/recently-visited";
@@ -35,9 +35,23 @@ export default function App() {
         </Button>
       </Flex>
       
-      {activeView === "newlyAdded" && <NewlyAdded />}
-      {activeView === "recentlyVisited" && <RecentlyVisited />}
-      {activeView === "search" && <Search />}
+      {activeView === "newlyAdded" && (
+        <Suspense fallback={<div>Loading Newly Added...</div>}>
+          <NewlyAdded />
+        </Suspense>
+      )}
+
+      {activeView === "recentlyVisited" && (
+        <Suspense fallback={<div>Loading Recently Visited...</div>}>
+          <RecentlyVisited />
+        </Suspense>
+      )}
+
+      {activeView === "search" && (
+        <Suspense fallback={<div>Loading Search...</div>}>
+          <Search />
+        </Suspense>
+      )}
     </main>
   );
 }
