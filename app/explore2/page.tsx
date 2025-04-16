@@ -26,12 +26,12 @@ export default function App() {
   return (
     // <AuthWrapper>
     <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Header />
+      {/* <Header /> */}
 
       {/* You can place the <Search> component wherever you need it on the page */}
       {/* <Search /> */}
 
-      <Grid
+      {/* <Grid
         justifyContent="center"
         alignSelf="center"
         alignItems="center"
@@ -39,9 +39,9 @@ export default function App() {
         templateRows="1fr 1fr 1fr 1fr 1fr 1fr 1fr"
         width="100%"
         height="100%"
-      >
+      > */}
         {/* Explore Section Header */}
-        <div
+        {/* <div
           style={{
             height: "100%",
             width: "100%",
@@ -49,35 +49,35 @@ export default function App() {
             textAlign: "center",
             ...(showBorders ? { border: "2px solid red" } : {}),
           }}
-        >
+        > */}
           
-        </div>
+        {/* </div> */}
 
         {/* Optionally remove the old search container code from here, 
             since the <Search> component is now separate. */}
 
         {/* Newly Added */}
-        <Flex
+        {/* <Flex
           width="100%"
           height="100%"
           area="2 / 3 / span 2 / span 1"
           style={{ ...(showBorders ? { border: "2px solid red" } : {}) }}
         >
           <NewlyAdded />
-        </Flex>
+        </Flex> */}
 
         {/* Recently Visited */}
-        <Flex
+        {/* <Flex
           width="100%"
           height="100%"
           area="4 / 3 / span 2 / span 1"
           style={{ ...(showBorders ? { border: "2px solid red" } : {}) }}
         >
           <RecentlyVisited />
-        </Flex>
+        </Flex> */}
 
         {/* More layout or features can go here */}
-      </Grid>
+      {/* </Grid> */}
     </main>
     // </AuthWrapper>
   );
